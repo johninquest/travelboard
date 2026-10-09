@@ -1,0 +1,1704 @@
+I think there is a very good middle ground, and I'd actually change the framing of the project.
+
+Don't build:
+
+“an AI travel agent.”
+
+And don't build:
+
+“a better travel aggregator.”
+
+Build a small, useful travel decision product whose underlying architecture can eventually become an agent.
+
+That distinction matters enormously for a solo founder.
+
+The AI-travel-planner space is already crowded in 2026: Mindtrip, Layla, Wanderlog, Google, Expedia and others are pushing toward conversational planning and booking. So “type what you want and AI plans a trip” is not novel enough by itself.
+
+But there is still room to build something novel without building the machinery upfront.
+
+My blunt recommendation
+
+I'd start with:
+
+“Find me the best holiday, not the best search result.”
+
+And make the first version almost embarrassingly simple.
+
+The user gives you:
+
+Where can I go?
+From: Munich / Nuremberg / Frankfurt
+Dates: flexible
+Duration: 5–8 days
+Budget: €1,000
+2 adults
+Priorities: ☀️ warm + 🏖️ beach + 🍷 food
+
+And you return:
+
+5 trips I'd seriously consider
+
+🇬🇷 Crete — €842
+★★★★ hotel · breakfast · direct flight
+Best overall
+
+🇪🇸 Mallorca — €917
+★★★★ hotel · beach · direct flight
+Best beach
+
+🇹🇷 Antalya — €714
+★★★★★ all-inclusive
+Best value
+
+etc.
+
+But here's the important bit:
+
+The product's secret sauce isn't AI.
+
+It's the decision model.
+
+You figure out:
+
+Given this person's constraints, what are the 5 best complete trips?
+
+AI can come later.
+
+Phase 1: Don't even build the aggregator
+
+This is where I think you can save yourself months.
+
+Build a landing page.
+
+Something like:
+
+Tell us your holiday.
+
+We'll find the trips worth booking.
+
+Then a simple form:
+
+Departure: Germany / airport
+When: June / flexible
+Duration: 5–8 nights
+Budget: €800–1,200
+Travellers: 2
+Looking for:
+☑ Beach
+☑ Warm
+☑ Good food
+☐ Nightlife
+☐ Family
+☐ Luxury
+
+[Find my trips]
+
+Initially, you manually fulfill the request.
+
+Seriously.
+
+Someone submits it.
+
+You take the request.
+
+You search existing travel sites.
+
+You construct 3–5 offers.
+
+You send them a beautiful result page.
+
+Then you watch what they click.
+
+Why I actually like this
+
+Because you're testing the riskiest assumption first.
+
+Not:
+
+“Can I technically aggregate Booking.com?”
+
+We already know the infrastructure exists. Booking.com has a Demand API covering accommodation, cars and flights; KAYAK offers flight/hotel/car APIs; Viator offers affiliate APIs and live product data; Travelpayouts gives affiliates access to a large collection of travel programs.
+
+The risky assumption is:
+
+Will people trust a new product to tell them which vacation they should book?
+
+That's what you need to validate.
+
+And here's where I'd make it novel
+
+Don't try to beat Google on search.
+
+Try to beat existing travel sites on decision quality.
+
+Imagine I give you:
+
+€1,400
+2 people
+8 days
+September
+departing Germany
+warm
+beach
+good food
+no car
+
+A normal aggregator says:
+
+Here are 2,843 hotels.
+
+Your product says:
+
+I've looked at the options. I'd book this one.
+
+And then explains:
+
+Why:
+
+€1,087 total
+direct flight
+4.6/5 hotel rating
+350m from beach
+breakfast included
+September weather is reliable
+leaves €313 of your budget for activities
+
+I'd choose Crete over Mallorca because you're getting a materially better hotel for the same flight time.
+
+That's the product.
+
+Then gradually automate it
+
+I'd think about your roadmap like this:
+
+Version 0
+
+Human intelligence
+
+User → form → you → travel sites → recommendation → affiliate links
+
+Cost:
+
+almost €0
+
+AI:
+
+none
+
+Goal:
+
+10–30 real users
+
+Version 1
+
+Automate the boring bits.
+
+User → form → flight/hotel APIs → database → simple ranking → result page
+
+AI:
+
+maybe 0–10%
+
+You're primarily building:
+
+travel data + ranking + UX
+
+Goal:
+
+100–500 users
+
+Version 2
+
+Introduce AI where it actually adds value.
+
+User says:
+
+“We want somewhere like Mallorca but less touristy and preferably under €1,200.”
+
+Now AI interprets the request.
+
+Your system turns that into structured preferences.
+
+AI becomes the interface, not the product.
+
+Version 3
+
+Now the agent becomes interesting.
+
+The system starts saying:
+
+“I found 47 viable combinations.”
+
+“I eliminated 32 because of bad flight times.”
+
+“I eliminated 8 because the hotel is poor value.”
+
+“These 4 are genuinely interesting.”
+
+“This is my recommendation.”
+
+That's an actual agentic workflow.
+
+There is another reason I'd avoid AI initially
+
+Trust.
+
+Travel is an unusually bad domain for hallucination.
+
+A wrong restaurant recommendation is annoying.
+
+A wrong hotel price or impossible flight connection can cost somebody hundreds of euros.
+
+There are already reports of AI travel planners producing outdated or incorrect travel information, which is one reason travelers remain cautious about letting AI actually execute travel purchases.
+
+So your positioning could actually be:
+
+AI can help you explore. We help you decide.
+
+And eventually:
+
+We verify the trip before we recommend it.
+
+That could become part of your differentiation.
+
+The business model I'd use
+
+Initially:
+
+Free
+
+→ affiliate commission.
+
+Don't complicate it with subscriptions.
+
+If someone clicks:
+
+“Book this hotel”
+
+you earn the commission.
+
+If they book activities:
+
+additional commission.
+
+Viator, for example, lets affiliate partners send users to Viator for the final transaction while earning commission, with a 30-day cookie on its current affiliate offering.
+
+Travelpayouts is also interesting for your MVP because it provides a single affiliate layer across multiple travel brands and currently automatically connects relevant programs when a project is created.
+
+So you don't need to spend your first month becoming an expert in affiliate plumbing.
+
+Here's where I'd be particularly careful
+Don't become an affiliate SEO farm.
+
+This is the trap.
+
+You build:
+
+Cheap hotels in Mallorca
+Cheap hotels in Tenerife
+Best hotels in Crete
+Cheap flights to Spain
+
+Then you spend 12 months chasing Google traffic.
+
+You have essentially built a commodity content business.
+
+I'd rather build:
+
+“Give me your constraints and I'll find the best trip.”
+
+That has a much more interesting product loop.
+
+And I wouldn't start with “all travel”
+
+This is another place I'd force you to be disciplined.
+
+Pick one job to be done.
+
+For example:
+
+“Affordable sun holidays from Germany”
+
+That's actually a great initial market.
+
+You can constrain the universe to:
+
+Departure
+
+Munich
+Nuremberg
+Stuttgart
+Frankfurt
+
+Destinations
+
+Spain
+Greece
+Turkey
+Portugal
+Italy
+Cyprus
+Malta
+
+Trip length
+
+4–10 nights
+
+Budget
+
+€400–€2,000
+
+Suddenly the problem becomes tractable.
+
+You're not building Expedia.
+
+You're building:
+
+The best-value sun holiday finder for Germans.
+
+That's something one person can actually attack.
+
+And then I'd introduce your “novel” layer
+
+Once you have users, start collecting the decisions they make.
+
+For example:
+
+User A:
+
+€1,000
+Mallorca vs Crete
+
+Chooses Crete.
+
+User B:
+
+€1,000
+Mallorca vs Crete
+
+Chooses Mallorca.
+
+Why?
+
+Maybe the model learns:
+
+Some users heavily value direct flights.
+
+Others:
+
+hotel quality.
+
+Others:
+
+beach proximity.
+
+Others:
+
+nightlife.
+
+Eventually you can construct a preference model for vacation decisions.
+
+That's much more interesting than simply scraping offers.
+
+I would also test one killer feature
+
+This:
+
+“Can you beat this holiday?”
+
+This may actually be the best initial wedge.
+
+User pastes:
+
+TUI holiday
+Mallorca
+7 nights
+€1,499
+
+You return:
+
+I found 3 alternatives.
+
+Same hotel: €1,431
+
+Similar hotel: €1,214
+
+Better-rated hotel: €1,326
+
+I'd save you €173 without changing the dates.
+
+That's an incredibly easy value proposition.
+
+And it gives you high commercial intent.
+
+You're not trying to convince someone to take a vacation.
+
+They've already decided to buy one.
+
+You're simply saying:
+
+“Before you pay €1,500, let me check whether you're getting a good deal.”
+
+That is a much easier customer acquisition problem.
+
+So I'd actually test TWO entry points
+Entry A — inspiration
+
+“Find me a holiday.”
+
+Low intent, potentially huge market.
+
+Entry B — optimization
+
+“Can you beat this deal?”
+
+High intent, smaller but potentially much better economics.
+
+I'd put both on the homepage.
+
+Then see which one people actually use.
+
+Your first 30 days could look like this
+Week 1 — Don't code
+
+Build the landing page.
+
+Get:
+
+10–20 test users
+20–50 actual travel requests
+manually fulfill them
+
+You want to hear:
+
+“Holy shit, that's exactly what I was looking for.”
+
+Not:
+
+“Cool AI.”
+
+Those are very different signals.
+
+Week 2 — Affiliate links
+
+Connect the easiest affiliate infrastructure.
+
+Travelpayouts is a reasonable starting point because it can give you access to multiple travel programs from one platform.
+
+Don't worry about sophisticated API integration yet.
+
+Track:
+
+recommendation → click → booking
+
+Now you're testing whether the business makes money.
+
+Week 3 — Build the smallest automation
+
+Instead of you manually searching everything:
+
+request
+
+↓
+
+structured criteria
+
+↓
+
+small set of travel sources
+
+↓
+
+candidate offers
+
+↓
+
+simple scoring
+
+↓
+
+results
+
+No autonomous agent.
+
+No multi-agent architecture.
+
+No vector database.
+
+No fancy RAG system.
+
+No 17 LLM calls.
+
+Just:
+
+search → normalize → score → present
+
+Week 4 — Measure brutally
+
+You need to know:
+
+100 people visit
+
+↓
+
+X submit a request
+
+↓
+
+Y receive recommendations
+
+↓
+
+Z click an offer
+
+↓
+
+N book
+
+↓
+
+€ revenue
+
+Then calculate:
+
+Revenue per visitor
+
+and
+
+Revenue per recommendation
+
+Those two numbers tell you whether you've found something.
+
+The decision tree I'd use
+
+After 30 days:
+
+If nobody wants it
+
+Kill it.
+
+If people want it but don't click
+
+Your recommendations aren't compelling enough.
+
+If people click but don't book
+
+Your offers/pricing/trust/UX are wrong.
+
+If people book but revenue is tiny
+
+You need higher-value travel categories or better monetization.
+
+If people repeatedly come back
+
+Now build the agent.
+
+That's when I'd start investing.
+
+The crucial insight
+
+You're not actually choosing between:
+
+Lean
+
+and
+
+Novel
+
+You're choosing between:
+
+Novel hypothesis + lean implementation
+
+versus
+
+Novel technology + huge implementation
+
+You want the first one.
+
+That's the sweet spot.
+
+If I were personally building this solo
+
+I'd spend the next month trying to prove this sentence:
+
+“People will give us their travel constraints and trust us to narrow thousands of possible trips down to 3–5 genuinely good ones.”
+
+If that works, then I'd build the technology that makes it scalable.
+
+And I would specifically not spend the first month building an AI agent.
+
+The agent should be the consequence of discovering a valuable workflow, not the hypothesis.
+
+And there is enough infrastructure underneath the market to let you postpone that complexity: Booking.com, KAYAK and Viator all expose partner/API paths, while affiliate networks can provide a shortcut to multiple suppliers.
+
+My strongest initial bet would therefore be:
+
+“Give us your budget, dates and preferences. We'll find the 3 holidays actually worth booking.”
+
+Start manually.
+Monetize with affiliate links.
+Measure real bookings.
+Automate only what hurts.
+Let the eventual agent emerge from the workflow.
+
+That's a much more realistic solo-founder path than trying to build “the autonomous Expedia” from day one.
+
+If you want, I can take this one step further and 
+design the actual MVP with you — homepage, user flow, first niche, affiliate stack, data sources, what you manually do vs automate, and the exact 30-day validation plan, including what I'd refuse to build in month one.
+
+Are there free APIs I can integrate here?
+
+Yes — and this is actually one of the reasons I think your lean-first approach is viable.
+
+But there's an important distinction:
+
+Free API for development/testing ≠ free API for a real commercial product with live prices.
+
+For your MVP, you can get surprisingly far without paying much.
+
+The shortlist I'd use
+API / platform	What you get	Free?	Good for your MVP?
+Amadeus Self-Service	Flights, hotels, destinations, activities	✅ Free quota for testing	⭐⭐⭐⭐⭐
+Travelpayouts	Affiliate programs + APIs/data feeds	✅ Free to join	⭐⭐⭐⭐⭐
+Booking.com Demand API	Hotels, cars, attractions, etc.	Sandbox, but production requires affiliate approval	⭐⭐⭐⭐
+Duffel	Live flight search/booking infrastructure	Test mode free; live is commercial	⭐⭐⭐
+Viator	Tours/activities	Affiliate/API access	⭐⭐⭐⭐
+1. Amadeus is probably where I'd start
+
+Amadeus has a Self-Service developer platform with APIs for:
+
+flight search
+hotel search
+destination discovery
+activities
+cars/transfers
+travel inspiration/market data
+
+Their developer environment gives you a free quota for testing, so you can build your initial prototype without paying for API calls.
+
+That makes it excellent for something like:
+
+User:
+€1,000
+2 people
+7 days
+September
+Munich
+Warm + beach
+
+        ↓
+
+Amadeus
+
+        ↓
+
+Flights
+Hotels
+Destinations
+Activities
+
+        ↓
+
+Your ranking logic
+
+        ↓
+
+"Here are 5 trips I'd recommend"
+
+You can build that entire experiment before worrying about commercial API costs.
+
+2. Travelpayouts is particularly interesting for you
+
+This is actually the piece I'd look at very seriously.
+
+Travelpayouts isn't just an API. It's an affiliate infrastructure layer.
+
+They currently say you can join for free, with no upfront costs, and get access to affiliate programs, APIs/data feeds, SDKs, white-label options and tracking.
+
+Even better for a solo founder, their current system automatically connects relevant programs when you create a project rather than requiring you to individually apply to every program.
+
+So conceptually:
+
+                   YOUR PRODUCT
+
+                        ↓
+
+              Travel search / ranking
+
+                   ↙        ↘
+
+             Amadeus      Travelpayouts
+               ↓                ↓
+           inventory       affiliate links
+                              ↓
+                    Booking / Expedia /
+                    hotels / activities
+                              ↓
+                         COMMISSION
+
+That's a very attractive starting architecture.
+
+3. Booking.com is slightly different
+
+Booking.com has a very serious Demand API now.
+
+It supports accommodation and other travel services, with flows ranging from:
+
+Search → look → redirect
+
+all the way to:
+
+Search → look → book inside your product.
+
+However, there's a catch that matters for you:
+
+You need to become a Managed Affiliate Partner and get access to the Partner Centre before you can use the production Demand API.
+
+They do provide a sandbox, though.
+
+So I wouldn't make Booking.com the dependency for your first experiment.
+
+4. Duffel is great, but I'd postpone it
+
+Duffel is very interesting if you eventually want to become a serious flight infrastructure company.
+
+You can create test tokens and build the integration in a sandbox.
+
+But here's the catch:
+
+sandbox prices aren't real.
+
+Duffel explicitly says that if you want real, live flight prices, you need to activate the account.
+
+So:
+
+Great for: building your flight integration.
+
+Not ideal for: proving your business model for free.
+
+Here's what I'd actually build
+
+This is where I think we can make your idea very lean.
+
+Don't start with 20 APIs.
+
+Start with:
+
+Amadeus
+
+for:
+
+flight + hotel/destination discovery
+
+and
+
+Travelpayouts
+
+for:
+
+affiliate monetization + links/tracking
+
+That's enough.
+
+Your first technical architecture could literally be this
+                 USER
+
+                  ↓
+
+          Simple web form
+
+                  ↓
+
+        User preferences JSON
+
+                  ↓
+
+        ┌─────────────────┐
+        │  Trip Finder     │
+        │                  │
+        │  Amadeus API     │
+        └────────┬────────┘
+                 ↓
+        Candidate trips
+                 ↓
+        Simple scoring
+                 ↓
+      ┌──────────┴──────────┐
+      ↓                     ↓
+  "Best value"          "Best overall"
+      ↓                     ↓
+        Travelpayouts affiliate
+                 ↓
+            Booking site
+                 ↓
+             COMMISSION
+
+And no AI is required.
+
+In fact, I'd deliberately avoid AI at first
+
+Suppose you have this:
+
+Trip A
+
+€827
+Flight: 2h 45m
+Hotel: 4.6/5
+Beach: 400m
+Breakfast: yes
+
+Trip B
+
+€794
+Flight: 5h 20m
+Hotel: 4.1/5
+Beach: 1.4km
+Breakfast: no
+
+A simple scoring function can say:
+
+price        30%
+hotel        25%
+flight       20%
+location     15%
+amenities    10%
+
+You can already produce:
+
+Trip A — Best overall
+
+You don't need an LLM to do that.
+
+Then AI becomes really interesting
+
+Once the basic system works, give the user a text box:
+
+“We're a couple in our early 30s. We want somewhere relaxing but not dead, preferably good food and a nice beach. We're okay spending a little more for a better hotel.”
+
+Now your LLM converts that into:
+
+{
+  "budget": 1300,
+  "travellers": 2,
+  "hotel_quality": "high",
+  "beach": "high",
+  "food": "high",
+  "nightlife": "medium",
+  "quietness": "medium",
+  "price_sensitivity": "medium"
+}
+
+Then your deterministic system does the actual search/ranking.
+
+That's a much safer architecture.
+
+And this is the part I really like
+
+You can actually run the first experiment for almost no money.
+
+You don't need:
+
+GPUs
+vector databases
+agent frameworks
+sophisticated orchestration
+huge datasets
+scraping infrastructure
+your own booking engine
+payment infrastructure
+
+You need:
+
+landing page
+
+form
+
+API calls
+
+ranking
+
+affiliate links
+
+That's it.
+
+But there's one thing I'd change from our previous discussion
+
+I wouldn't even build the full "find me a vacation" product initially.
+
+I'd make your MVP:
+
+“Can I beat this holiday?”
+
+Why?
+
+Because it gives you pre-qualified commercial intent.
+
+Imagine:
+
+Paste your holiday offer
+
+[ TUI / Booking.com / Expedia URL ]
+
+or
+
+Upload a screenshot
+
+Then:
+
+We found a potentially better option
+
+Your offer
+
+€1,489
+
+7 nights · Mallorca
+★★★★ hotel
+Direct flight
+
+Our alternative
+
+€1,217
+
+7 nights · Mallorca
+★★★★+ hotel
+Direct flight
+
+Potential saving: €272
+
+Compare →
+
+That is a very clean product.
+
+And your backend doesn't need to solve:
+
+"What does every human want from a holiday?"
+
+It only needs to solve:
+
+"Can I find a better combination than this?"
+
+That's dramatically easier.
+
+Then you have a beautiful evolution path
+MVP
+
+Can I beat this holiday?
+
+↓
+
+V2
+
+Find me a better holiday
+
+↓
+
+V3
+
+Find me the best holiday
+
+↓
+
+V4
+
+Monitor the market for me
+
+↓
+
+V5
+
+Book/manage it for me
+
+And notice what's happening.
+
+You're gradually moving from:
+
+affiliate website
+
+→ travel optimization engine
+
+→ travel agent
+
+→ agentic travel platform
+
+without having to make that enormous technological bet on day one.
+
+My current stack recommendation
+
+If you forced me to start this weekend, I'd investigate:
+
+Frontend: Next.js / whatever you're comfortable with
+
+Database: Supabase/Postgres
+
+Flight/hotel discovery: Amadeus
+
+Affiliate layer: Travelpayouts
+
+Initial AI: none
+
+Later AI: OpenAI API for interpreting preferences
+
+Analytics: PostHog
+
+Payments: none initially
+
+Booking: redirect to supplier
+
+And I'd aim to get the first usable version in front of 10 real people, rather than trying to build a complete travel platform.
+
+The beautiful thing is that if 10 people don't care, you've spent very little.
+
+If 10 people love it, then we start throwing machinery at the problem.
+
+I like this idea. From the start. I would like to optimize it for SEO and traffic from AI Agents. How do I do that?
+
+Yes. And I would design the product SEO-first and agent-discoverable from day one, but I would not create a separate “AI strategy.” The same underlying thing should serve Google, ChatGPT, Perplexity, Copilot, and eventually autonomous travel agents.
+
+The key idea is:
+
+Don't optimize for AI answers. Build the best machine-readable source for a particular class of travel decisions.
+
+That is a much more durable strategy.
+
+First: there are really 3 traffic channels
+
+Think of your acquisition as:
+
+Google
+→ traditional search traffic
+
+AI search
+→ ChatGPT / Gemini / Perplexity / Copilot citations
+
+AI agents
+→ an agent needs a reliable page/data source to answer a user's request
+
+Your product should be designed for all three.
+
+And this is increasingly measurable. Bing Webmaster Tools now has an AI Performance report showing which pages are cited in AI-generated answers, grounding queries, and citation share.
+
+OpenAI similarly says public websites can appear in ChatGPT search, and specifically recommends allowing OAI-SearchBot if you want your content discovered and cited.
+
+So this isn't hypothetical anymore.
+
+The mistake I'd avoid
+
+Don't build:
+
+/blog/best-beaches-in-mallorca
+
+and then produce 10,000 AI-generated articles.
+
+That is exactly the sort of thing I'd expect to become increasingly commoditized.
+
+Instead, build pages around decisions.
+
+For example:
+
+/holidays/under-1000-from-munich
+
+Best holidays under €1,000 from Munich
+
+/holidays/crete-vs-mallorca
+
+Crete vs Mallorca: which is better for a €1,000 holiday?
+
+/holidays/warm-europe-september
+
+Best warm European destinations in September
+
+/holidays/7-days-under-800
+
+7-day holidays under €800
+
+But the crucial difference is:
+
+These aren't static SEO articles.
+
+They are live decision pages.
+
+Imagine this page
+Best beach holidays from Munich under €1,000
+
+Updated: 8 October 2026
+
+We currently found 143 viable trips.
+
+🥇 Crete
+
+€824 / person
+
+7 nights · direct flight · 4★ hotel
+
+Best overall
+
+Why we like it:
+
+€176 below your budget
+4.6/5 hotel rating
+direct flight
+350m from beach
+breakfast included
+
+Check this trip →
+
+🥈 Mallorca
+
+€879 / person
+
+...
+
+🥉 Antalya
+
+€697 / person
+
+...
+
+And then:
+
+Want us to personalize this?
+
+Budget: €800–1,200
+Departure: Munich
+Duration: 5–8 nights
+Beach ✓
+Good food ✓
+
+Find my best trip →
+
+That page can simultaneously be:
+
+an SEO landing page
+an AI citation target
+a useful human page
+an affiliate funnel
+a doorway into your actual product
+
+That's what I'd aim for.
+
+The really important SEO insight
+
+You don't want to target only:
+
+“Mallorca hotels”
+
+Those are incredibly competitive terms.
+
+You want to target long-tail travel intent.
+
+For example:
+
+“warm destinations from Germany in November”
+
+“best beach holiday under €1000”
+
+“cheap 5 star holiday Turkey”
+
+“best holiday from Munich September”
+
+“Mallorca vs Crete for couples”
+
+“where to go in Europe for 7 days in October”
+
+“best family holiday under €1500”
+
+These queries are much closer to what your eventual product does.
+
+And there are potentially thousands of combinations.
+
+This is where programmatic SEO becomes interesting
+
+You could have a controlled system generating pages from your actual travel dataset.
+
+For example:
+
+Departure airport
+
+×
+month
+
+×
+budget
+
+×
+trip type
+
+×
+duration
+
+might create:
+
+/holidays/from-munich/under-1000/september/beach
+
+or:
+
+/holidays/from-berlin/under-1500/october/family
+
+But don't generate 100,000 pages immediately.
+
+Google explicitly cares about useful, accessible content, and you don't want a giant collection of near-identical pages that exist primarily to capture search traffic.
+
+I'd start with perhaps 50–200 genuinely useful pages.
+
+Then watch what Google and AI systems actually surface.
+
+And here's where AI search is different
+
+Traditional SEO tends to reward:
+
+relevance + authority + links + technical quality
+
+AI retrieval has another important requirement:
+
+Can the model extract a clear answer from this page?
+
+Look at what Bing is now exposing to site owners: not just rankings, but grounding queries, cited URLs and citation share for AI answers.
+
+That suggests an important design principle:
+
+Every page should contain explicit answers.
+
+Don't write:
+
+“Mallorca is a beautiful island with diverse attractions…”
+
+Write:
+
+Best for: beach + nightlife
+Typical September temperature: X
+Direct flights from Munich: yes
+Typical 7-night budget: €X–€Y
+Best for: couples
+Avoid if: you want very quiet beaches
+
+Machines can understand that extremely easily.
+
+Humans can too.
+
+I'd create a standardized “Trip Fact Sheet”
+
+This could eventually become one of your biggest assets.
+
+Every destination/trip page has:
+
+Trip
+
+Destination: Crete
+Departure: Munich
+Dates: Sept 12–19
+Duration: 7 nights
+Travellers: 2
+
+Cost
+
+Flight: €238
+Hotel: €684
+Transfer: €42
+Estimated total: €964
+
+Characteristics
+
+Beach: 9/10
+Food: 9/10
+Nightlife: 6/10
+Family: 8/10
+Romance: 9/10
+
+Logistics
+
+Direct flight: yes
+Flight time: 2h 45m
+Airport transfer: 35 min
+
+Recommendation
+
+Best for: couples seeking beach + food
+
+Our confidence: high
+
+This is fantastic for:
+
+users
+Google
+ChatGPT
+Perplexity
+Copilot
+your own future agents
+Make the pages extremely crawlable
+
+This is boring but important.
+
+Don't make your core information appear only after:
+
+Click → wait → JavaScript → API → spinner → result.
+
+Have a server-rendered HTML page containing the important facts.
+
+Your interactive application can sit on top.
+
+That means a crawler can arrive at:
+
+/holidays/crete/september/munich
+
+and immediately see:
+
+€824
+7 nights
+direct flight
+4★ hotel
+etc.
+
+rather than receiving an empty React shell.
+
+Structured data matters too
+
+Use Schema.org where it accurately describes what you're publishing.
+
+Google has explicit structured-data support around travel-related entities, including VacationRental, and recommends making structured data available in crawlable HTML and maintaining sitemaps.
+
+But don't fall into the trap of:
+
+“I'll add schema and Google will rank me.”
+
+Structured data isn't the strategy.
+
+It's making your already-useful content easier for machines to understand.
+
+I would also expose an actual machine-readable layer
+
+This is where I think you can get ahead of most travel sites.
+
+For example:
+
+/api/trips/...
+
+or even simple JSON endpoints.
+
+Imagine an AI agent wants:
+
+“Find me a beach holiday from Munich under €1,000 in September.”
+
+Your site could have a machine-readable representation like:
+
+{
+  "destination": "Crete",
+  "departure": "Munich",
+  "duration_nights": 7,
+  "travel_month": "September",
+  "price_total": 824,
+  "currency": "EUR",
+  "direct_flight": true,
+  "hotel_rating": 4,
+  "beach_distance_m": 350,
+  "breakfast": true,
+  "last_checked": "2026-10-08T..."
+}
+
+Now your data isn't just designed for humans.
+
+It's designed for retrieval and reasoning.
+
+And that fits where the web is heading. Microsoft is explicitly describing newer web infrastructure as being designed around AI systems retrieving fresh, authoritative evidence for agentic reasoning.
+
+Here's the more radical idea
+
+Eventually:
+
+Don't just make your website searchable.
+
+Make your trip database a destination for agents.
+
+Imagine an agent has the user's request:
+
+“Find me a beach vacation for two adults, leaving from Munich, €1,200 max.”
+
+Instead of crawling the entire internet, it encounters your site as a source of:
+
+verified, structured travel recommendations
+
+The agent retrieves:
+
+Trip #48372
+
+Munich → Crete
+7 nights
+€1,087
+Direct
+4★
+Beach: 350m
+Updated: 17 minutes ago
+
+Then it can cite your page.
+
+That's an entirely different type of SEO.
+
+You're effectively trying to become:
+
+the structured answer layer for a particular travel intent.
+
+But don't build an API for agents yet
+
+This is another place where I'd keep you disciplined.
+
+Don't spend three months building:
+
+“The world's first MCP-enabled autonomous travel API.”
+
+😂
+
+Not yet.
+
+Simply make your normal website's underlying data clean and structured.
+
+Then expose it through JSON once there's evidence people/agents are using it.
+
+Your URL architecture matters
+
+I'd probably build around intent, not inventory.
+
+Something like:
+
+/holidays/
+
+/holidays/beach/
+/holidays/family/
+/holidays/couples/
+/holidays/ski/
+
+/holidays/under-1000/
+
+/holidays/from-munich/
+
+/holidays/september/
+
+/destinations/crete/
+/destinations/mallorca/
+
+/compare/crete-vs-mallorca/
+
+/deals/
+
+And eventually combinations:
+
+/holidays/from-munich/beach/under-1000/september/
+
+But only create an indexable page when it has enough useful data to justify existing.
+
+Your “Can you beat this holiday?” feature is SEO gold
+
+This is actually another reason I like the idea.
+
+Someone searches:
+
+“TUI Mallorca 1499 review”
+
+You can have:
+
+Is €1,499 a good price for this Mallorca holiday?
+
+And show:
+
+We found 27 comparable trips.
+
+Current offer: €1,499
+Our estimated comparable range: €1,180–€1,390
+Verdict: Above average
+
+Then:
+
+“Find alternatives”
+
+That page is useful even if the person never uses your general travel search.
+
+And it has commercial intent.
+
+I'd build a content flywheel
+
+This is what I think your eventual acquisition engine could look like:
+
+Travel data
+
+↓
+
+Trip comparisons
+
+↓
+
+Useful pages
+
+↓
+
+Google traffic
+
+AI citations
+
+↓
+
+User arrives
+
+↓
+
+Personalized search
+
+↓
+
+Affiliate click
+
+↓
+
+Booking
+
+↓
+
+More travel data
+
+↓
+
+Better recommendations
+
+↓
+
+More useful pages
+
+That's much more defensible than:
+
+AI generates travel articles → SEO → affiliate links.
+
+One important technical thing for ChatGPT
+
+Make sure your robots.txt doesn't accidentally block AI search crawlers.
+
+OpenAI explicitly says that if you want your public content to appear in ChatGPT search results, you should allow OAI-SearchBot.
+
+So your eventual setup should include something along the lines of allowing:
+
+User-agent: OAI-SearchBot
+Allow: /
+
+while separately deciding whether you want GPTBot access. OpenAI treats those controls independently: OAI-SearchBot is for search, while GPTBot relates to potential model-training use.
+
+That's a subtle but important distinction.
+
+I'd also use Bing Webmaster Tools from day one
+
+Not because Bing traditional search is necessarily your biggest acquisition source.
+
+Because Bing is now giving publishers AI visibility data.
+
+You can eventually see things like:
+
+Which queries caused AI systems to cite me?
+
+Which pages get cited?
+
+What's my citation share?
+
+That's exactly the feedback loop you want for this experiment.
+
+And use IndexNow to tell participating search engines about newly created/updated URLs quickly.
+
+So here's the architecture I'd now recommend
+Layer 1 — Data
+
+Amadeus / affiliate partners / other sources
+
+↓
+
+Layer 2 — Normalized trip model
+Trip
+Destination
+Dates
+Price
+Flight
+Hotel
+Activities
+Constraints
+Scores
+Last checked
+
+↓
+
+Layer 3 — Decision engine
+
+Which trips are actually good?
+
+↓
+
+Layer 4 — Public pages
+
+Human-readable + machine-readable
+
+↓
+
+Layer 5 — Personalized interface
+
+“Find me my trip.”
+
+↓
+
+Layer 6 — Affiliate transaction
+
+Book → commission
+
+And the really important part
+
+Don't optimize the website for SEO.
+
+Optimize it for answerability.
+
+That's a slightly different philosophy.
+
+Ask yourself for every page:
+
+If ChatGPT had to answer a user's question using this page as its source, would it have everything it needs?
+
+If the answer is yes, you've probably built a good SEO page too.
+
+If we were actually starting this together
+
+I'd make our first experiment incredibly specific:
+
+Product
+
+“Can I beat your holiday?”
+
+Market
+
+German travelers
+
+Initial content
+
+100–200 highly targeted pages
+
+around:
+
+holidays under €500 / €750 / €1,000 / €1,500
+departures from Munich / Nuremberg / Frankfurt / Berlin
+September / October / November etc.
+beach / family / couples / luxury
+destination comparisons
+Product CTA
+
+Have a holiday in mind? Let me beat it.
+
+Data
+
+Amadeus + affiliate network.
+
+AI
+
+Zero initially, except perhaps internally for generating/normalizing copy.
+
+Goal after 30 days
+
+Not:
+
+“We have 10,000 visitors.”
+
+But:
+
+“People are discovering us through search, giving us real travel offers, clicking our alternatives, and at least some are booking.”
+
+If we prove that, then I'd be very interested in turning the system into the agentic product we were discussing.
+
+And honestly, I think this is a considerably more sensible solo-founder bet than starting by building an AI travel agent.
