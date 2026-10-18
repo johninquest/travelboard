@@ -32,8 +32,10 @@ onBootstrap((e) => {
     {
       name: "requests",
       createRule: "",
-      listRule: null,
-      viewRule: null,
+      // Anonymous read by unguessable token: the result page must be able to
+      // tell "open" from "fulfilled" without an account.
+      listRule: "",
+      viewRule: "",
       fields: [
         { type: "text", name: "token", presentable: true },
         { type: "select", name: "status", maxSelect: 1, values: ["open", "fulfilled", "abandoned"] },

@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+/* Horizon Wanderer — light-only warm palette. Ported 1:1 from ui-baseline.html. */
+:root {
+  --background: #fbf8f3; /* Sandstone */
+  --surface: #ffffff;
+  --surface-warm: #f4eee4;
+  --foreground: #1c1917; /* Deep Espresso */
+  --muted-foreground: #57534e;
+  --subtle: #a8a29e;
+  --border: #e7dfd3;
+  --border-strong: #d6cbbb;
+  --primary: #e05a47; /* Terracotta — the only action colour */
+  --primary-hover: #c74a38;
+  --primary-soft: #fbeae5;
+  --secondary: #5b7065; /* Sage Olive — the only secondary colour */
+  --secondary-hover: #4a5c52;
+  --secondary-soft: #eaefe9;
+  --positive: #3f6c53;
+  --warning: #b45309;
+  --danger: #b91c1c;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-warm: var(--surface-warm);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle: var(--subtle);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-soft: var(--primary-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-soft: var(--secondary-soft);
+  --color-positive: var(--positive);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+
+  --radius-input: 8px;
+  --radius-card: 14px;
+
+  --shadow-card: 0 1px 2px rgb(28 25 23 / 0.05);
+
+  --breakpoint-xs: 30rem;
+  --container-page: 1120px;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Every price/number block: tabular figures so €842 vs €917 align. */
+.tnum {
+  font-feature-settings: "tnum";
+}
+
+/* Display type: tighter tracking, no colouring of data. */
+.font-display {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* Keyboard-first focus ring — this is a form product. */
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
