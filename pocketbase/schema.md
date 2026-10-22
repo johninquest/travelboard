@@ -1,12 +1,18 @@
-# Pocketbase schema — validation phase (V0/V1)
+# Pocketbase schema — validation phase (V0 / deals board)
 
-Handoff spec for the **existing Pocketbase instance on the VPS**. Either create the six
-collections by hand from this document, or drop [`schema.pb.js`](./schema.pb.js) into the
-instance's `pb_hooks/` directory and restart — the hook creates everything below and then
-renames itself to `schema.pb.js.done` so it runs exactly once.
+Handoff spec for the **existing Pocketbase instance on the VPS**. Either create the
+collections by hand from this document, drop [`schema.pb.js`](./schema.pb.js) into the
+instance's `pb_hooks/` directory and restart, or import
+[`collections.json`](./collections.json) from the dashboard
+(*Import collections* — it is ordered so `travel_sources` exists before `travel_listings`
+references it).
+
+The hook creates everything below and renames itself to `schema.pb.js.done`, but only once
+every collection in the spec exists — a partial failure leaves the hook in place and retries
+on the next restart.
 
 The hook was written and verified against **Pocketbase v0.40.5** (live test instance, full
-run: 6 collections, 6 relations, 1 field-rule, 3 unique indexes, idempotent re-run). If your
+run: collections, relations, field rules, unique indexes, idempotent re-run). If your
 instance is older, upgrade first or expect API differences.
 
 ## Collections
@@ -28,7 +34,7 @@ not used — plain decimal euros (number fields). Every price record carries `la
 Rules: `create` = `""` (anyone), `list`/`view`/`update`/`delete` = `null` (superuser only).
 Index: `CREATE UNIQUE INDEX idx_requests_token ON travel_requests (token)`.
 
-### `travel_trips` — the Layer-2 core asset
+### `travel_trips` — a fulfilled human request (V0 funnel)
 
 | Field | Type | Notes |
 | --- | --- | --- |
@@ -109,6 +115,82 @@ Rules: `create` = `""` (anyone), rest `null`.
 Rules: `list`/`view` = `""` (anyone), rest `null`. Index:
 `CREATE UNIQUE INDEX idx_destinations_code ON travel_destinations (code)`.
 
+### `travel_sources` — where offers come from, and whether we may fetch them
+
+The `allowed` flag is a **recorded human decision**, never inferred at runtime. The ingestion
+worker must refuse to poll a source whose row is missing, `allowed = false`, or has no
+`feed_url`. That is what keeps a future automated poller from crawling somewhere it isn't
+permitted.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `name` | text | display name ("Urlaubspiraten") |
+| `slug` | text (max 80) | URL key for `/quelle/<slug>/`; unique via index |
+| `kind` | select | `feed` / `operator` / `manual` |
+| `feed_url` | text (max 500) | RSS/Atom endpoint, if any |
+| `robots_url` | text (max 500) | where the permission decision came from |
+| `content_signal` | text (max 200) | verbatim `Content-Signal` header, e.g. `ai-train=yes, search=yes, ai-input=yes` |
+| `attribution_url` | text (max 500) | link we show the reader |
+| `allowed` | bool | **the gate** |
+| `max_age_days` | number (int, 1–90) | hard expiry ceiling for this source's prices |
+| `last_polled` | date | |
+| `note` | text (max 2000) | the reasoning, in words |
+
+Rules: `list`/`view` = `""` (anyone — attribution pages are public), `update`/`delete` =
+`@request.auth.id != ""`, `create` = `null`.
+Index: `CREATE UNIQUE INDEX idx_travel_sources_slug ON travel_sources (slug)`.
+
+Verified-permitted starting rows (checked against live robots.txt, 2026):
+
+| name | slug | feed_url | permission |
+| --- | --- | --- | --- |
+| Urlaubspiraten | `urlaubspiraten` | `https://www.urlaubspiraten.de/feed` | `UA=* Allow: /`; `Content-Signal: ai-train=yes, search=yes, ai-input=yes` |
+| mydealz Reisen | `mydealz-reisen` | `https://www.mydealz.de/rss/gruppe/reisen` | `UA=*` allows `/`; the `Disallow: /` lines belong to named AI-bot blocks — **never impersonate those bots** |
+
+### `travel_listings` — the deals board's Layer-2 core asset
+
+One row = one normalised, dated, attributable offer. Everything the board renders reads from
+here; supplier quirks stay in the JSON fields.
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `title` | text | our own wording |
+| `slug` | text (max 120) | `/deal/<slug>/`; unique via index |
+| `summary` | text (max 280) | **our own one-line summary** — never copied marketing prose (copyright guardrail) |
+| `destination` | text (max 80) | human name ("Kreta") |
+| `country` | text (max 4) | ISO alpha-2, free text: the board is Europe-wide, not the V0 seven-country set |
+| `departure_airport` | text (max 5) | IATA; free text for the same reason |
+| `nights` | number (int, 1–30) | |
+| `travel_window` | json | `{start, end, label}` |
+| `price_from_eur` | number | the operator's own stated "ab" price |
+| `price_pp_eur` | number | per person |
+| `currency` | text (max 3) | `EUR` |
+| `travellers` | number (int, 1–9) | usually 2 |
+| `accommodation` | json | `{name, category, board}` |
+| `included` | json | array of strings — feeds the PAngV all-in statement |
+| `excluded` | json | array of strings — what the price does **not** cover |
+| `themes` | select multi (max 8) | `beach` / `all-inclusive` / `city` / `family` / `romance` / `last-minute` / `ski` / `cruise` |
+| `source` | relation → `travel_sources` | |
+| `source_url` | text (max 500) | the page we took the facts from |
+| `source_guid` | text (max 255) | feed item id, for dedupe |
+| `source_published_at` | date | drives auto-expiry |
+| `booking_url` | text (max 500) | CHECK24 affiliate path; rendered server-side only |
+| `affiliate_network` | select | `check24` / `awin` / `direct` / `none` |
+| `status` | select | `live` / `expired` / `needs_review` — drives the public-view rule |
+| `confidence` | select | `verified` (we checked) / `feed` (unreviewed import) / `manual` |
+| `last_checked` | date | staleness is always visible |
+| `notes` | text (max 4000) | |
+
+Rules: `create` = `null`, `update`/`delete` = `@request.auth.id != ""`.
+`list`/`view` = `@request.auth.id != "" || status = "live"` — an expired or
+needs-review offer can never be served to the public, which is the mechanical guard against
+advertising a stale price (UWG Anhang Nr. 5/6).
+
+Indexes:
+- `CREATE UNIQUE INDEX idx_travel_listings_slug ON travel_listings (slug)`
+- `CREATE UNIQUE INDEX idx_travel_listings_guid ON travel_listings (source_guid) WHERE source_guid != ''` — partial, so hand-curated rows with no guid can coexist
+- non-unique on `(status, last_checked)`, `country`, `departure_airport` for the board queries
+
 ## Auth model (v0.40 reality — no "superuser API key")
 
 v0.40 has **no static superuser API key**. Two verified options:
@@ -134,24 +216,36 @@ v0.40 has **no static superuser API key**. Two verified options:
   returns 404.
 - Multi-field `expand` must be comma-separated in one param (`?expand=a,b`); repeated
   `expand[]=a&expand[]=b` returns no expand object.
+- `Collection.addIndex(name, unique, fields, extra)` — `fields` is a comma-separated string
+  and `extra` is trailing SQL, so a **partial unique index** works:
+  `addIndex("idx_…", true, "source_guid", "WHERE source_guid != ''")`.
 - Inside the JSVM, `Collection` has no `set()`/`get()` — mutate with the global
   `unmarshal(data, collection)` then `$app.save(collection)`. Records do have
-  `set()`/`get()`.
+  `set()`/`get()`. **`unmarshal` merges over the model in place, so a `null` in the data
+  argument means "leave what is stored", not "clear it"** — pass 3 therefore writes all four
+  rule fields explicitly for every collection it touches.
 - JS hooks live in `pb_hooks/` (goja, ES5-style: no `import`/`export`), and the JSVM has no
   timer queue — long `setTimeout` callbacks never fire. Keep the hook one-shot.
 
 ## After the hook runs
 
-1. Verify in the dashboard (`/_/`): 6 collections, relations wired, `travel_trips` list/view rule
-   shows `@request.auth.id != "" || fulfilled = true`, 3 unique indexes present.
+1. Verify in the dashboard (`/_/`): 8 collections, relations wired, `travel_listings` list/view
+   rule shows `@request.auth.id != "" || status = "live"`, indexes present.
 2. Confirm `pb_hooks/schema.pb.js` was renamed to `schema.pb.js.done` (it self-renames at
-   startup; a "please restart the app manually" log line is normal).
+   startup only once every collection exists; a "please restart the app manually" log line
+   is normal).
 3. Hand over `PB_URL` + superuser email/password (option 1 above) for `.env`.
 4. To add fields later: re-copy `schema.pb.js` from the repo into `pb_hooks/` and restart —
    existing collections/fields/indexes are skipped, new ones are added.
+5. Seed `travel_sources` with the two rows above, `allowed = true`, `max_age_days = 14`.
 
 ## Things not to do
 
-- Don't make `travel_offers.affiliate_url` publicly viewable; links go out server-side only.
+- Don't make `travel_offers.affiliate_url` or `travel_listings.booking_url` publicly viewable;
+  links go out server-side only.
+- Don't poll a `travel_sources` row unless `allowed = true` and `feed_url` is set. The flag is
+  a human decision recorded here, not something the worker should judge.
 - Don't put prices in `travel_requests`; a request is a question, not an answer.
 - Don't hand-edit the `travel_trips` view rule to `""` — publish with `fulfilled = true` instead.
+- Don't set a `travel_listings` row to `live` while `confidence = "feed"` and `last_checked` is
+  older than its source's `max_age_days`. Expire it or mark it `needs_review`.

@@ -1,11 +1,17 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 /**
- * Creates the six validation-phase collections, then renames itself to
+ * Creates the validation-phase collections, then renames itself to
  * `schema.pb.js.done` so it runs exactly once.
  *
- * Usage: copy this file into `pb_hooks/` next to the pocketbase executable.
+ * Usage: copy this file into `pb_hooks/` next to the pocketbase executable and restart.
  * Written and verified against Pocketbase v0.40.5.
+ *
+ * Two groups live in this file:
+ * - V0 (travel_requests, travel_trips, travel_offers, travel_clicks, travel_events,
+ *   travel_destinations) — the human-fulfilled request funnel, already imported.
+ * - V0.5 (travel_sources, travel_listings) — the deals board. `travel_listings` is the
+ *   new Layer-2 core asset: one normalised, dated, attributable offer per row.
  *
  * Idempotent: existing collections and fields are skipped, so re-copying the file to add
  * fields later is safe.
@@ -122,6 +128,69 @@ onBootstrap((e) => {
         { type: "text", name: "notes", max: 4000 },
       ],
     },
+
+    // ---- V0.5: the deals board ----------------------------------------------
+    // `allowed` on a source is a *recorded human decision*, never inferred at runtime:
+    // a poller must refuse to fetch a source whose row is missing or allowed=false.
+    {
+      name: "travel_sources",
+      createRule: null,
+      listRule: "",
+      viewRule: "",
+      fields: [
+        { type: "text", name: "name", presentable: true },
+        { type: "text", name: "slug", max: 80 },
+        { type: "select", name: "kind", maxSelect: 1, values: ["feed", "operator", "manual"] },
+        { type: "text", name: "feed_url", max: 500 },
+        { type: "text", name: "robots_url", max: 500 },
+        // verbatim Content-Signal header, e.g. "ai-train=yes, search=yes, ai-input=yes"
+        { type: "text", name: "content_signal", max: 200 },
+        { type: "text", name: "attribution_url", max: 500 },
+        { type: "bool", name: "allowed" },
+        // hard ceiling on how old a price may be advertised as (UWG Anhang Nr. 5/6)
+        { type: "number", name: "max_age_days", onlyInt: true, min: 1, max: 90 },
+        { type: "date", name: "last_polled" },
+        { type: "text", name: "note", max: 2000 },
+      ],
+    },
+    {
+      name: "travel_listings",
+      createRule: null,
+      // set in pass 3, after the `status` field exists
+      listRule: null,
+      viewRule: null,
+      fields: [
+        { type: "text", name: "title", presentable: true },
+        { type: "text", name: "slug", max: 120 },
+        // our own one-line summary. Never copied marketing prose (copyright guardrail).
+        { type: "text", name: "summary", max: 280 },
+        { type: "text", name: "destination", max: 80 },
+        // ISO alpha-2, free text: the board is Europe-wide, not the V0 seven-country set.
+        { type: "text", name: "country", max: 4 },
+        { type: "text", name: "departure_airport", max: 5 },
+        { type: "number", name: "nights", onlyInt: true, min: 1, max: 30 },
+        // { "start": "YYYY-MM-DD", "end": "YYYY-MM-DD", "label": "20 Aug - 27 Aug 2026" }
+        { type: "json", name: "travel_window" },
+        { type: "number", name: "price_from_eur", min: 0 },
+        { type: "number", name: "price_pp_eur", min: 0 },
+        { type: "text", name: "currency", max: 3 },
+        { type: "number", name: "travellers", onlyInt: true, min: 1, max: 9 },
+        // { "name": "...", "category": 4, "board": "all inclusive" }
+        { type: "json", name: "accommodation" },
+        { type: "json", name: "included" },
+        { type: "json", name: "excluded" },
+        { type: "select", name: "themes", maxSelect: 8, values: ["beach", "all-inclusive", "city", "family", "romance", "last-minute", "ski", "cruise"] },
+        { type: "text", name: "source_url", max: 500 },
+        { type: "text", name: "source_guid", max: 255 },
+        { type: "date", name: "source_published_at" },
+        { type: "text", name: "booking_url", max: 500 },
+        { type: "select", name: "affiliate_network", maxSelect: 1, values: ["check24", "awin", "direct", "none"] },
+        { type: "select", name: "status", maxSelect: 1, values: ["live", "expired", "needs_review"] },
+        { type: "select", name: "confidence", maxSelect: 1, values: ["verified", "feed", "manual"] },
+        { type: "date", name: "last_checked" },
+        { type: "text", name: "notes", max: 4000 },
+      ],
+    },
   ];
 
   // Relations are added in a second pass, once every target collection has an id.
@@ -132,33 +201,75 @@ onBootstrap((e) => {
     { collection: "travel_clicks", field: "trip", target: "travel_trips", maxSelect: 1, cascadeDelete: false },
     { collection: "travel_clicks", field: "offer", target: "travel_offers", maxSelect: 1, cascadeDelete: false },
     { collection: "travel_clicks", field: "request", target: "travel_requests", maxSelect: 1, cascadeDelete: false },
+    { collection: "travel_listings", field: "source", target: "travel_sources", maxSelect: 1, cascadeDelete: false },
   ];
 
   // Rules and indexes applied after all fields exist.
   // v0.40 text fields have no `unique` property — uniqueness is enforced by collection
   // indexes (verified: field unique:true is silently dropped; indexes are enforced).
+  // `unmarshal` merges over the model in-place (verified on a live v0.40.5 instance),
+  // so a null here means "leave whatever is stored" — pass 3 therefore writes both
+  // rules explicitly for every collection it touches.
   var DEFERRED_RULES = [
     {
       collection: "travel_trips",
       listRule: '@request.auth.id != "" || fulfilled = true',
       viewRule: '@request.auth.id != "" || fulfilled = true',
+      updateRule: null,
+      deleteRule: null,
+    },
+    {
+      collection: "travel_listings",
+      // Anonymous readers see live offers only; expired/needs_review stay superuser-only
+      // so a stale price can never be served to the public.
+      listRule: '@request.auth.id != "" || status = "live"',
+      viewRule: '@request.auth.id != "" || status = "live"',
+      updateRule: '@request.auth.id != ""',
+      deleteRule: '@request.auth.id != ""',
+    },
+    {
+      collection: "travel_sources",
+      listRule: "",
+      viewRule: "",
+      updateRule: '@request.auth.id != ""',
+      deleteRule: '@request.auth.id != ""',
     },
   ];
 
+  // v0.40 indexes are raw SQL kept on the collection; `extra` carries a partial-index
+  // WHERE clause so feed-less (manual) rows with an empty source_guid can coexist.
   var DEFERRED_INDEXES = [
-    "CREATE UNIQUE INDEX idx_travel_requests_token ON travel_requests (token)",
-    "CREATE UNIQUE INDEX idx_travel_trips_slug ON travel_trips (slug)",
-    "CREATE UNIQUE INDEX idx_travel_destinations_code ON travel_destinations (code)",
+    { collection: "travel_requests", name: "idx_travel_requests_token", column: "token", unique: true, extra: "" },
+    { collection: "travel_trips", name: "idx_travel_trips_slug", column: "slug", unique: true, extra: "" },
+    { collection: "travel_destinations", name: "idx_travel_destinations_code", column: "code", unique: true, extra: "" },
+    { collection: "travel_sources", name: "idx_travel_sources_slug", column: "slug", unique: true, extra: "" },
+    { collection: "travel_listings", name: "idx_travel_listings_slug", column: "slug", unique: true, extra: "" },
+    { collection: "travel_listings", name: "idx_travel_listings_guid", column: "source_guid", unique: true, extra: "WHERE source_guid != ''" },
+    { collection: "travel_listings", name: "idx_travel_listings_status_checked", column: "status, last_checked", unique: false, extra: "" },
+    { collection: "travel_listings", name: "idx_travel_listings_country", column: "country", unique: false, extra: "" },
+    { collection: "travel_listings", name: "idx_travel_listings_departure", column: "departure_airport", unique: false, extra: "" },
   ];
 
   try {
-    // Rename before doing any work, so a partial failure still cannot re-run on reboot.
-    // Re-copy schema.pb.js from the repo to retry.
-    try {
-      $os.rename(__hooks + "/schema.pb.js", __hooks + "/schema.pb.js.done")
-      console.log("[schema] renamed hook to schema.pb.js.done")
-    } catch (renameErr) {
-      console.log("[schema] hook not auto-renamed (already renamed?) — continuing")
+    // Guarded rename, so a partial failure CAN be retried by restarting.
+    // Only mark the hook done once every collection in the spec already exists.
+    var allPresent = true
+    for (var g = 0; g < COLLECTIONS.length; g++) {
+      try {
+        $app.findCollectionByNameOrId(COLLECTIONS[g].name)
+      } catch (missing) {
+        allPresent = false
+      }
+    }
+    if (allPresent) {
+      try {
+        $os.rename(__hooks + "/schema.pb.js", __hooks + "/schema.pb.js.done")
+        console.log("[schema] all collections present — renamed hook to schema.pb.js.done")
+      } catch (renameErr) {
+        console.log("[schema] hook not auto-renamed (already renamed?) — continuing")
+      }
+    } else {
+      console.log("[schema] schema incomplete — hook left in place, will re-run on next restart")
     }
 
     var created = 0
@@ -231,7 +342,12 @@ onBootstrap((e) => {
       var dr = DEFERRED_RULES[d]
       var dcol = $app.findCollectionByNameOrId(dr.collection)
 
-      if (dcol.listRule === dr.listRule && dcol.viewRule === dr.viewRule) {
+      if (
+        dcol.listRule === dr.listRule &&
+        dcol.viewRule === dr.viewRule &&
+        dcol.updateRule === dr.updateRule &&
+        dcol.deleteRule === dr.deleteRule
+      ) {
         console.log("[schema]   " + dr.collection + ": rules already set")
         continue
       }
@@ -239,31 +355,39 @@ onBootstrap((e) => {
       // v0.40's Collection JS binding has no set()/get(); unmarshal merges data over
       // the model in-place (see types.d.ts "unmarshal clones and merges the data
       // argument on top of dst").
-      unmarshal({ listRule: dr.listRule, viewRule: dr.viewRule }, dcol)
+      unmarshal(
+        {
+          listRule: dr.listRule,
+          viewRule: dr.viewRule,
+          updateRule: dr.updateRule,
+          deleteRule: dr.deleteRule,
+        },
+        dcol
+      )
       $app.save(dcol)
-      console.log("[schema]   " + dr.collection + ": view/list rules set")
+      console.log("[schema]   " + dr.collection + ": rules set")
     }
 
-    // Pass 4: unique indexes (added idempotently by name).
+    // Pass 4: indexes (added idempotently by name).
     for (var x = 0; x < DEFERRED_INDEXES.length; x++) {
-      var stmt = DEFERRED_INDEXES[x]
-      var idxName = stmt.match(/INDEX (\w+)/)[1]
-      var idxCol = stmt.match(/ ON (\w+) /)[1]
-      var icol = $app.findCollectionByNameOrId(idxCol)
+      var spec2 = DEFERRED_INDEXES[x]
+      var icol = $app.findCollectionByNameOrId(spec2.collection)
 
       var already = false
       var ix = icol.indexes
       for (var y = 0; y < ix.length; y++) {
-        if (ix[y].indexOf(idxName) !== -1) { already = true; break }
+        if (ix[y].indexOf(spec2.name) !== -1) { already = true; break }
       }
       if (already) {
-        console.log("[schema]   index " + idxName + ": exists")
+        console.log("[schema]   index " + spec2.name + ": exists")
         continue
       }
 
-      icol.addIndex(idxName, true, stmt.match(/ ON (\w+) \((\w+)\)/)[2], "")
+      // addIndex(name, unique, fields, extra) — `extra` is the trailing SQL, used here
+      // for the partial-index WHERE clause on source_guid.
+      icol.addIndex(spec2.name, spec2.unique, spec2.column, spec2.extra)
       $app.save(icol)
-      console.log("[schema]   index " + idxName + " (" + idxCol + "." + stmt.match(/ \((\w+)\)/)[1] + "): created")
+      console.log("[schema]   index " + spec2.name + " (" + spec2.collection + "." + spec2.column + "): created")
     }
 
     console.log("[schema] done — " + created + " created, " + skipped + " already existed")
