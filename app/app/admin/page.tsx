@@ -30,6 +30,7 @@ export default async function AdminPage() {
   await connection();
   let queue: QueueItem[] = [];
   let requests: Record<string, unknown>[] = [];
+  let funnel = { views: -1, board: -1, deals: -1, clicks: -1, requests: -1 };
   let error = "";
   try {
     const pb = await pbAuthed();
@@ -44,6 +45,24 @@ export default async function AdminPage() {
       .collection("travel_requests")
       .getList(1, 50, { filter: "status='open'", sort: "-id" });
     requests = res.items;
+
+    // 7-day funnel readout: counts only, via Pocketbase total (no aggregation needed).
+    const since = new Date(Date.now() - 7 * 86_400_000).toISOString().slice(0, 19) + "Z";
+    const count = async (collection: string, filter: string): Promise<number> => {
+      try {
+        const r = await pb.collection(collection).getList(1, 1, { filter, requestKey: null });
+        return r.totalItems;
+      } catch {
+        return -1;
+      }
+    };
+    funnel = {
+      views: await count("travel_events", `name = "page_view" && created >= "${since}"`),
+      board: await count("travel_events", `name = "page_view" && props.path = "/deals" && created >= "${since}"`),
+      deals: await count("travel_events", `name = "page_view" && props.path ~ "/deal/" && created >= "${since}"`),
+      clicks: await count("travel_clicks", `created >= "${since}"`),
+      requests: await count("travel_requests", `created >= "${since}"`),
+    };
   } catch (e) {
     error = e instanceof Error ? e.message : "Pocketbase unreachable";
   }
@@ -52,6 +71,27 @@ export default async function AdminPage() {
     <main className="mx-auto max-w-(--container-page) px-4 py-12 flex flex-col gap-6">
       <h1 className="font-display text-2xl font-bold">Kuration</h1>
       {error && <p className="text-sm text-danger">{error}</p>}
+
+      <section aria-label="Funnel der letzten 7 Tage">
+        <h2 className="text-sm font-semibold text-muted-foreground">Funnel (7 Tage)</h2>
+        <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-5">
+          {[
+            { k: "Seitenaufrufe", v: funnel.views },
+            { k: "Board /deals", v: funnel.board },
+            { k: "Deal-Seiten", v: funnel.deals },
+            { k: "Klicks raus", v: funnel.clicks },
+            { k: "Anfragen", v: funnel.requests },
+          ].map(({ k, v }) => (
+            <div key={k} className="rounded-(--radius-card) border border-border bg-surface p-4">
+              <p className="text-xs uppercase tracking-wide text-subtle">{k}</p>
+              <p className="tnum mt-1 text-2xl font-bold">{v < 0 ? "—" : v}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-2 text-xs text-subtle">
+          Klicks ÷ Seitenaufrufe = CTR. Revenue pro Visitor erst mit CHECK24-Partnerreport.
+        </p>
+      </section>
 
       <section>
         <h2 className="text-sm font-semibold text-muted-foreground">

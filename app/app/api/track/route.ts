@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { pbAdmin } from "@/lib/pb";
 
 // Fire-and-forget funnel events. Client calls navigator.sendBeacon("/api/track", ...).
-// Stored in the `events` collection; anon create is allowed by schema rules.
+// Stored in the `travel_events` collection; anon create is allowed by schema rules.
 export async function POST(request: Request) {
   let body: { name?: string; props?: Record<string, unknown>; sessionId?: string };
   try {

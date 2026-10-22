@@ -28,3 +28,13 @@ export function trackPageView(path: string) {
 export function trackFormSubmit(source: "find" | "beat") {
   send("form_submit", { source });
 }
+
+// Board funnel: card impressions + outbound clicks (server logs the click too;
+// this client event carries the session so page_view -> click can be joined).
+export function trackCardView(listingId: string) {
+  send("card_view", { listing: listingId });
+}
+
+export function trackDealClick(listingId: string) {
+  send("deal_click", { listing: listingId });
+}
