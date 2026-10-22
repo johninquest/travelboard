@@ -101,6 +101,8 @@ onBootstrap((e) => {
       viewRule: null,
       fields: [
         { type: "text", name: "ref", max: 80 },
+        // V0.5: clicks on the deals board. Nullable — V0 trip clicks don't set it.
+        { type: "text", name: "listing", max: 32 },
       ],
     },
     {

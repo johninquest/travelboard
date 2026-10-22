@@ -88,6 +88,7 @@ ships the URL to the client.
 | `offer` | relation → `travel_offers` | |
 | `request` | relation → `travel_requests` | |
 | `ref` | text (max 80) | short code in the redirect URL |
+| `listing` | text (max 32) | V0.5: id of the clicked `travel_listings` row (plain text — nullable, V0 clicks don't set it) |
 
 Rules: `create` = `""` (anyone — the redirect endpoint writes them), rest `null`.
 

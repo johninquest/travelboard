@@ -45,6 +45,8 @@ export type Listing = {
   confidence: ListingConfidence;
   lastChecked: string; // ISO — staleness must be visible
   notes: string;
+  sourceName: string; // expanded from travel_sources, public-safe
+  sourceAttributionUrl: string;
 };
 
 export const LISTING_SELECT_VALUES = {
