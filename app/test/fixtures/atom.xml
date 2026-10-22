@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Beispiel-Reisedeals</title>
+  <link rel="alternate" href="https://example.org/deals"/>
+  <updated>2026-08-04T08:00:00Z</updated>
+  <entry>
+    <title>Sardinien: 4 Naechte Kueste ab 289 EUR</title>
+    <link rel="alternate" href="https://example.org/deals/sardinien-kueste"/>
+    <id>urn:uuid:1f0e2d3c4b5a69788796a5b4c3d2e1f0</id>
+    <published>2026-08-02T09:00:00+02:00</published>
+    <summary>4 Naechte an der Nordkueste Sardiniens, Fruehstueck inklusive.</summary>
+  </entry>
+  <entry>
+    <title>Zypern All Inclusive fuer 2</title>
+    <link href="https://example.org/deals/sizilien"/>
+    <id>urn:uuid:0f1e2d3c4b5a69788796a5b4c3d2e1f1</id>
+    <updated>2026-08-01T06:30:00Z</updated>
+    <content type="html">&lt;p&gt;7 Naechte All Inclusive in Paphos, ab 719 EUR fuer 2 Personen.&lt;/p&gt;</content>
+  </entry>
+</feed>
