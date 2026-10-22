@@ -1,9 +1,9 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getLiveListings } from "@/lib/board";
 import { DealCard } from "@/components/deal-card";
-
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Aktuelle Reiseangebote",
@@ -12,15 +12,12 @@ export const metadata: Metadata = {
 };
 
 export default async function DealsPage() {
-  const listings = await getLiveListings().catch(() => []);
-
   return (
     <main className="mx-auto max-w-(--container-page) px-4 py-12">
       <nav className="mb-8 flex items-center justify-between text-sm">
         <Link href="/" className="text-muted-foreground hover:text-foreground">
           ← sunwise.
         </Link>
-        <span className="text-subtle">{listings.length} Angebote</span>
       </nav>
 
       <h1 className="font-display text-3xl font-extrabold">Aktuelle Reiseangebote</h1>
@@ -30,22 +27,9 @@ export default async function DealsPage() {
         Gefunden in öffentlichen Reise-Feeds — Buchung direkt beim Veranstalter.
       </p>
 
-      {listings.length === 0 ? (
-        <div className="mt-10 rounded-card border border-border bg-surface-warm p-8 text-sm text-muted-foreground">
-          Noch keine live geschalteten Angebote. Der Feed-Worker importiert
-          Kandidaten zur redaktionellen Prüfung —{" "}
-          <Link href="/contact" className="text-primary underline">
-            Interesse an einem Ziel? Schreib uns
-          </Link>
-          .
-        </div>
-      ) : (
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {listings.map((l) => (
-            <DealCard key={l.id} listing={l} />
-          ))}
-        </div>
-      )}
+      <Suspense fallback={<BoardSkeleton />}>
+        <Board />
+      </Suspense>
 
       <section className="mt-12 border-t border-border pt-8 text-xs text-subtle">
         <p>
@@ -56,5 +40,44 @@ export default async function DealsPage() {
         </p>
       </section>
     </main>
+  );
+}
+
+function BoardSkeleton() {
+  return (
+    <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className="h-44 animate-pulse rounded-card border border-border bg-surface" />
+      ))}
+    </div>
+  );
+}
+
+async function Board() {
+  await connection(); // live board data — never prerendered (cacheComponents)
+  const listings = await getLiveListings().catch(() => []);
+
+  if (listings.length === 0) {
+    return (
+      <div className="mt-10 rounded-card border border-border bg-surface-warm p-8 text-sm text-muted-foreground">
+        Noch keine live geschalteten Angebote. Der Feed-Worker importiert
+        Kandidaten zur redaktionellen Prüfung —{" "}
+        <Link href="/contact" className="text-primary underline">
+          Interesse an einem Ziel? Schreib uns
+        </Link>
+        .
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <p className="mt-4 text-sm text-subtle">{listings.length} Angebote</p>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {listings.map((l) => (
+          <DealCard key={l.id} listing={l} />
+        ))}
+      </div>
+    </>
   );
 }

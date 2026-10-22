@@ -1,12 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getLiveListingBySlug } from "@/lib/board";
-import { priceStatement, eur } from "@/lib/listing";
-
-export const dynamic = "force-dynamic";
+import { priceStatement, eur, type Listing } from "@/lib/listing";
 
 type Props = { params: Promise<{ slug: string }> };
+
+async function loadListing(slug: string) {
+  return getLiveListingBySlug(slug);
+}
 
 function fact(label: string, value: React.ReactNode) {
   return (
@@ -17,19 +21,31 @@ function fact(label: string, value: React.ReactNode) {
   );
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const l = await getLiveListingBySlug(slug).catch(() => null);
-  if (!l) return { title: "Angebot nicht gefunden" };
-  return {
-    title: `${l.destination}: ${l.summary}`,
-    description: `${l.summary}. ${priceStatement(l)} Zuletzt geprüft: ${new Date(l.lastChecked).toLocaleDateString("de-DE")}.`,
-  };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: "Reiseangebot" };
 }
 
 export default async function DealPage({ params }: Props) {
+  return (
+    <main className="mx-auto max-w-3xl px-4 py-12">
+      <nav className="mb-8 text-sm">
+        <Link href="/deals" className="text-muted-foreground hover:text-foreground">
+          ← Alle Angebote
+        </Link>
+      </nav>
+      {/* params is runtime data under cacheComponents — it may only be read
+          inside a Suspense boundary, so the whole body streams below it. */}
+      <Suspense fallback={<div className="h-96 animate-pulse rounded-card border border-border bg-surface" />}>
+        <DealBody params={params} />
+      </Suspense>
+    </main>
+  );
+}
+
+async function DealBody({ params }: { params: Props["params"] }) {
   const { slug } = await params;
-  const listing = await getLiveListingBySlug(slug);
+  await connection(); // live board data — never prerendered (cacheComponents)
+  const listing = await loadListing(slug);
   if (!listing) notFound();
 
   const l = listing;
@@ -40,13 +56,7 @@ export default async function DealPage({ params }: Props) {
   const sourceUrl = l.sourceAttributionUrl;
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
-      <nav className="mb-8 text-sm">
-        <Link href="/deals" className="text-muted-foreground hover:text-foreground">
-          ← Alle Angebote
-        </Link>
-      </nav>
-
+    <>
       <h1 className="font-display text-2xl font-extrabold md:text-3xl">{l.title}</h1>
       <p className="mt-2 text-sm text-muted-foreground">
         {l.destination}
@@ -110,6 +120,52 @@ export default async function DealPage({ params }: Props) {
           das Angebot des Veranstalters.
         </p>
       </section>
-    </main>
+
+      <JsonLd l={l} statement={statement} />
+    </>
+  );
+}
+
+// Schema.org facts about the offer as we know them. Only fields we actually
+// verified are emitted; price is the "from" price with the required statement.
+function JsonLd({ l, statement }: { l: Listing; statement: string }) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: l.title,
+    description: l.summary,
+    brand: { "@type": "Brand", name: l.sourceName || l.destination || "Unbekannt" },
+    offers:
+      l.priceFromEur != null
+        ? {
+            "@type": "Offer",
+            price: l.priceFromEur,
+            priceCurrency: "EUR",
+            priceSpecification: {
+              "@type": "PriceSpecification",
+              price: l.priceFromEur,
+              priceCurrency: "EUR",
+              valueAddedTaxIncluded: true,
+            },
+            availability: "https://schema.org/InStock",
+            url: `https://travelboard.johnxlabs.de/deal/${l.slug}`,
+            validThrough: l.travelWindow?.end ?? undefined,
+          }
+        : undefined,
+    additionalProperty: [
+      { "@type": "PropertyValue", name: "Reisedauer", value: l.nights != null ? `${l.nights} Nächte` : undefined },
+      { "@type": "PropertyValue", name: "Abflughafen", value: l.departureAirport ?? undefined },
+      { "@type": "PropertyValue", name: "Unterkunft", value: l.accommodation.name ?? undefined },
+      { "@type": "PropertyValue", name: "Kategorie", value: l.accommodation.category != null ? `${l.accommodation.category} Sterne` : undefined },
+      { "@type": "PropertyValue", name: "Verpflegung", value: l.accommodation.board ?? undefined },
+      { "@type": "PropertyValue", name: "Zuletzt geprüft", value: l.lastChecked ?? undefined },
+      { "@type": "PropertyValue", name: "Preishinweis", value: statement },
+    ].filter((p) => p.value != null),
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+    />
   );
 }
