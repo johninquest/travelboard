@@ -14,7 +14,7 @@ export default async function AdminPage() {
   try {
     const pb = await pbAuthed();
     const res = await pb
-      .collection("requests")
+      .collection("travel_requests")
       .getList(1, 50, { filter: "status='open'", sort: "-id" });
     open = res.items;
   } catch (e) {

@@ -14,7 +14,7 @@ instance is older, upgrade first or expect API differences.
 All timestamps (`created`, `updated`) are Pocketbase system fields. Prices are EUR cents
 not used — plain decimal euros (number fields). Every price record carries `last_checked`.
 
-### `requests` — what users asked for
+### `travel_requests` — what users asked for
 
 | Field | Type | Notes |
 | --- | --- | --- |
@@ -26,15 +26,15 @@ not used — plain decimal euros (number fields). Every price record carries `la
 | `fulfilled_at` | date | when the request was answered |
 
 Rules: `create` = `""` (anyone), `list`/`view`/`update`/`delete` = `null` (superuser only).
-Index: `CREATE UNIQUE INDEX idx_requests_token ON requests (token)`.
+Index: `CREATE UNIQUE INDEX idx_requests_token ON travel_requests (token)`.
 
-### `trips` — the Layer-2 core asset
+### `travel_trips` — the Layer-2 core asset
 
 | Field | Type | Notes |
 | --- | --- | --- |
 | `slug` | text | stable URL key; unique via index |
 | `destination` | text | human name ("Crete") |
-| `destination_code` | relation → `destinations` | |
+| `destination_code` | relation → `travel_destinations` | |
 | `departure_airport` | select | `MUC` / `NUE` / `STR` / `FRA` |
 | `country` | select | `ES` / `GR` / `TR` / `PT` / `IT` / `CY` / `MT` |
 | `nights` | number (int, 1–30) | |
@@ -54,17 +54,17 @@ Index: `CREATE UNIQUE INDEX idx_requests_token ON requests (token)`.
 | `supplier_ref` | text (max 120) | supplier-side id for re-verification |
 | `last_checked` | date | staleness is always visible |
 | `rank` | number (int) | position within its request |
-| `request` | relation → `requests` | optional; manual trips may have none |
+| `request` | relation → `travel_requests` | optional; manual trips may have none |
 
 Rules: `create`/`update`/`delete` = `null` (superuser only).
 `list`/`view` = `@request.auth.id != "" || fulfilled = true` — anonymous visitors see only
-published trips. Index: `CREATE UNIQUE INDEX idx_trips_slug ON trips (slug)`.
+published trips. Index: `CREATE UNIQUE INDEX idx_trips_slug ON travel_trips (slug)`.
 
-### `offers` — affiliate links, never exposed raw
+### `travel_offers` — affiliate links, never exposed raw
 
 | Field | Type | Notes |
 | --- | --- | --- |
-| `trip` | relation → `trips` (cascade delete) | |
+| `trip` | relation → `travel_trips` (cascade delete) | |
 | `affiliate_url` | text | injected server-side at click time only |
 | `network` | select | `travelpayouts` / `booking` / `direct` |
 | `price_total_eur` | number | |
@@ -74,18 +74,18 @@ published trips. Index: `CREATE UNIQUE INDEX idx_trips_slug ON trips (slug)`.
 Rules: all `null` (superuser only). The result page server-renders a redirect, it never
 ships the URL to the client.
 
-### `clicks` — affiliate outbound clicks
+### `travel_clicks` — affiliate outbound clicks
 
 | Field | Type | Notes |
 | --- | --- | --- |
-| `trip` | relation → `trips` | |
-| `offer` | relation → `offers` | |
-| `request` | relation → `requests` | |
+| `trip` | relation → `travel_trips` | |
+| `offer` | relation → `travel_offers` | |
+| `request` | relation → `travel_requests` | |
 | `ref` | text (max 80) | short code in the redirect URL |
 
 Rules: `create` = `""` (anyone — the redirect endpoint writes them), rest `null`.
 
-### `events` — funnel analytics
+### `travel_events` — funnel analytics
 
 | Field | Type | Notes |
 | --- | --- | --- |
@@ -96,18 +96,18 @@ Rules: `create` = `""` (anyone — the redirect endpoint writes them), rest `nul
 
 Rules: `create` = `""` (anyone), rest `null`.
 
-### `destinations` — reference data
+### `travel_destinations` — reference data
 
 | Field | Type | Notes |
 | --- | --- | --- |
 | `code` | text (max 10) | airport/region code; unique via index |
 | `name` | text (max 80) | |
-| `country` | select | same 7 values as `trips` |
+| `country` | select | same 7 values as `travel_trips` |
 | `climate` | json | |
 | `notes` | text (max 4000) | "avoid if…" content lives here |
 
 Rules: `list`/`view` = `""` (anyone), rest `null`. Index:
-`CREATE UNIQUE INDEX idx_destinations_code ON destinations (code)`.
+`CREATE UNIQUE INDEX idx_destinations_code ON travel_destinations (code)`.
 
 ## Auth model (v0.40 reality — no "superuser API key")
 
@@ -142,7 +142,7 @@ v0.40 has **no static superuser API key**. Two verified options:
 
 ## After the hook runs
 
-1. Verify in the dashboard (`/_/`): 6 collections, relations wired, `trips` list/view rule
+1. Verify in the dashboard (`/_/`): 6 collections, relations wired, `travel_trips` list/view rule
    shows `@request.auth.id != "" || fulfilled = true`, 3 unique indexes present.
 2. Confirm `pb_hooks/schema.pb.js` was renamed to `schema.pb.js.done` (it self-renames at
    startup; a "please restart the app manually" log line is normal).
@@ -152,6 +152,6 @@ v0.40 has **no static superuser API key**. Two verified options:
 
 ## Things not to do
 
-- Don't make `offers.affiliate_url` publicly viewable; links go out server-side only.
-- Don't put prices in `requests`; a request is a question, not an answer.
-- Don't hand-edit the `trips` view rule to `""` — publish with `fulfilled = true` instead.
+- Don't make `travel_offers.affiliate_url` publicly viewable; links go out server-side only.
+- Don't put prices in `travel_requests`; a request is a question, not an answer.
+- Don't hand-edit the `travel_trips` view rule to `""` — publish with `fulfilled = true` instead.

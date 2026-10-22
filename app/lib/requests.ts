@@ -7,7 +7,7 @@ import type { Criteria } from "@/lib/criteria";
 export async function createRequest(criteria: Criteria): Promise<string> {
   const token = randomBytes(12).toString("base64url");
   const pb = pbAdmin();
-  await pb.collection("requests").create({
+  await pb.collection("travel_requests").create({
     token,
     status: "open",
     source: criteria.source,

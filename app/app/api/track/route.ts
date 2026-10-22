@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   }
   try {
     const pb = pbAdmin();
-    await pb.collection("events").create({
+    await pb.collection("travel_events").create({
       name: body.name,
       props: body.props ?? {},
       session_id: body.sessionId ?? "",

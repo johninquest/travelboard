@@ -30,7 +30,7 @@ onBootstrap((e) => {
   // directly (see core.Collection.UnmarshalJSON).
   var COLLECTIONS = [
     {
-      name: "requests",
+      name: "travel_requests",
       createRule: "",
       // Anonymous read by unguessable token: the result page must be able to
       // tell "open" from "fulfilled" without an account.
@@ -46,7 +46,7 @@ onBootstrap((e) => {
       ],
     },
     {
-      name: "trips",
+      name: "travel_trips",
       createRule: null,
       // set in pass 3, after the `fulfilled` field exists
       listRule: null,
@@ -76,7 +76,7 @@ onBootstrap((e) => {
       ],
     },
     {
-      name: "offers",
+      name: "travel_offers",
       createRule: null,
       listRule: null,
       viewRule: null,
@@ -89,7 +89,7 @@ onBootstrap((e) => {
       ],
     },
     {
-      name: "clicks",
+      name: "travel_clicks",
       createRule: "",
       listRule: null,
       viewRule: null,
@@ -98,7 +98,7 @@ onBootstrap((e) => {
       ],
     },
     {
-      name: "events",
+      name: "travel_events",
       createRule: "",
       listRule: null,
       viewRule: null,
@@ -110,7 +110,7 @@ onBootstrap((e) => {
       ],
     },
     {
-      name: "destinations",
+      name: "travel_destinations",
       createRule: null,
       listRule: "",
       viewRule: "",
@@ -126,12 +126,12 @@ onBootstrap((e) => {
 
   // Relations are added in a second pass, once every target collection has an id.
   var RELATIONS = [
-    { collection: "trips", field: "destination_code", target: "destinations", maxSelect: 1, cascadeDelete: false },
-    { collection: "trips", field: "request", target: "requests", maxSelect: 1, cascadeDelete: false },
-    { collection: "offers", field: "trip", target: "trips", maxSelect: 1, cascadeDelete: true },
-    { collection: "clicks", field: "trip", target: "trips", maxSelect: 1, cascadeDelete: false },
-    { collection: "clicks", field: "offer", target: "offers", maxSelect: 1, cascadeDelete: false },
-    { collection: "clicks", field: "request", target: "requests", maxSelect: 1, cascadeDelete: false },
+    { collection: "travel_trips", field: "destination_code", target: "travel_destinations", maxSelect: 1, cascadeDelete: false },
+    { collection: "travel_trips", field: "request", target: "travel_requests", maxSelect: 1, cascadeDelete: false },
+    { collection: "travel_offers", field: "trip", target: "travel_trips", maxSelect: 1, cascadeDelete: true },
+    { collection: "travel_clicks", field: "trip", target: "travel_trips", maxSelect: 1, cascadeDelete: false },
+    { collection: "travel_clicks", field: "offer", target: "travel_offers", maxSelect: 1, cascadeDelete: false },
+    { collection: "travel_clicks", field: "request", target: "travel_requests", maxSelect: 1, cascadeDelete: false },
   ];
 
   // Rules and indexes applied after all fields exist.
@@ -139,16 +139,16 @@ onBootstrap((e) => {
   // indexes (verified: field unique:true is silently dropped; indexes are enforced).
   var DEFERRED_RULES = [
     {
-      collection: "trips",
+      collection: "travel_trips",
       listRule: '@request.auth.id != "" || fulfilled = true',
       viewRule: '@request.auth.id != "" || fulfilled = true',
     },
   ];
 
   var DEFERRED_INDEXES = [
-    "CREATE UNIQUE INDEX idx_requests_token ON requests (token)",
-    "CREATE UNIQUE INDEX idx_trips_slug ON trips (slug)",
-    "CREATE UNIQUE INDEX idx_destinations_code ON destinations (code)",
+    "CREATE UNIQUE INDEX idx_travel_requests_token ON travel_requests (token)",
+    "CREATE UNIQUE INDEX idx_travel_trips_slug ON travel_trips (slug)",
+    "CREATE UNIQUE INDEX idx_travel_destinations_code ON travel_destinations (code)",
   ];
 
   try {

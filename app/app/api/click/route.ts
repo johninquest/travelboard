@@ -13,13 +13,13 @@ export async function GET(request: Request) {
   let affiliate: string | null = null;
   try {
     const pb = await pbAuthed();
-    const trip = (await pb.collection("trips").getOne(tripId)) as Record<string, unknown>;
+    const trip = (await pb.collection("travel_trips").getOne(tripId)) as Record<string, unknown>;
     const offers = await pb
-      .collection("offers")
+      .collection("travel_offers")
       .getList(1, 1, { filter: `trip="${tripId}"`, sort: "-id" });
     affiliate = offers.items[0]?.affiliate_url ?? null;
     if (affiliate) {
-      await pb.collection("clicks").create({
+      await pb.collection("travel_clicks").create({
         trip: tripId,
         offer: offers.items[0]?.id ?? "",
         request: trip["request"] ?? "",

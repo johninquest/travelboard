@@ -35,11 +35,11 @@ export default async function ResultPage({
   let trips: Trip[] = [];
   try {
     const list = await pb
-      .collection("requests")
+      .collection("travel_requests")
       .getList(1, 1, { filter: `token="${token}"` });
     request = list.items[0] ?? null;
     if (request) {
-      const t = await pb.collection("trips").getList(1, 5, {
+      const t = await pb.collection("travel_trips").getList(1, 5, {
         filter: `request="${request["id"]}" && fulfilled=true`,
         sort: "rank",
       });
