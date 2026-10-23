@@ -3,9 +3,21 @@
 Handoff spec for the **existing Pocketbase instance on the VPS**. Either create the
 collections by hand from this document, drop [`schema.pb.js`](./schema.pb.js) into the
 instance's `pb_hooks/` directory and restart, or import
-[`collections.json`](./collections.json) from the dashboard
-(*Import collections* — it is ordered so `travel_sources` exists before `travel_listings`
-references it).
+[`collections.json`](./collections.json) from the dashboard (*Import collections*).
+
+`collections.json` is **generated** — do not hand-edit it. Regenerate and check it with:
+
+```sh
+node pocketbase/build-collections.mjs    # writes collections.json
+node pocketbase/verify-collections.mjs   # static importability check
+```
+
+Every collection and field carries a deterministic 15-char `[a-z0-9]` id, and every
+`relation` field's `collectionId` is the **real id** of its target collection. Both matter:
+the Admin UI rejects the file with *"Invalid collections configuration."* if any collection
+lacks an `id`, and PocketBase rejects a relation whose `collectionId` is not an exact
+collection id (a collection *name* fails with *"The relation collection doesn't exist."*).
+Because ids are explicit, import order does not matter.
 
 The hook creates everything below and renames itself to `schema.pb.js.done`, but only once
 every collection in the spec exists — a partial failure leaves the hook in place and retries
