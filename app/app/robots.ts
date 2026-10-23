@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://travelboard.johnxlabs.de";
+import { SITE_URL as SITE } from "@/lib/site";
 
 // robots.txt policy (from the plan):
 // - Search + AI *citation* bots are wanted: they send users and citations.

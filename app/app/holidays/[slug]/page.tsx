@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { pbPublic } from "@/lib/pb";
 import { recordToListing } from "@/lib/listings-read";
 import { findHub, hubFilter, type HubDef } from "@/lib/hubs";
-import { DealCard } from "@/components/deal-card";
+import { DealRow } from "@/components/deal-row";
 
 // A hub only exists when it has real data behind it. Below this many live
 // offers we 404 rather than publish a thin page — the answerability rule.
@@ -39,8 +39,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HubPage({ params }: Props) {
   return (
-    <main className="mx-auto max-w-(--container-page) px-4 py-12">
-      <nav className="mb-8 text-sm">
+    <main className="mx-auto max-w-(--container-page) px-4 py-8">
+      <nav className="mb-6 text-sm">
         <Link href="/deals" className="text-muted-foreground hover:text-foreground">
           ← Alle Angebote
         </Link>
@@ -122,9 +122,9 @@ async function HubBody({ params }: { params: Props["params"] }) {
         </dl>
       </section>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 border-t border-border">
         {offers.map((l) => (
-          <DealCard key={l.id} listing={l} />
+          <DealRow key={l.id} listing={l} />
         ))}
       </div>
 

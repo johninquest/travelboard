@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getLiveListingBySlug } from "@/lib/board";
 import { priceStatement, eur, type Listing } from "@/lib/listing";
+import { SITE_URL } from "@/lib/site";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -27,8 +28,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function DealPage({ params }: Props) {
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
-      <nav className="mb-8 text-sm">
+    <main className="mx-auto max-w-3xl px-4 py-8">
+      <nav className="mb-6 text-sm">
         <Link href="/deals" className="text-muted-foreground hover:text-foreground">
           ← Alle Angebote
         </Link>
@@ -148,7 +149,7 @@ function JsonLd({ l, statement }: { l: Listing; statement: string }) {
               valueAddedTaxIncluded: true,
             },
             availability: "https://schema.org/InStock",
-            url: `https://travelboard.johnxlabs.de/deal/${l.slug}`,
+            url: `${SITE_URL}/deal/${l.slug}`,
             validThrough: l.travelWindow?.end ?? undefined,
           }
         : undefined,

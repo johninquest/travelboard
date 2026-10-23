@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import { inter, cabinetGrotesk } from "@/lib/fonts";
 import { PageViewTracker } from "@/components/page-view-tracker";
+import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { BRAND } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "sunwise. — AI can help you explore. We help you decide.",
-    template: "%s · sunwise.",
+    default: `${BRAND} — geprüfte Pauschalreise-Angebote`,
+    template: `%s · ${BRAND}`,
   },
   description:
-    "Tell us your budget and dates. We return 3–5 complete trips we'd actually book — each with a price, a reason, and a link.",
+    "Kuratierte Pauschalreise-Angebote für deutsche Abflughäfen: Preis, Reisedauer, Abflughafen und Reisezeitraum — ohne Fluff.",
 };
 
 export default function RootLayout({
@@ -17,11 +19,13 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="en"
+      lang="de"
       className={`${inter.variable} ${cabinetGrotesk.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <SiteHeader />
         {children}
+        <SiteFooter />
         <PageViewTracker />
       </body>
     </html>
