@@ -2,12 +2,11 @@ import { NextResponse } from "next/server";
 import { pbPublic } from "@/lib/pb";
 import { recordToListing } from "@/lib/listings-read";
 import { ALL_HUBS, findHub, hubFilter } from "@/lib/hubs";
+import { SITE_URL as SITE } from "@/lib/site";
 
 // Machine-readable layer for AI engines and agents (the "answerability" bet).
 // Public, and deliberately NO booking_url — that stays server-side so every
 // outbound click is logged. Fields are explicit facts, not prose.
-
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://travelboard.johnxlabs.de";
 
 export function publicOffer(l: ReturnType<typeof recordToListing>) {
   return {

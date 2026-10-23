@@ -2,8 +2,7 @@ import type { MetadataRoute } from "next";
 import { connection } from "next/server";
 import { pbPublic } from "@/lib/pb";
 import { ALL_HUBS, hubFilter } from "@/lib/hubs";
-
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://travelboard.johnxlabs.de";
+import { SITE_URL as SITE } from "@/lib/site";
 // A hub is only worth indexing when it carries enough real offers — same gate
 // as the page itself, so sitemap and page never disagree.
 const MIN_OFFERS = 3;

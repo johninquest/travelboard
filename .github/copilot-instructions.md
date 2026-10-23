@@ -2,21 +2,50 @@
 
 ## Repository status
 
-This repository currently contains **no application code**. It holds a single ideation
-transcript, [ideation_session.txt](/ideation_session.txt), which defines the product thesis,
-market, MVP scope, and roadmap for a solo-founder travel decision product.
+The repo holds a working Next.js app in [`app/`](/app) plus a PocketBase schema in
+[`pocketbase/`](/pocketbase). [ideation_session.txt](/ideation_session.txt) remains the
+source of truth for product decisions — read it before writing code, and do not invent
+requirements that contradict it.
 
-There are no build, test, or lint commands yet. When the first app is scaffolded, add them
-here (full suite, single test, lint, typecheck) as the authoritative entry points.
+The product has since pivoted from the "decision product" framing below to a **feed-first
+travel-deals board**: a clean, dense, fluff-free listings board of verified package offers,
+monetised via affiliate links. The board is the front door (`/`), with `/deals` as the
+canonical board URL and `/anfrage` holding the older decision-product forms.
 
-**Before writing code, read [ideation_session.txt](/ideation_session.txt).** It is the source
-of truth for product decisions. Do not invent requirements that contradict it.
+### Commands (run from `app/`)
+
+| Purpose | Command |
+| --- | --- |
+| Dev server | `npm run dev` |
+| Build | `npm run build` |
+| Lint | `npm run lint` |
+| Typecheck | `npx tsc --noEmit` |
+| Tests | `npm test` (vitest) |
+| Feed ingest | `npm run ingest` |
+
+### Setup prerequisites
+
+The board renders an empty state until these are done — see
+[`app/README.md`](/app/README.md) for the full list:
+
+1. Import the extended PocketBase schema (`travel_sources`, `travel_listings`,
+   `travel_clicks.listing`).
+2. Seed `travel_sources` rows.
+3. Set `PB_SUPERUSER_EMAIL` / `PB_SUPERUSER_PASSWORD` in `app/.env.local`.
+4. Run `npm run ingest`.
+
+**Never start a local PocketBase instance** — the user manages PocketBase themselves.
 
 ## Product thesis
 
 The product is **not** an AI travel agent and **not** a better travel aggregator. It is a
 travel *decision* product: the user supplies constraints, and the product returns a small
 number of complete trips it would actually book, each with an explicit justification.
+
+The current implementation of that thesis is the **deals board**: rather than asking the
+user for constraints, it curates verified package offers and lets the user narrow by
+destination, airport, theme and month. The decision work happens in the curation and
+ranking, not in a form.
 
 - The differentiator is the **decision model** (ranking + explanation), not the AI.
 - Positioning: *"AI can help you explore. We help you decide."* Later: *"We verify the trip
