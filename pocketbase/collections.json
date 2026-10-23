@@ -1,149 +1,177 @@
 [
   {
+    "id": "znni6xmzoofhxpw",
+    "name": "travel_requests",
+    "type": "base",
     "fields": [
       {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
-        "name": "token",
+        "hidden": true,
         "presentable": false,
+        "system": true,
+        "id": "odtgi00thbz33uf",
+        "type": "text",
+        "name": "id",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "primaryKey": true,
+        "required": true
+      },
+      {
+        "hidden": false,
+        "presentable": true,
         "system": false,
         "type": "text",
+        "name": "token",
+        "autogeneratePattern": "",
         "max": 0,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "lpqpdhiefimy4u3"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "status",
         "presentable": false,
         "system": false,
         "type": "select",
+        "name": "status",
         "maxSelect": 1,
         "values": [
           "open",
           "fulfilled",
           "abandoned"
-        ]
+        ],
+        "id": "oxmcdti8ar0x1bu"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "source",
         "presentable": false,
         "system": false,
         "type": "select",
+        "name": "source",
         "maxSelect": 1,
         "values": [
           "find",
           "beat"
-        ]
+        ],
+        "id": "wany7023cxsk1zu"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "criteria",
         "presentable": false,
         "system": false,
         "type": "json",
-        "maxSize": 2000000
+        "name": "criteria",
+        "maxSize": 2000000,
+        "required": false,
+        "id": "orrqbzh4p201pmn"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "note",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "note",
+        "autogeneratePattern": "",
         "max": 2000,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "x3myhjk3xtl2clq"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "fulfilled_at",
         "presentable": false,
         "system": false,
         "type": "date",
+        "name": "fulfilled_at",
+        "min": "",
         "max": "",
-        "min": ""
+        "id": "67v83a7tg1yfajr"
       }
     ],
-    "id": null,
-    "indexes": [],
-    "name": "travel_requests",
-    "type": "base",
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_travel_requests_token` ON `travel_requests` (token)"
+    ],
     "createRule": "",
+    "listRule": "",
+    "viewRule": "",
     "updateRule": null,
     "deleteRule": null,
-    "listRule": "",
-    "viewRule": ""
+    "system": false
   },
   {
+    "id": "80a5fjhm4p7wjqh",
+    "name": "travel_trips",
+    "type": "base",
     "fields": [
       {
-        "autogeneratePattern": "",
+        "hidden": true,
+        "presentable": false,
+        "system": true,
+        "id": "cco79u9tkd4lol0",
+        "type": "text",
+        "name": "id",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "primaryKey": true,
+        "required": true
+      },
+      {
         "hidden": false,
-        "id": null,
+        "presentable": true,
+        "system": false,
+        "type": "text",
         "name": "slug",
-        "presentable": false,
-        "system": false,
-        "type": "text",
+        "autogeneratePattern": "",
         "max": 0,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "4ywq6rjxvwygtlf"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
+        "presentable": false,
+        "system": false,
+        "type": "text",
         "name": "destination",
-        "presentable": false,
-        "system": false,
-        "type": "text",
+        "autogeneratePattern": "",
         "max": 0,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "wytef9kkplm8196"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "departure_airport",
         "presentable": false,
         "system": false,
         "type": "select",
+        "name": "departure_airport",
         "maxSelect": 1,
         "values": [
           "MUC",
           "NUE",
           "STR",
           "FRA"
-        ]
+        ],
+        "id": "l5n49ythxfqp3b2"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "country",
         "presentable": false,
         "system": false,
         "type": "select",
+        "name": "country",
         "maxSelect": 1,
         "values": [
           "ES",
@@ -153,487 +181,549 @@
           "IT",
           "CY",
           "MT"
-        ]
+        ],
+        "id": "f6ueokrf95agjrl"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "nights",
         "presentable": false,
         "system": false,
         "type": "number",
-        "max": 30,
+        "name": "nights",
         "min": 1,
-        "onlyInt": true
+        "max": 30,
+        "onlyInt": true,
+        "id": "d6dvaoxff5k7h8j"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "start_date",
         "presentable": false,
         "system": false,
         "type": "date",
+        "name": "start_date",
+        "min": "",
         "max": "",
-        "min": ""
+        "id": "6y3xm1mtyummk1w"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
+        "presentable": false,
+        "system": false,
+        "type": "number",
         "name": "travellers",
-        "presentable": false,
-        "system": false,
-        "type": "number",
-        "max": 9,
         "min": 1,
-        "onlyInt": true
+        "max": 9,
+        "onlyInt": true,
+        "id": "mffnt0vkc1nwpni"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
+        "presentable": false,
+        "system": false,
+        "type": "number",
         "name": "price_total_eur",
+        "min": 0,
+        "max": null,
+        "id": "8qzvusyiuitcjkx"
+      },
+      {
+        "hidden": false,
         "presentable": false,
         "system": false,
         "type": "number",
-        "max": null,
-        "min": 0,
-        "onlyInt": false
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
         "name": "price_ppp_eur",
-        "presentable": false,
-        "system": false,
-        "type": "number",
-        "max": null,
         "min": 0,
-        "onlyInt": false
+        "max": null,
+        "id": "ncy81u63dt071nm"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "currency",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "currency",
+        "autogeneratePattern": "",
         "max": 3,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "c28wb01ubxghtzt"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
+        "presentable": false,
+        "system": false,
+        "type": "bool",
         "name": "verified",
-        "presentable": false,
-        "system": false,
-        "type": "bool"
+        "required": false,
+        "id": "u1gn6h956md3mdx"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
+        "presentable": false,
+        "system": false,
+        "type": "bool",
         "name": "fulfilled",
-        "presentable": false,
-        "system": false,
-        "type": "bool"
+        "required": false,
+        "id": "hfduoirbmje2qco"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
+        "presentable": false,
+        "system": false,
+        "type": "json",
         "name": "flight",
+        "maxSize": 2000000,
+        "required": false,
+        "id": "jqgv18etz47jt8o"
+      },
+      {
+        "hidden": false,
         "presentable": false,
         "system": false,
         "type": "json",
-        "maxSize": 2000000
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
         "name": "hotel",
+        "maxSize": 2000000,
+        "required": false,
+        "id": "ajrvraxkz5d6use"
+      },
+      {
+        "hidden": false,
         "presentable": false,
         "system": false,
         "type": "json",
-        "maxSize": 2000000
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
         "name": "characteristics",
+        "maxSize": 2000000,
+        "required": false,
+        "id": "kmlq7arn7kbeajr"
+      },
+      {
+        "hidden": false,
         "presentable": false,
         "system": false,
         "type": "json",
-        "maxSize": 2000000
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
         "name": "logistics",
+        "maxSize": 2000000,
+        "required": false,
+        "id": "pt8orq0s2jvnibp"
+      },
+      {
+        "hidden": false,
         "presentable": false,
         "system": false,
         "type": "json",
-        "maxSize": 2000000
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
         "name": "justification",
-        "presentable": false,
-        "system": false,
-        "type": "json",
-        "maxSize": 2000000
+        "maxSize": 2000000,
+        "required": false,
+        "id": "zieg79ibwhy7iys"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "supplier",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "supplier",
+        "autogeneratePattern": "",
         "max": 40,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "0wzaoj3o28i26b4"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "supplier_ref",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "supplier_ref",
+        "autogeneratePattern": "",
         "max": 120,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "idqpkubroue6301"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "last_checked",
         "presentable": false,
         "system": false,
         "type": "date",
+        "name": "last_checked",
+        "min": "",
         "max": "",
-        "min": ""
+        "id": "7w093n4rxaonpez"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "rank",
         "presentable": false,
         "system": false,
         "type": "number",
-        "max": null,
+        "name": "rank",
         "min": null,
-        "onlyInt": true
+        "max": null,
+        "onlyInt": true,
+        "id": "wt9aolx50epawby"
       },
       {
-        "cascadeDelete": false,
         "hidden": false,
-        "id": null,
-        "maxSelect": 1,
-        "minSelect": 0,
+        "presentable": false,
+        "system": false,
+        "type": "relation",
         "name": "destination_code",
-        "presentable": false,
-        "system": false,
-        "type": "relation",
-        "collectionId": "@collection:travel_destinations"
+        "cascadeDelete": false,
+        "minSelect": 0,
+        "maxSelect": 1,
+        "collectionId": "rsdhk92edr7yc3o",
+        "id": "toafjtc5bqeafnw"
       },
       {
-        "cascadeDelete": false,
         "hidden": false,
-        "id": null,
-        "maxSelect": 1,
-        "minSelect": 0,
-        "name": "request",
         "presentable": false,
         "system": false,
         "type": "relation",
-        "collectionId": "@collection:travel_requests"
+        "name": "request",
+        "cascadeDelete": false,
+        "minSelect": 0,
+        "maxSelect": 1,
+        "collectionId": "znni6xmzoofhxpw",
+        "id": "2vr0nh0sat38vf5"
       }
     ],
-    "id": null,
-    "indexes": [],
-    "name": "travel_trips",
-    "type": "base",
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_travel_trips_slug` ON `travel_trips` (slug)"
+    ],
     "createRule": null,
+    "listRule": "@request.auth.id != \"\" || fulfilled = true",
+    "viewRule": "@request.auth.id != \"\" || fulfilled = true",
     "updateRule": null,
     "deleteRule": null,
-    "listRule": "@request.auth.id != \"\" || fulfilled = true",
-    "viewRule": "@request.auth.id != \"\" || fulfilled = true"
+    "system": false
   },
   {
+    "id": "f2deeion4qb3tao",
+    "name": "travel_offers",
+    "type": "base",
     "fields": [
       {
-        "autogeneratePattern": "",
+        "hidden": true,
+        "presentable": false,
+        "system": true,
+        "id": "2850q6khwqvomss",
+        "type": "text",
+        "name": "id",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "primaryKey": true,
+        "required": true
+      },
+      {
         "hidden": false,
-        "id": null,
-        "name": "affiliate_url",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "affiliate_url",
+        "autogeneratePattern": "",
         "max": 0,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "5jx5zh7xg44xkjb"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "network",
         "presentable": false,
         "system": false,
         "type": "select",
+        "name": "network",
         "maxSelect": 1,
         "values": [
           "travelpayouts",
           "booking",
           "direct"
-        ]
+        ],
+        "id": "0ks6d7qoqqd4p2c"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "price_total_eur",
         "presentable": false,
         "system": false,
         "type": "number",
-        "max": null,
+        "name": "price_total_eur",
         "min": 0,
-        "onlyInt": false
+        "max": null,
+        "id": "a9yscmf01iwkh9q"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "verified",
         "presentable": false,
         "system": false,
-        "type": "bool"
+        "type": "bool",
+        "name": "verified",
+        "required": false,
+        "id": "41671hqmrkaug70"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "last_checked",
         "presentable": false,
         "system": false,
         "type": "date",
+        "name": "last_checked",
+        "min": "",
         "max": "",
-        "min": ""
+        "id": "m74wvn8965ryjaw"
       },
       {
-        "cascadeDelete": true,
         "hidden": false,
-        "id": null,
-        "maxSelect": 1,
-        "minSelect": 0,
-        "name": "trip",
         "presentable": false,
         "system": false,
         "type": "relation",
-        "collectionId": "@collection:travel_trips"
+        "name": "trip",
+        "cascadeDelete": true,
+        "minSelect": 0,
+        "maxSelect": 1,
+        "collectionId": "80a5fjhm4p7wjqh",
+        "id": "svl3uaf0q1duyb7"
       }
     ],
-    "id": null,
     "indexes": [],
-    "name": "travel_offers",
-    "type": "base",
     "createRule": null,
+    "listRule": null,
+    "viewRule": null,
     "updateRule": null,
     "deleteRule": null,
-    "listRule": null,
-    "viewRule": null
+    "system": false
   },
   {
+    "id": "zajt3j5kamwwx32",
+    "name": "travel_clicks",
+    "type": "base",
     "fields": [
       {
-        "autogeneratePattern": "",
+        "hidden": true,
+        "presentable": false,
+        "system": true,
+        "id": "dr5iseck7djc6z0",
+        "type": "text",
+        "name": "id",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "primaryKey": true,
+        "required": true
+      },
+      {
         "hidden": false,
-        "id": null,
-        "name": "ref",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "ref",
+        "autogeneratePattern": "",
         "max": 80,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "m0u04fcvpado0rv"
       },
       {
-        "cascadeDelete": false,
         "hidden": false,
-        "id": null,
-        "maxSelect": 1,
-        "minSelect": 0,
-        "name": "trip",
-        "presentable": false,
-        "system": false,
-        "type": "relation",
-        "collectionId": "@collection:travel_trips"
-      },
-      {
-        "cascadeDelete": false,
-        "hidden": false,
-        "id": null,
-        "maxSelect": 1,
-        "minSelect": 0,
-        "name": "offer",
-        "presentable": false,
-        "system": false,
-        "type": "relation",
-        "collectionId": "@collection:travel_offers"
-      },
-      {
-        "cascadeDelete": false,
-        "hidden": false,
-        "id": null,
-        "maxSelect": 1,
-        "minSelect": 0,
-        "name": "request",
-        "presentable": false,
-        "system": false,
-        "type": "relation",
-        "collectionId": "@collection:travel_requests"
-      }
-    ],
-    "id": null,
-    "indexes": [],
-    "name": "travel_clicks",
-    "type": "base",
-    "createRule": "",
-    "updateRule": null,
-    "deleteRule": null,
-    "listRule": null,
-    "viewRule": null
-  },
-  {
-    "fields": [
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
-        "name": "name",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "listing",
+        "autogeneratePattern": "",
+        "max": 32,
+        "min": 0,
+        "pattern": "",
+        "primaryKey": false,
+        "required": false,
+        "id": "qb242vr8zun3nra"
+      },
+      {
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "type": "relation",
+        "name": "trip",
+        "cascadeDelete": false,
+        "minSelect": 0,
+        "maxSelect": 1,
+        "collectionId": "80a5fjhm4p7wjqh",
+        "id": "9fcix8xxb1817e2"
+      },
+      {
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "type": "relation",
+        "name": "offer",
+        "cascadeDelete": false,
+        "minSelect": 0,
+        "maxSelect": 1,
+        "collectionId": "f2deeion4qb3tao",
+        "id": "7fx0vd4nl1wdr41"
+      },
+      {
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "type": "relation",
+        "name": "request",
+        "cascadeDelete": false,
+        "minSelect": 0,
+        "maxSelect": 1,
+        "collectionId": "znni6xmzoofhxpw",
+        "id": "f3f5ev4j2sarnq0"
+      }
+    ],
+    "indexes": [],
+    "createRule": "",
+    "listRule": null,
+    "viewRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "system": false
+  },
+  {
+    "id": "2a840wf12tyxndz",
+    "name": "travel_events",
+    "type": "base",
+    "fields": [
+      {
+        "hidden": true,
+        "presentable": false,
+        "system": true,
+        "id": "u5r7rczezry5ogg",
+        "type": "text",
+        "name": "id",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "primaryKey": true,
+        "required": true
+      },
+      {
+        "hidden": false,
+        "presentable": true,
+        "system": false,
+        "type": "text",
+        "name": "name",
+        "autogeneratePattern": "",
         "max": 60,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "a9lfom02jvc47j2"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "props",
         "presentable": false,
         "system": false,
         "type": "json",
-        "maxSize": 2000000
+        "name": "props",
+        "maxSize": 2000000,
+        "required": false,
+        "id": "1klgyudy171ergy"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "session_id",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "session_id",
+        "autogeneratePattern": "",
         "max": 80,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "6ctrqhuussvdu26"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "path",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "path",
+        "autogeneratePattern": "",
         "max": 300,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "p0g24ia3fhd76s4"
       }
     ],
-    "id": null,
     "indexes": [],
-    "name": "travel_events",
-    "type": "base",
     "createRule": "",
+    "listRule": null,
+    "viewRule": null,
     "updateRule": null,
     "deleteRule": null,
-    "listRule": null,
-    "viewRule": null
+    "system": false
   },
   {
+    "id": "rsdhk92edr7yc3o",
+    "name": "travel_destinations",
+    "type": "base",
     "fields": [
       {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
-        "name": "code",
+        "hidden": true,
         "presentable": false,
+        "system": true,
+        "id": "kfk55yjj9xssesf",
+        "type": "text",
+        "name": "id",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "primaryKey": true,
+        "required": true
+      },
+      {
+        "hidden": false,
+        "presentable": true,
         "system": false,
         "type": "text",
+        "name": "code",
+        "autogeneratePattern": "",
         "max": 10,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "k9og4t2os6uhz1w"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "name",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "name",
+        "autogeneratePattern": "",
         "max": 80,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "0kbl3z5nhhcquqj"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "country",
         "presentable": false,
         "system": false,
         "type": "select",
+        "name": "country",
         "maxSelect": 1,
         "values": [
           "ES",
@@ -643,397 +733,421 @@
           "IT",
           "CY",
           "MT"
-        ]
+        ],
+        "id": "b1febgyjg8edyk8"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "climate",
         "presentable": false,
         "system": false,
         "type": "json",
-        "maxSize": 2000000
+        "name": "climate",
+        "maxSize": 2000000,
+        "required": false,
+        "id": "kzhlfpgfd78gvm4"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "notes",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "notes",
+        "autogeneratePattern": "",
         "max": 4000,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "elmv3pq8b6xnzv3"
       }
     ],
-    "id": null,
-    "indexes": [],
-    "name": "travel_destinations",
-    "type": "base",
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_travel_destinations_code` ON `travel_destinations` (code)"
+    ],
     "createRule": null,
+    "listRule": "",
+    "viewRule": "",
     "updateRule": null,
     "deleteRule": null,
-    "listRule": "",
-    "viewRule": ""
+    "system": false
   },
   {
+    "id": "zak5gzjo3lwynxs",
+    "name": "travel_sources",
+    "type": "base",
     "fields": [
       {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
-        "name": "name",
+        "hidden": true,
         "presentable": false,
+        "system": true,
+        "id": "z4gv0fn9g21yopb",
+        "type": "text",
+        "name": "id",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "primaryKey": true,
+        "required": true
+      },
+      {
+        "hidden": false,
+        "presentable": true,
         "system": false,
         "type": "text",
+        "name": "name",
+        "autogeneratePattern": "",
         "max": 0,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "wsgr2mmsfq7p9jm"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "slug",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "slug",
+        "autogeneratePattern": "",
         "max": 80,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "8f06zovosaaag4j"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "kind",
         "presentable": false,
         "system": false,
         "type": "select",
+        "name": "kind",
         "maxSelect": 1,
         "values": [
           "feed",
           "operator",
           "manual"
-        ]
+        ],
+        "id": "8k4udurvdrh4ti6"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
+        "presentable": false,
+        "system": false,
+        "type": "text",
         "name": "feed_url",
-        "presentable": false,
-        "system": false,
-        "type": "text",
+        "autogeneratePattern": "",
         "max": 500,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "a4rzljm87bzfh33"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
+        "presentable": false,
+        "system": false,
+        "type": "text",
         "name": "robots_url",
-        "presentable": false,
-        "system": false,
-        "type": "text",
+        "autogeneratePattern": "",
         "max": 500,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "6qxle8d86ufuf2l"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "content_signal",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "content_signal",
+        "autogeneratePattern": "",
         "max": 200,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "elhijclzunx8m1p"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "attribution_url",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "attribution_url",
+        "autogeneratePattern": "",
         "max": 500,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "y2r7bd70qdztnhr"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "allowed",
         "presentable": false,
         "system": false,
-        "type": "bool"
+        "type": "bool",
+        "name": "allowed",
+        "required": false,
+        "id": "lnm9lj5uq4sodt6"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "max_age_days",
         "presentable": false,
         "system": false,
         "type": "number",
-        "max": 90,
+        "name": "max_age_days",
         "min": 1,
-        "onlyInt": true
+        "max": 90,
+        "onlyInt": true,
+        "id": "ht3v4qkcwerpwq2"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "last_polled",
         "presentable": false,
         "system": false,
         "type": "date",
+        "name": "last_polled",
+        "min": "",
         "max": "",
-        "min": ""
+        "id": "bedkk2svybh4a0v"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "note",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "note",
+        "autogeneratePattern": "",
         "max": 2000,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "eu2c16dxmoeeio4"
       }
     ],
-    "id": null,
-    "indexes": [],
-    "name": "travel_sources",
-    "type": "base",
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_travel_sources_slug` ON `travel_sources` (slug)"
+    ],
     "createRule": null,
+    "listRule": "",
+    "viewRule": "",
     "updateRule": "@request.auth.id != \"\"",
     "deleteRule": "@request.auth.id != \"\"",
-    "listRule": "",
-    "viewRule": ""
+    "system": false
   },
   {
+    "id": "n968dxqv8j2hbqt",
+    "name": "travel_listings",
+    "type": "base",
     "fields": [
       {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
-        "name": "title",
+        "hidden": true,
         "presentable": false,
+        "system": true,
+        "id": "j2yvidpe3kec3n1",
+        "type": "text",
+        "name": "id",
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$",
+        "primaryKey": true,
+        "required": true
+      },
+      {
+        "hidden": false,
+        "presentable": true,
         "system": false,
         "type": "text",
+        "name": "title",
+        "autogeneratePattern": "",
         "max": 0,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "orx9rtymcrz26xx"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "slug",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "slug",
+        "autogeneratePattern": "",
         "max": 120,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "cdclj6zl56muyjv"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "summary",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "summary",
+        "autogeneratePattern": "",
         "max": 280,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "xa3rv7aw4roa2al"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "destination",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "destination",
+        "autogeneratePattern": "",
         "max": 80,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "h4hsw7kuxr7b086"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "country",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "country",
+        "autogeneratePattern": "",
         "max": 4,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "rrj7i0k1a59zl9v"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "departure_airport",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "departure_airport",
+        "autogeneratePattern": "",
         "max": 5,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "oybiyxjnsuq4n6g"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "nights",
         "presentable": false,
         "system": false,
         "type": "number",
-        "max": 30,
+        "name": "nights",
         "min": 1,
-        "onlyInt": true
+        "max": 30,
+        "onlyInt": true,
+        "id": "zlj9ctgmotuidw2"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "travel_window",
         "presentable": false,
         "system": false,
         "type": "json",
-        "maxSize": 2000000
+        "name": "travel_window",
+        "maxSize": 2000000,
+        "required": false,
+        "id": "wdtj2kuam2niafm"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
+        "presentable": false,
+        "system": false,
+        "type": "number",
         "name": "price_from_eur",
+        "min": 0,
+        "max": null,
+        "id": "82un9t6j2y8ng83"
+      },
+      {
+        "hidden": false,
         "presentable": false,
         "system": false,
         "type": "number",
-        "max": null,
-        "min": 0,
-        "onlyInt": false
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
         "name": "price_pp_eur",
-        "presentable": false,
-        "system": false,
-        "type": "number",
-        "max": null,
         "min": 0,
-        "onlyInt": false
+        "max": null,
+        "id": "lbk10p5ceqlds7y"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "currency",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "currency",
+        "autogeneratePattern": "",
         "max": 3,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "n4ugfpinisuxzgv"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "travellers",
         "presentable": false,
         "system": false,
         "type": "number",
-        "max": 9,
+        "name": "travellers",
         "min": 1,
-        "onlyInt": true
+        "max": 9,
+        "onlyInt": true,
+        "id": "ui3nfndqc6t5z70"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
+        "presentable": false,
+        "system": false,
+        "type": "json",
         "name": "accommodation",
+        "maxSize": 2000000,
+        "required": false,
+        "id": "a494i92bbr0cact"
+      },
+      {
+        "hidden": false,
         "presentable": false,
         "system": false,
         "type": "json",
-        "maxSize": 2000000
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
         "name": "included",
+        "maxSize": 2000000,
+        "required": false,
+        "id": "tfm2smf6r5l3u2x"
+      },
+      {
+        "hidden": false,
         "presentable": false,
         "system": false,
         "type": "json",
-        "maxSize": 2000000
-      },
-      {
-        "autogeneratePattern": "",
-        "hidden": false,
-        "id": null,
         "name": "excluded",
-        "presentable": false,
-        "system": false,
-        "type": "json",
-        "maxSize": 2000000
+        "maxSize": 2000000,
+        "required": false,
+        "id": "2n79jg38aa0gn8d"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "themes",
         "presentable": false,
         "system": false,
         "type": "select",
+        "name": "themes",
         "maxSelect": 8,
         "values": [
           "beach",
@@ -1044,153 +1158,153 @@
           "last-minute",
           "ski",
           "cruise"
-        ]
+        ],
+        "id": "j85onga2d9e842f"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "source_url",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "source_url",
+        "autogeneratePattern": "",
         "max": 500,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "9be3rs96oend3rs"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "source_guid",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "source_guid",
+        "autogeneratePattern": "",
         "max": 255,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "b4jzt9uemv457bp"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "source_published_at",
         "presentable": false,
         "system": false,
         "type": "date",
+        "name": "source_published_at",
+        "min": "",
         "max": "",
-        "min": ""
+        "id": "wsv0wvuj97dhrei"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "booking_url",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "booking_url",
+        "autogeneratePattern": "",
         "max": 500,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "cckltd6ybmte2e1"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "affiliate_network",
         "presentable": false,
         "system": false,
         "type": "select",
+        "name": "affiliate_network",
         "maxSelect": 1,
         "values": [
           "check24",
           "awin",
           "direct",
           "none"
-        ]
+        ],
+        "id": "0ejd5mgtz2yrh1y"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "status",
         "presentable": false,
         "system": false,
         "type": "select",
+        "name": "status",
         "maxSelect": 1,
         "values": [
           "live",
           "expired",
           "needs_review"
-        ]
+        ],
+        "id": "amf0obhpegwt1fi"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "confidence",
         "presentable": false,
         "system": false,
         "type": "select",
+        "name": "confidence",
         "maxSelect": 1,
         "values": [
           "verified",
           "feed",
           "manual"
-        ]
+        ],
+        "id": "k47u5w6nkhi8pmc"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "last_checked",
         "presentable": false,
         "system": false,
         "type": "date",
+        "name": "last_checked",
+        "min": "",
         "max": "",
-        "min": ""
+        "id": "uahprghbhkzct39"
       },
       {
-        "autogeneratePattern": "",
         "hidden": false,
-        "id": null,
-        "name": "notes",
         "presentable": false,
         "system": false,
         "type": "text",
+        "name": "notes",
+        "autogeneratePattern": "",
         "max": 4000,
         "min": 0,
         "pattern": "",
         "primaryKey": false,
-        "required": false
+        "required": false,
+        "id": "67g93d9yj0xiz9x"
       },
       {
-        "cascadeDelete": false,
         "hidden": false,
-        "id": null,
-        "maxSelect": 1,
-        "minSelect": 0,
-        "name": "source",
         "presentable": false,
         "system": false,
         "type": "relation",
-        "collectionId": "@collection:travel_sources"
+        "name": "source",
+        "cascadeDelete": false,
+        "minSelect": 0,
+        "maxSelect": 1,
+        "collectionId": "zak5gzjo3lwynxs",
+        "id": "mw2lh4cffa539rw"
       }
     ],
-    "id": null,
-    "indexes": [],
-    "name": "travel_listings",
-    "type": "base",
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_travel_listings_slug` ON `travel_listings` (slug)",
+      "CREATE UNIQUE INDEX `idx_travel_listings_guid` ON `travel_listings` (source_guid) WHERE source_guid != ''",
+      "CREATE INDEX `idx_travel_listings_status_checked` ON `travel_listings` (status, last_checked)",
+      "CREATE INDEX `idx_travel_listings_country` ON `travel_listings` (country)",
+      "CREATE INDEX `idx_travel_listings_departure` ON `travel_listings` (departure_airport)"
+    ],
     "createRule": null,
+    "listRule": "@request.auth.id != \"\" || status = \"live\"",
+    "viewRule": "@request.auth.id != \"\" || status = \"live\"",
     "updateRule": "@request.auth.id != \"\"",
     "deleteRule": "@request.auth.id != \"\"",
-    "listRule": "@request.auth.id != \"\" || status = \"live\"",
-    "viewRule": "@request.auth.id != \"\" || status = \"live\""
+    "system": false
   }
 ]
