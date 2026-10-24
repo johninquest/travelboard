@@ -59,7 +59,7 @@ export type Logistics = {
 
 // Price formatting — total + per person on one line, tabular figures.
 export function formatEur(n: number): string {
-  return `€${n.toLocaleString("de-DE")}`;
+  return `€${n.toLocaleString("en-GB")}`;
 }
 
 export function priceLine(t: Pick<Trip, "priceTotalEur" | "pricePppEur">): string {

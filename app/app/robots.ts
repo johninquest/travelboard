@@ -14,17 +14,17 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/api/admin", "/api/track", "/api/click", "/r/"],
+        disallow: ["/admin", "/api/track", "/api/click", "/r/"],
       },
       {
         userAgent: "OAI-SearchBot",
         allow: "/",
-        disallow: ["/admin", "/api/admin", "/api/track", "/api/click", "/r/"],
+        disallow: ["/admin", "/api/track", "/api/click", "/r/"],
       },
       {
         userAgent: "ChatGPT-User",
         allow: "/",
-        disallow: ["/admin", "/api/admin", "/api/track", "/api/click", "/r/"],
+        disallow: ["/admin", "/api/track", "/api/click", "/r/"],
       },
     ],
     sitemap: `${SITE}/sitemap.xml`,

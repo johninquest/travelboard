@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "urlaubspiraten",
+    "name": "Urlaubspiraten",
+    "kind": "feed",
+    "feed_url": "https://www.urlaubspiraten.de/feed",
+    "robots_url": "https://www.urlaubspiraten.de/robots.txt",
+    "content_signal": "ai-train=yes, search=yes, ai-input=yes",
+    "attribution_url": "https://www.urlaubspiraten.de/",
+    "allowed": true,
+    "max_age_days": 14,
+    "note": "robots.txt is UA=* Allow: / and the Content-Signal header permits search and AI input. Verified 2026."
+  },
+  {
+    "slug": "mydealz-reisen",
+    "name": "mydealz Reisen",
+    "kind": "feed",
+    "feed_url": "https://www.mydealz.de/rss/gruppe/reisen",
+    "robots_url": "https://www.mydealz.de/robots.txt",
+    "content_signal": "",
+    "attribution_url": "https://www.mydealz.de/gruppe/reisen",
+    "allowed": true,
+    "max_age_days": 14,
+    "note": "UA=* allows /. The Disallow: / lines belong to named AI-bot blocks — never impersonate those bots. Verified 2026."
+  }
+]

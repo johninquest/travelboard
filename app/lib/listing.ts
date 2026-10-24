@@ -108,21 +108,23 @@ export function slugify(input: string): string {
 }
 
 export function eur(n: number): string {
-  return `€${n.toLocaleString("de-DE")}`;
+  return `€${n.toLocaleString("en-GB")}`;
 }
 
-// PAngV 3(1): a price is never shown as a bare number. This is the Gesamtpreis +
-// exclusions statement that sits under every price on the board.
+// PAngV 3(1): a price is never shown as a bare number. This is the total +
+// exclusions statement that sits under every price on the board. The wording is
+// English but the *content* is unchanged — total, per-person, what is included,
+// what is not, and the instruction to check the total with the supplier.
 export function priceStatement(
   l: Pick<Listing, "priceFromEur" | "pricePerPersonEur" | "travellers" | "included" | "excluded" | "currency">
 ): string {
-  if (l.priceFromEur == null) return "Kein Preis angegeben — bitte den Preis direkt beim Anbieter prüfen.";
+  if (l.priceFromEur == null) return "No price stated — please check the price directly with the supplier.";
   const cur = l.currency || "EUR";
-  const parts = [`Ab ${eur(l.priceFromEur)} ${cur} laut Anbieter`];
+  const parts = [`From ${eur(l.priceFromEur)} ${cur} as stated by the supplier`];
   if (l.pricePerPersonEur != null) {
-    parts.push(`= ${eur(l.pricePerPersonEur)} pro Person bei ${l.travellers ?? 2} Reisenden`);
+    parts.push(`= ${eur(l.pricePerPersonEur)} per person for ${l.travellers ?? 2} travellers`);
   }
-  if (l.included.length) parts.push(`Enthalten: ${l.included.join(", ")}`);
-  parts.push(l.excluded.length ? `Nicht enthalten: ${l.excluded.join(", ")}` : "Nicht alle Zusatzkosten sind ausgewiesen — Gesamtpreis beim Anbieter prüfen");
+  if (l.included.length) parts.push(`Included: ${l.included.join(", ")}`);
+  parts.push(l.excluded.length ? `Not included: ${l.excluded.join(", ")}` : "Not all additional costs are stated — check the total with the supplier");
   return parts.join(". ") + ".";
 }

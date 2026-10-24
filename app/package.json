@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "ingest": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --experimental-strip-types scripts/ingest.ts"
+    "ingest": "node --experimental-strip-types scripts/ingest.ts"
   },
   "dependencies": {
     "lucide-react": "^1.59.0",

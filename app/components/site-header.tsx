@@ -15,13 +15,13 @@ export function SiteHeader() {
         </Link>
         <nav className="flex items-center gap-5">
           <Link href="/deals" className={link}>
-            Angebote
+            Offers
           </Link>
-          <Link href="/holidays/spanien" className={link}>
-            Reiseziele
+          <Link href="/holidays/spain" className={link}>
+            Destinations
           </Link>
           <Link href="/anfrage" className={link}>
-            Reise finden
+            Find a trip
           </Link>
         </nav>
       </div>
@@ -34,15 +34,15 @@ export function SiteFooter() {
     <footer className="mt-auto border-t border-border bg-surface">
       <div className="mx-auto flex max-w-(--container-page) flex-wrap items-center justify-between gap-4 px-4 py-6 text-xs text-subtle">
         <p>
-          {BRAND} — geprüfte Pauschalreise-Angebote. Buchung direkt beim
-          Veranstalter.
+          {BRAND} — verified package holiday offers. You book directly with the
+          tour operator.
         </p>
         <nav className="flex items-center gap-4">
           <Link href="/deals" className="hover:text-foreground">
-            Angebote
+            Offers
           </Link>
           <Link href="/anfrage" className="hover:text-foreground">
-            Reise finden
+            Find a trip
           </Link>
         </nav>
       </div>

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { getLiveListingBySlug } from "@/lib/board";
+import { getLiveListingBySlug } from "@/lib/store";
 import { priceStatement, eur, type Listing } from "@/lib/listing";
 import { SITE_URL } from "@/lib/site";
 
@@ -23,7 +23,7 @@ function fact(label: string, value: React.ReactNode) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Reiseangebot" };
+  return { title: "Holiday offer" };
 }
 
 export default async function DealPage({ params }: Props) {
@@ -31,7 +31,7 @@ export default async function DealPage({ params }: Props) {
     <main className="mx-auto max-w-3xl px-4 py-8">
       <nav className="mb-6 text-sm">
         <Link href="/deals" className="text-muted-foreground hover:text-foreground">
-          ← Alle Angebote
+          ← All offers
         </Link>
       </nav>
       {/* params is runtime data under cacheComponents — it may only be read
@@ -51,8 +51,8 @@ async function DealBody({ params }: { params: Props["params"] }) {
 
   const l = listing;
   const statement = priceStatement(l);
-  const checked = l.lastChecked ? new Date(l.lastChecked).toLocaleString("de-DE") : "unbekannt";
-  const published = l.sourcePublishedAt ? new Date(l.sourcePublishedAt).toLocaleDateString("de-DE") : "—";
+  const checked = l.lastChecked ? new Date(l.lastChecked).toLocaleString("en-GB") : "unknown";
+  const published = l.sourcePublishedAt ? new Date(l.sourcePublishedAt).toLocaleDateString("en-GB") : "—";
   const sourceName = l.sourceName;
   const sourceUrl = l.sourceAttributionUrl;
 
@@ -61,13 +61,13 @@ async function DealBody({ params }: { params: Props["params"] }) {
       <h1 className="font-display text-2xl font-extrabold md:text-3xl">{l.title}</h1>
       <p className="mt-2 text-sm text-muted-foreground">
         {l.destination}
-        {l.country ? ` (${l.country})` : ""} · gefunden am {published}
-        {sourceName ? ` bei ${sourceName}` : ""}
+        {l.country ? ` (${l.country})` : ""} · found on {published}
+        {sourceName ? ` at ${sourceName}` : ""}
       </p>
 
       <div className="mt-6 rounded-card border border-border bg-surface p-6 shadow-card">
         <p className="tnum text-3xl font-extrabold text-primary">
-          {l.priceFromEur != null ? `ab ${eur(l.priceFromEur)}` : "Preis beim Anbieter prüfen"}
+          {l.priceFromEur != null ? `from ${eur(l.priceFromEur)}` : "Check the price with the supplier"}
         </p>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{statement}</p>
 
@@ -75,29 +75,29 @@ async function DealBody({ params }: { params: Props["params"] }) {
           href={`/api/deal-click/${l.id}`}
           className="mt-5 inline-block rounded-input bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-hover"
         >
-          Zum Angebot beim Anbieter
+          Go to the offer at the supplier
         </a>
         <p className="mt-2 text-[11px] text-subtle">
-          Weiterleitung zum Veranstalter. {sourceName ? `Angebot ursprünglich bei ${sourceName} veröffentlicht` : "Quelle: Anbieter"}
-          . Für vermittelte Buchungen können wir eine Provision erhalten — das ändert nichts am Preis.
+          You are redirected to the tour operator. {sourceName ? `Offer originally published at ${sourceName}` : "Source: supplier"}
+          . We may receive a commission on referred bookings — this does not change the price.
         </p>
       </div>
 
       <dl className="mt-8">
-        {l.nights != null && fact("Reisedauer", `${l.nights} Nächte`)}
-        {l.travelWindow?.label && fact("Reisezeitraum", l.travelWindow.label)}
-        {l.travelWindow?.start && fact("An-/Abreise", `${l.travelWindow.start} – ${l.travelWindow.end ?? "?"}`)}
-        {l.departureAirport && fact("Abflughafen", l.departureAirport)}
-        {l.travellers != null && fact("Reisende", `${l.travellers} Personen`)}
-        {l.accommodation.name && fact("Unterkunft", l.accommodation.name)}
-        {l.accommodation.category != null && fact("Kategorie (Anbieterangabe)", `${l.accommodation.category}★`)}
-        {l.accommodation.board && fact("Verpflegung", l.accommodation.board)}
-        {l.themes.length > 0 && fact("Themen", l.themes.join(", "))}
-        {l.included.length > 0 && fact("Enthalten", l.included.join(", "))}
-        {l.excluded.length > 0 && fact("Nicht enthalten", l.excluded.join(", "))}
+        {l.nights != null && fact("Trip length", `${l.nights} nights`)}
+        {l.travelWindow?.label && fact("Travel window", l.travelWindow.label)}
+        {l.travelWindow?.start && fact("Departure / return", `${l.travelWindow.start} – ${l.travelWindow.end ?? "?"}`)}
+        {l.departureAirport && fact("Departure airport", l.departureAirport)}
+        {l.travellers != null && fact("Travellers", `${l.travellers} people`)}
+        {l.accommodation.name && fact("Accommodation", l.accommodation.name)}
+        {l.accommodation.category != null && fact("Category (supplier's rating)", `${l.accommodation.category}★`)}
+        {l.accommodation.board && fact("Board", l.accommodation.board)}
+        {l.themes.length > 0 && fact("Themes", l.themes.join(", "))}
+        {l.included.length > 0 && fact("Included", l.included.join(", "))}
+        {l.excluded.length > 0 && fact("Not included", l.excluded.join(", "))}
         {sourceName &&
           fact(
-            "Gefunden bei",
+            "Found at",
             sourceUrl ? (
               <a href={sourceUrl} className="text-primary underline">
                 {sourceName}
@@ -106,8 +106,8 @@ async function DealBody({ params }: { params: Props["params"] }) {
               sourceName
             )
           )}
-        {fact("Zuletzt geprüft", checked)}
-        {fact("Status", "redaktionell geprüft")}
+        {fact("Last checked", checked)}
+        {fact("Status", "editorially verified")}
       </dl>
 
       {l.notes && (
@@ -116,9 +116,9 @@ async function DealBody({ params }: { params: Props["params"] }) {
 
       <section className="mt-10 border-t border-border pt-6 text-xs text-subtle">
         <p>
-          Alle Angaben laut Anbieter zum Prüfzeitpunkt. Preise können sich ändern,
-          Verfügbarkeit ist begrenzt. Diese Seite ist keine Buchung — sie verlinkt auf
-          das Angebot des Veranstalters.
+          All details as stated by the supplier at the time we checked. Prices can
+          change and availability is limited. This page is not a booking — it links
+          to the tour operator&apos;s offer.
         </p>
       </section>
 
@@ -135,7 +135,7 @@ function JsonLd({ l, statement }: { l: Listing; statement: string }) {
     "@type": "Product",
     name: l.title,
     description: l.summary,
-    brand: { "@type": "Brand", name: l.sourceName || l.destination || "Unbekannt" },
+    brand: { "@type": "Brand", name: l.sourceName || l.destination || "Unknown" },
     offers:
       l.priceFromEur != null
         ? {
@@ -154,13 +154,13 @@ function JsonLd({ l, statement }: { l: Listing; statement: string }) {
           }
         : undefined,
     additionalProperty: [
-      { "@type": "PropertyValue", name: "Reisedauer", value: l.nights != null ? `${l.nights} Nächte` : undefined },
-      { "@type": "PropertyValue", name: "Abflughafen", value: l.departureAirport ?? undefined },
-      { "@type": "PropertyValue", name: "Unterkunft", value: l.accommodation.name ?? undefined },
-      { "@type": "PropertyValue", name: "Kategorie", value: l.accommodation.category != null ? `${l.accommodation.category} Sterne` : undefined },
-      { "@type": "PropertyValue", name: "Verpflegung", value: l.accommodation.board ?? undefined },
-      { "@type": "PropertyValue", name: "Zuletzt geprüft", value: l.lastChecked ?? undefined },
-      { "@type": "PropertyValue", name: "Preishinweis", value: statement },
+      { "@type": "PropertyValue", name: "Trip length", value: l.nights != null ? `${l.nights} nights` : undefined },
+      { "@type": "PropertyValue", name: "Departure airport", value: l.departureAirport ?? undefined },
+      { "@type": "PropertyValue", name: "Accommodation", value: l.accommodation.name ?? undefined },
+      { "@type": "PropertyValue", name: "Category", value: l.accommodation.category != null ? `${l.accommodation.category} stars` : undefined },
+      { "@type": "PropertyValue", name: "Board", value: l.accommodation.board ?? undefined },
+      { "@type": "PropertyValue", name: "Last checked", value: l.lastChecked ?? undefined },
+      { "@type": "PropertyValue", name: "Price note", value: statement },
     ].filter((p) => p.value != null),
   };
   return (

@@ -6,21 +6,21 @@ import { Board, BoardSkeleton, PriceDisclaimer } from "@/components/board";
 // /anfrage — the board is the product, so it gets the homepage.
 
 export const metadata: Metadata = {
-  title: "Aktuelle Reiseangebote",
+  title: "Current holiday offers",
   description:
-    "Kuratierte Pauschalreise-Angebote für deutsche Abflughäfen: Preis, Reisedauer, Abflughafen und Reisezeitraum — ohne Fluff.",
+    "Curated package holiday offers departing from German airports: price, trip length, departure airport and travel dates — no fluff.",
 };
 
 export default function Home() {
   return (
     <main className="mx-auto max-w-(--container-page) px-4 py-8">
       <h1 className="font-display text-2xl font-extrabold md:text-3xl">
-        Aktuelle Reiseangebote
+        Current holiday offers
       </h1>
       <p className="mt-2 max-w-[70ch] text-sm text-muted-foreground">
-        Ein Redakteur prüft jedes Angebot, bevor es hier erscheint: Preis beim
-        Anbieter verifiziert, Reisedaten realistisch, Abflughäfen in Deutschland.
-        Gefunden in öffentlichen Reise-Feeds — Buchung direkt beim Veranstalter.
+        An editor checks every offer before it appears here: price verified with
+        the supplier, travel dates realistic, departure airports in Germany.
+        Found in public travel feeds — you book directly with the tour operator.
       </p>
 
       <Suspense fallback={<BoardSkeleton />}>

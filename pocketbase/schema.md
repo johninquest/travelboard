@@ -1,4 +1,17 @@
-# Pocketbase schema — validation phase (V0 / deals board)
+# Pocketbase schema — DEFERRED
+
+> **Status: deferred, not in use.** The deals board no longer reads or writes
+> PocketBase. It reads committed JSON through `app/lib/store.ts`
+> (`app/data/listings.json`, `app/data/candidates.json`, `app/data/sources.json`),
+> so a fresh clone runs with no database and no credentials.
+>
+> PocketBase is now only relevant to the legacy `/anfrage` request funnel, and
+> only if `PB_URL` is set. Nothing below is required to run the board.
+>
+> **Revisit when** any of these becomes true: more than ~50 live listings, click
+> volume that a structured log can't carry, or a second person curating. At that
+> point `lib/store.ts` is the single swap point — the schema below is still the
+> intended shape, and `app/data/*.json` already uses it.
 
 Handoff spec for the **existing Pocketbase instance on the VPS**. Either create the
 collections by hand from this document, drop [`schema.pb.js`](./schema.pb.js) into the
