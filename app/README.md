@@ -1,4 +1,4 @@
-# sunwise. — travel deals board
+# travelboard — travel deals board
 
 A feed-first board of verified package-holiday offers for German departure airports.
 The board is the front door: `/` and `/deals` render the same server-rendered listings.
