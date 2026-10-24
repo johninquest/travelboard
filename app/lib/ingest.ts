@@ -1,25 +1,21 @@
-// Pocketbase upsert layer for the ingestion worker. Network and parsing live in
-// feed-fetch.ts / rss.ts / feed-extract.ts; this module only talks to the DB.
+// Ingestion worker for the deals board. Network and parsing live in
+// feed-fetch.ts / rss.ts / feed-extract.ts; this module turns feed items into
+// candidate drafts and decides which existing candidates have gone stale.
 //
 // Invariant the whole product rests on: a feed item is *discovery*, never an
-// advertised fact. New listings are created as needs_review/feed and are only
-// ever published to `live` by a human who verified the price on the source page.
-// This worker therefore NEVER creates or updates a row into `live`.
+// advertised fact. Drafts are written as needs_review/feed and are only ever
+// published to `live` by a human who verified the price on the source page.
+// This worker therefore NEVER produces a `live` row.
+//
+// It writes to data/candidates.json, not to the board. Promoting a candidate
+// means moving it into data/listings.json with status "live" and
+// confidence "verified" — a deliberate, reviewable commit.
 
-import type PocketBase from "pocketbase";
 import { fetchFeed } from "./feed-fetch.ts";
 import { parseFeed } from "./rss.ts";
 import { draftFromFeed, type DraftListing } from "./feed-extract.ts";
 import { isExpired } from "./listing.ts";
-
-export type SourceRecord = {
-  id: string;
-  slug: string;
-  name: string;
-  feed_url: string;
-  allowed: boolean;
-  max_age_days: number;
-};
+import type { SourceRecord } from "./store.ts";
 
 export type IngestStats = {
   source: string;
@@ -32,13 +28,6 @@ export type IngestStats = {
   notModified?: boolean;
   error?: string;
 };
-
-const GUID_FILTER = (guid: string) => `source_guid = "${escapeFilterValue(guid)}"`;
-const SLUG_FILTER = (slug: string) => `slug = "${escapeFilterValue(slug)}"`;
-
-function escapeFilterValue(s: string): string {
-  return s.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
-}
 
 // Fields we refresh when a feed item reappears. Never status/confidence —
 // those are the human's decision and a re-poll must not silently publish anything.
@@ -62,32 +51,6 @@ function refreshFields(draft: DraftListing): Partial<DraftListing> {
   };
 }
 
-async function upsertDraft(pb: PocketBase, sourceId: string, draft: DraftListing): Promise<"created" | "refreshed" | "unchanged"> {
-  const byGuid = await pb
-    .collection("travel_listings")
-    .getFirstListItem(GUID_FILTER(draft.source_guid), { requestKey: null })
-    .catch(() => null);
-  const bySlug =
-    !byGuid && draft.slug
-      ? await pb
-          .collection("travel_listings")
-          .getFirstListItem(SLUG_FILTER(draft.slug), { requestKey: null })
-          .catch(() => null)
-      : null;
-  const existing = byGuid ?? bySlug;
-
-  if (!existing) {
-    await pb.collection("travel_listings").create({ ...draft, source: sourceId });
-    return "created";
-  }
-
-  const changes = refreshFields(draft);
-  const dirty = Object.entries(changes).some(([k, v]) => !sameValue((existing as Record<string, unknown>)[k], v));
-  if (!dirty) return "unchanged";
-  await pb.collection("travel_listings").update(existing.id, changes);
-  return "refreshed";
-}
-
 function sameValue(a: unknown, b: unknown): boolean {
   if (a === b) return true;
   if (a == null && b == null) return true;
@@ -97,79 +60,111 @@ function sameValue(a: unknown, b: unknown): boolean {
   return String(a) === String(b);
 }
 
-// Drop live rows whose offer can no longer be advertised honestly (UWG Nr. 5/6).
-async function expireStale(pb: PocketBase, source: SourceRecord): Promise<number> {
-  const stale = await pb
-    .collection("travel_listings")
-    .getFullList({ filter: `source = "${source.id}" && status = "live"`, requestKey: null });
-  let count = 0;
-  for (const rec of stale) {
-    const l = {
-      travelWindow: (rec.travel_window as { start?: string; end?: string } | null) ?? null,
-      sourcePublishedAt: (rec.source_published_at as string | null) ?? null,
-    };
-    if (isExpired(l, source.max_age_days)) {
-      await pb.collection("travel_listings").update(rec.id, { status: "expired" });
-      count++;
-    }
-  }
-  return count;
-}
+export type IngestResult = {
+  stats: IngestStats;
+  // The full candidate set after the run: this source's refreshed drafts plus
+  // every other source's rows, untouched. The caller writes it back to
+  // data/candidates.json.
+  candidates: Record<string, unknown>[];
+};
 
-export async function ingestSource(pb: PocketBase, source: SourceRecord, now: Date = new Date()): Promise<IngestStats> {
-  if (!source.allowed) return { source: source.slug, skipped: "not_allowed" };
-  if (!source.feed_url) return { source: source.slug, skipped: "no_feed" };
+// Poll one source and merge its items into the candidate set. `existing` is the
+// current contents of data/candidates.json (all sources — we split it here).
+export async function ingestSource(
+  source: SourceRecord,
+  existing: Record<string, unknown>[],
+  now: Date = new Date()
+): Promise<IngestResult> {
+  const mine = existing.filter((c) => c["source"] === source.slug);
+  const others = existing.filter((c) => c["source"] !== source.slug);
+
+  if (!source.allowed) {
+    return { stats: { source: source.slug, skipped: "not_allowed" }, candidates: existing };
+  }
+  if (!source.feed_url) {
+    return { stats: { source: source.slug, skipped: "no_feed" }, candidates: existing };
+  }
 
   let res;
   try {
     res = await fetchFeed(source.feed_url);
   } catch (err) {
-    return { source: source.slug, skipped: null, error: err instanceof Error ? err.message : String(err) };
+    return {
+      stats: { source: source.slug, skipped: null, error: err instanceof Error ? err.message : String(err) },
+      candidates: existing,
+    };
   }
 
   if (res.status === 304) {
-    await pb.collection("travel_sources").update(source.id, { last_polled: now.toISOString() });
-    return { source: source.slug, skipped: null, notModified: true };
+    return { stats: { source: source.slug, skipped: null, notModified: true }, candidates: existing };
   }
-  if (res.status === 304 || (res.status < 200 || res.status >= 300) || !res.body) {
-    await pb.collection("travel_sources").update(source.id, { last_polled: now.toISOString() });
-    return { source: source.slug, skipped: null, error: `HTTP ${res.status}` };
+  if (res.status < 200 || res.status >= 300 || !res.body) {
+    return { stats: { source: source.slug, skipped: null, error: `HTTP ${res.status}` }, candidates: existing };
   }
 
   const feed = parseFeed(res.body);
+  const byGuid = new Map(mine.map((c) => [String(c["source_guid"] ?? ""), c]));
+  const bySlug = new Map(mine.map((c) => [String(c["slug"] ?? ""), c]));
+
   let created = 0;
   let refreshed = 0;
   let unchanged = 0;
+  const touched = new Set<Record<string, unknown>>();
+
   for (const item of feed.items) {
     if (!item.title) continue;
     const draft = draftFromFeed(item, now);
     if (!draft.source_guid) continue;
-    const outcome = await upsertDraft(pb, source.id, draft);
-    if (outcome === "created") created++;
-    else if (outcome === "refreshed") refreshed++;
-    else unchanged++;
+
+    const match = byGuid.get(draft.source_guid) ?? (draft.slug ? bySlug.get(draft.slug) : undefined);
+    if (!match) {
+      const rec: Record<string, unknown> = { ...draft, source: source.slug };
+      mine.push(rec);
+      byGuid.set(draft.source_guid, rec);
+      if (draft.slug) bySlug.set(draft.slug, rec);
+      touched.add(rec);
+      created++;
+      continue;
+    }
+
+    touched.add(match);
+    const changes = refreshFields(draft);
+    const dirty = Object.entries(changes).some(([k, v]) => !sameValue(match[k], v));
+    if (!dirty) {
+      unchanged++;
+      continue;
+    }
+    Object.assign(match, changes);
+    refreshed++;
   }
 
-  const expired = await expireStale(pb, source);
+  // Drop candidates whose offer can no longer be advertised honestly
+  // (UWG Anhang Nr. 5/6). Only untouched rows are eligible — a row we just
+  // refreshed is by definition still current.
+  let expired = 0;
+  const kept = mine.filter((c) => {
+    if (touched.has(c)) return true;
+    const l = {
+      travelWindow: (c["travel_window"] as { start?: string; end?: string } | null) ?? null,
+      sourcePublishedAt: (c["source_published_at"] as string | null) ?? null,
+    };
+    if (isExpired(l, source.max_age_days, now)) {
+      expired++;
+      return false;
+    }
+    return true;
+  });
 
-  await pb
-    .collection("travel_sources")
-    .update(source.id, {
-      last_polled: now.toISOString(),
-      ...(res.contentSignal ? { content_signal: res.contentSignal } : {}),
-    });
-
-  return { source: source.slug, skipped: null, fetched: feed.items.length, created, refreshed, unchanged, expired };
-}
-
-export async function loadFeedSources(pb: PocketBase): Promise<SourceRecord[]> {
-  const records = await pb.collection("travel_sources").getFullList({ filter: "kind = 'feed'", requestKey: null });
-  return records.map((r) => ({
-    id: r.id,
-    slug: r.slug,
-    name: r.name,
-    feed_url: r.feed_url,
-    allowed: r.allowed,
-    max_age_days: r.max_age_days || 14,
-  }));
+  return {
+    stats: {
+      source: source.slug,
+      skipped: null,
+      fetched: feed.items.length,
+      created,
+      refreshed,
+      unchanged,
+      expired,
+    },
+    candidates: [...others, ...kept],
+  };
 }

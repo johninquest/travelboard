@@ -7,11 +7,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: `${BRAND} — geprüfte Pauschalreise-Angebote`,
+    default: `${BRAND} — verified package holiday offers`,
     template: `%s · ${BRAND}`,
   },
   description:
-    "Kuratierte Pauschalreise-Angebote für deutsche Abflughäfen: Preis, Reisedauer, Abflughafen und Reisezeitraum — ohne Fluff.",
+    "Curated package holiday offers departing from German airports: price, trip length, departure airport and travel dates — no fluff.",
 };
 
 export default function RootLayout({
@@ -19,7 +19,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="de"
+      lang="en"
       className={`${inter.variable} ${cabinetGrotesk.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">

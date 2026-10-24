@@ -15,8 +15,9 @@ export async function POST(request: NextRequest) {
   try {
     token = await createRequest(parsed.data);
   } catch {
-    // Pocketbase not reachable/configured — V0 falls back to a pending page
-    // instead of losing the user's intent.
+    // Pocketbase configured but unreachable — V0 falls back to a pending page
+    // instead of losing the user's intent. (No PB_URL at all is not an error:
+    // createRequest returns "pending" and we land on the same page.)
     return NextResponse.redirect(
       new URL(`/r/pending?source=${parsed.data.source}`, request.url),
       303,

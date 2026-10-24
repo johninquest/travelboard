@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { connection } from "next/server";
-import { getLiveListings, type BoardFilter } from "@/lib/board";
+import { getLiveListings, type BoardFilter } from "@/lib/store";
 import { DealRow } from "@/components/deal-row";
 
 // The board itself. Rendered by both `/` (the front door) and `/deals` (the
@@ -26,10 +26,10 @@ export async function Board({ filter = {} }: { filter?: BoardFilter }) {
   if (listings.length === 0) {
     return (
       <div className="mt-6 rounded-(--radius-card) border border-border bg-surface-warm p-6 text-sm text-muted-foreground">
-        Noch keine live geschalteten Angebote. Der Feed-Worker importiert
-        Kandidaten zur redaktionellen Prüfung —{" "}
+        No live offers yet. The feed worker imports candidates for editorial
+        review —{" "}
         <Link href="/anfrage" className="text-primary underline">
-          Interesse an einem Ziel? Schreib uns
+          interested in a destination? Tell us
         </Link>
         .
       </div>
@@ -38,7 +38,7 @@ export async function Board({ filter = {} }: { filter?: BoardFilter }) {
 
   return (
     <>
-      <p className="mt-4 text-sm text-subtle">{listings.length} Angebote</p>
+      <p className="mt-4 text-sm text-subtle">{listings.length} offers</p>
       <div className="mt-2 border-t border-border">
         {listings.map((l) => (
           <DealRow key={l.id} listing={l} />
@@ -54,10 +54,10 @@ export function PriceDisclaimer() {
   return (
     <section className="mt-10 border-t border-border pt-6 text-xs text-subtle">
       <p>
-        Preise laut Anbieter, Stand der Prüfung siehe Angebot. Alle Preise pro
-        Person bzw. als Gesamtpreis wie beim Anbieter ausgewiesen; Zuschläge für
-        Gepäck, Transfers oder Touristenabgaben können hinzukommen. Angebote mit
-        Affiliate-Kennzeichnung sind als solche markiert.
+        Prices as stated by the supplier; the date we checked is shown on each
+        offer. All prices are per person or as a total, exactly as the supplier
+        states them; surcharges for luggage, transfers or tourist taxes may
+        apply. Offers carrying an affiliate label are marked as such.
       </p>
     </section>
   );
