@@ -1,1 +1,669 @@
-[]
+[
+    {
+        "id":  "sample-001",
+        "title":  "Sample: 7 nights Majorca",
+        "slug":  "sample-001",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Majorca",
+        "country":  "ES",
+        "departure_airport":  "MUC",
+        "nights":  7,
+        "travel_window":  {
+                              "start":  "2026-11-09",
+                              "end":  "2026-11-16",
+                              "label":  "9 Nov - 16 Nov 2026"
+                          },
+        "price_from_eur":  742,
+        "price_pp_eur":  371,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Hotel Playa",
+                              "category":  3,
+                              "board":  "breakfast"
+                          },
+        "included":  [
+                         "flight",
+                         "hotel",
+                         "breakfast",
+                         "transfer"
+                     ],
+        "excluded":  [
+                         "tourist tax",
+                         "checked luggage"
+                     ],
+        "themes":  [
+                       "beach",
+                       "family"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-001",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    },
+    {
+        "id":  "sample-002",
+        "title":  "Sample: 10 nights Crete",
+        "slug":  "sample-002",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Crete",
+        "country":  "GR",
+        "departure_airport":  "MUC",
+        "nights":  10,
+        "travel_window":  {
+                              "start":  "2026-11-16",
+                              "end":  "2026-11-26",
+                              "label":  "16 Nov - 26 Nov 2026"
+                          },
+        "price_from_eur":  1486,
+        "price_pp_eur":  743,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Resort Crete",
+                              "category":  4,
+                              "board":  "all inclusive"
+                          },
+        "included":  [
+                         "flight",
+                         "hotel",
+                         "all inclusive",
+                         "transfer"
+                     ],
+        "excluded":  [
+                         "tourist tax"
+                     ],
+        "themes":  [
+                       "beach",
+                       "all-inclusive",
+                       "romance"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-002",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    },
+    {
+        "id":  "sample-003",
+        "title":  "Sample: 7 nights Antalya",
+        "slug":  "sample-003",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Antalya",
+        "country":  "TR",
+        "departure_airport":  "NUE",
+        "nights":  7,
+        "travel_window":  {
+                              "start":  "2026-11-23",
+                              "end":  "2026-11-30",
+                              "label":  "23 Nov - 30 Nov 2026"
+                          },
+        "price_from_eur":  898,
+        "price_pp_eur":  449,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Beach Resort",
+                              "category":  5,
+                              "board":  "all inclusive"
+                          },
+        "included":  [
+                         "flight",
+                         "hotel",
+                         "all inclusive",
+                         "transfer"
+                     ],
+        "excluded":  [
+                         "tourist tax",
+                         "spa treatments"
+                     ],
+        "themes":  [
+                       "beach",
+                       "all-inclusive",
+                       "family"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-003",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    },
+    {
+        "id":  "sample-004",
+        "title":  "Sample: 5 nights Algarve",
+        "slug":  "sample-004",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Algarve",
+        "country":  "PT",
+        "departure_airport":  "STR",
+        "nights":  5,
+        "travel_window":  {
+                              "start":  "2026-12-07",
+                              "end":  "2026-12-12",
+                              "label":  "7 Dec - 12 Dec 2026"
+                          },
+        "price_from_eur":  534,
+        "price_pp_eur":  267,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Apartments Lagos",
+                              "category":  3,
+                              "board":  "self catering"
+                          },
+        "included":  [
+                         "flight",
+                         "apartment"
+                     ],
+        "excluded":  [
+                         "transfer",
+                         "tourist tax"
+                     ],
+        "themes":  [
+                       "beach",
+                       "romance"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-004",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    },
+    {
+        "id":  "sample-005",
+        "title":  "Sample: 4 nights Rome",
+        "slug":  "sample-005",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Rome",
+        "country":  "IT",
+        "departure_airport":  "FRA",
+        "nights":  4,
+        "travel_window":  {
+                              "start":  "2026-12-14",
+                              "end":  "2026-12-18",
+                              "label":  "14 Dec - 18 Dec 2026"
+                          },
+        "price_from_eur":  468,
+        "price_pp_eur":  234,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Hotel Centro",
+                              "category":  3,
+                              "board":  "breakfast"
+                          },
+        "included":  [
+                         "flight",
+                         "hotel",
+                         "breakfast"
+                     ],
+        "excluded":  [
+                         "city tax",
+                         "public transport"
+                     ],
+        "themes":  [
+                       "city",
+                       "romance"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-005",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    },
+    {
+        "id":  "sample-006",
+        "title":  "Sample: 7 nights Paphos",
+        "slug":  "sample-006",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Paphos",
+        "country":  "CY",
+        "departure_airport":  "MUC",
+        "nights":  7,
+        "travel_window":  {
+                              "start":  "2027-01-11",
+                              "end":  "2027-01-18",
+                              "label":  "11 Jan - 18 Jan 2027"
+                          },
+        "price_from_eur":  812,
+        "price_pp_eur":  406,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Bay Hotel",
+                              "category":  4,
+                              "board":  "half board"
+                          },
+        "included":  [
+                         "flight",
+                         "hotel",
+                         "half board",
+                         "transfer"
+                     ],
+        "excluded":  [
+                         "tourist tax"
+                     ],
+        "themes":  [
+                       "beach",
+                       "romance",
+                       "family"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-006",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    },
+    {
+        "id":  "sample-007",
+        "title":  "Sample: 6 nights Malta",
+        "slug":  "sample-007",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Malta",
+        "country":  "MT",
+        "departure_airport":  "STR",
+        "nights":  6,
+        "travel_window":  {
+                              "start":  "2026-12-21",
+                              "end":  "2026-12-27",
+                              "label":  "21 Dec - 27 Dec 2026"
+                          },
+        "price_from_eur":  596,
+        "price_pp_eur":  298,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Hotel Sliema",
+                              "category":  4,
+                              "board":  "breakfast"
+                          },
+        "included":  [
+                         "flight",
+                         "hotel",
+                         "breakfast"
+                     ],
+        "excluded":  [
+                         "transfer",
+                         "tourist tax"
+                     ],
+        "themes":  [
+                       "city",
+                       "beach"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-007",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    },
+    {
+        "id":  "sample-008",
+        "title":  "Sample: 9 nights Tenerife",
+        "slug":  "sample-008",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Tenerife",
+        "country":  "ES",
+        "departure_airport":  "NUE",
+        "nights":  9,
+        "travel_window":  {
+                              "start":  "2027-02-08",
+                              "end":  "2027-02-17",
+                              "label":  "8 Feb - 17 Feb 2027"
+                          },
+        "price_from_eur":  1134,
+        "price_pp_eur":  567,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Costa Adeje Resort",
+                              "category":  4,
+                              "board":  "all inclusive"
+                          },
+        "included":  [
+                         "flight",
+                         "hotel",
+                         "all inclusive",
+                         "transfer"
+                     ],
+        "excluded":  [
+                         "tourist tax"
+                     ],
+        "themes":  [
+                       "beach",
+                       "all-inclusive",
+                       "family"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-008",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    },
+    {
+        "id":  "sample-009",
+        "title":  "Sample: 8 nights Kos",
+        "slug":  "sample-009",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Kos",
+        "country":  "GR",
+        "departure_airport":  "FRA",
+        "nights":  8,
+        "travel_window":  {
+                              "start":  "2027-01-04",
+                              "end":  "2027-01-12",
+                              "label":  "4 Jan - 12 Jan 2027"
+                          },
+        "price_from_eur":  906,
+        "price_pp_eur":  453,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Kos Village",
+                              "category":  3,
+                              "board":  "half board"
+                          },
+        "included":  [
+                         "flight",
+                         "hotel",
+                         "half board"
+                     ],
+        "excluded":  [
+                         "transfer",
+                         "tourist tax"
+                     ],
+        "themes":  [
+                       "beach",
+                       "family"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-009",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    },
+    {
+        "id":  "sample-010",
+        "title":  "Sample: 5 nights Sardinia",
+        "slug":  "sample-010",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Sardinia",
+        "country":  "IT",
+        "departure_airport":  "MUC",
+        "nights":  5,
+        "travel_window":  {
+                              "start":  "2026-11-02",
+                              "end":  "2026-11-07",
+                              "label":  "2 Nov - 7 Nov 2026"
+                          },
+        "price_from_eur":  449,
+        "price_pp_eur":  225,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Costa Smeralda Rooms",
+                              "category":  3,
+                              "board":  "breakfast"
+                          },
+        "included":  [
+                         "flight",
+                         "hotel",
+                         "breakfast"
+                     ],
+        "excluded":  [
+                         "transfer",
+                         "city tax"
+                     ],
+        "themes":  [
+                       "beach",
+                       "last-minute",
+                       "romance"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-010",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    },
+    {
+        "id":  "sample-011",
+        "title":  "Sample: 10 nights Bodrum",
+        "slug":  "sample-011",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Bodrum",
+        "country":  "TR",
+        "departure_airport":  "STR",
+        "nights":  10,
+        "travel_window":  {
+                              "start":  "2027-01-25",
+                              "end":  "2027-02-04",
+                              "label":  "25 Jan - 4 Feb 2027"
+                          },
+        "price_from_eur":  1268,
+        "price_pp_eur":  634,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Aegean Resort",
+                              "category":  5,
+                              "board":  "all inclusive"
+                          },
+        "included":  [
+                         "flight",
+                         "hotel",
+                         "all inclusive",
+                         "transfer"
+                     ],
+        "excluded":  [
+                         "tourist tax",
+                         "watersports"
+                     ],
+        "themes":  [
+                       "beach",
+                       "all-inclusive",
+                       "romance"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-011",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    },
+    {
+        "id":  "sample-012",
+        "title":  "Sample: 4 nights Madeira",
+        "slug":  "sample-012",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Madeira",
+        "country":  "PT",
+        "departure_airport":  "FRA",
+        "nights":  4,
+        "travel_window":  {
+                              "start":  "2027-03-08",
+                              "end":  "2027-03-12",
+                              "label":  "8 Mar - 12 Mar 2027"
+                          },
+        "price_from_eur":  412,
+        "price_pp_eur":  206,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Funchal Guesthouse",
+                              "category":  3,
+                              "board":  "breakfast"
+                          },
+        "included":  [
+                         "flight",
+                         "hotel",
+                         "breakfast"
+                     ],
+        "excluded":  [
+                         "transfer",
+                         "car hire"
+                     ],
+        "themes":  [
+                       "city",
+                       "romance"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-012",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    },
+    {
+        "id":  "sample-013",
+        "title":  "Sample: 14 nights Costa Blanca",
+        "slug":  "sample-013",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Costa Blanca",
+        "country":  "ES",
+        "departure_airport":  "NUE",
+        "nights":  14,
+        "travel_window":  {
+                              "start":  "2027-02-15",
+                              "end":  "2027-03-01",
+                              "label":  "15 Feb - 1 Mar 2027"
+                          },
+        "price_from_eur":  1672,
+        "price_pp_eur":  836,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Long Stay Apartments",
+                              "category":  3,
+                              "board":  "self catering"
+                          },
+        "included":  [
+                         "flight",
+                         "apartment",
+                         "transfer"
+                     ],
+        "excluded":  [
+                         "tourist tax",
+                         "cleaning fee"
+                     ],
+        "themes":  [
+                       "beach",
+                       "family"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-013",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch. Deliberately 14 nights: outside the 4-10 night scope."
+    },
+    {
+        "id":  "sample-014",
+        "title":  "Sample: 7 nights Rhodes",
+        "slug":  "sample-014",
+        "summary":  "Placeholder offer for design review - not a real, checked price.",
+        "destination":  "Rhodes",
+        "country":  "GR",
+        "departure_airport":  "MUC",
+        "nights":  7,
+        "travel_window":  {
+                              "start":  "2027-02-01",
+                              "end":  "2027-02-08",
+                              "label":  "1 Feb - 8 Feb 2027"
+                          },
+        "price_from_eur":  1048,
+        "price_pp_eur":  524,
+        "currency":  "EUR",
+        "travellers":  2,
+        "accommodation":  {
+                              "name":  "Sample Lindos Bay Resort",
+                              "category":  4,
+                              "board":  "all inclusive"
+                          },
+        "included":  [
+                         "flight",
+                         "hotel",
+                         "all inclusive",
+                         "transfer"
+                     ],
+        "excluded":  [
+                         "tourist tax"
+                     ],
+        "themes":  [
+                       "beach",
+                       "all-inclusive",
+                       "family"
+                   ],
+        "source":  "sample",
+        "source_url":  "",
+        "source_guid":  "sample-014",
+        "source_published_at":  "2026-10-22T23:17:09Z",
+        "booking_url":  "",
+        "affiliate_network":  "none",
+        "status":  "live",
+        "confidence":  "manual",
+        "last_checked":  "2026-10-24T17:17:09Z",
+        "notes":  "SAMPLE DATA - delete before launch."
+    }
+]

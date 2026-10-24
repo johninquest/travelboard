@@ -22,5 +22,17 @@
     "allowed": true,
     "max_age_days": 14,
     "note": "UA=* allows /. The Disallow: / lines belong to named AI-bot blocks — never impersonate those bots. Verified 2026."
+  },
+  {
+    "slug": "sample",
+    "name": "Sample data",
+    "kind": "sample",
+    "feed_url": "",
+    "robots_url": "",
+    "content_signal": "",
+    "attribution_url": "",
+    "allowed": false,
+    "max_age_days": 365,
+    "note": "NOT A REAL SOURCE. Every offer in listings.json whose \"source\" is \"sample\" is placeholder data for design review and must be deleted before launch. kind is \"sample\", not \"feed\", so the ingest worker never polls it; allowed=false is a second guard. See app/data/README.md."
   }
 ]
