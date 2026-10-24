@@ -3,9 +3,8 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { pbPublic } from "@/lib/pb";
-import { recordToListing } from "@/lib/listings-read";
-import { findHub, hubFilter, type HubDef } from "@/lib/hubs";
+import { getHubListings } from "@/lib/store";
+import { findHub, type HubDef } from "@/lib/hubs";
 import { DealRow } from "@/components/deal-row";
 
 // A hub only exists when it has real data behind it. Below this many live
@@ -15,12 +14,7 @@ const MIN_OFFERS = 3;
 type Props = { params: Promise<{ slug: string }> };
 
 async function hubOffers(hub: HubDef) {
-  const pb = pbPublic();
-  const records = await pb
-    .collection("travel_listings")
-    .getFullList({ filter: hubFilter(hub), sort: "-source_published_at", expand: "source", requestKey: null })
-    .catch(() => []);
-  return records.map(recordToListing);
+  return getHubListings(hub).catch(() => []);
 }
 
 // Explicit answers for the "would ChatGPT have everything it needs" test.
@@ -34,7 +28,7 @@ function facts(l: Awaited<ReturnType<typeof hubOffers>>) {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Pauschalreisen" };
+  return { title: "Package holidays" };
 }
 
 export default async function HubPage({ params }: Props) {
@@ -42,7 +36,7 @@ export default async function HubPage({ params }: Props) {
     <main className="mx-auto max-w-(--container-page) px-4 py-8">
       <nav className="mb-6 text-sm">
         <Link href="/deals" className="text-muted-foreground hover:text-foreground">
-          ← Alle Angebote
+          ← All offers
         </Link>
       </nav>
       {/* params is runtime data under cacheComponents — read only inside Suspense */}
@@ -66,13 +60,13 @@ async function HubBody({ params }: { params: Props["params"] }) {
       <>
         <h1 className="font-display text-2xl font-extrabold">{hub.name}</h1>
         <p className="mt-3 max-w-[70ch] text-sm text-muted-foreground">
-          {hub.description} Aktuell haben wir für dieses Ziel nicht genug geprüfte
-          Angebote, um eine eigene Seite zu rechtfertigen. Der Bestand wächst mit
-          der redaktionellen Prüfung.
+          {hub.description} We do not currently have enough verified offers for
+          this destination to justify a page of its own. The selection grows as
+          editorial review continues.
         </p>
         <p className="mt-6 text-sm">
           <Link href="/deals" className="text-primary underline">
-            Alle aktuellen Angebote ansehen
+            See all current offers
           </Link>
         </p>
       </>
@@ -83,40 +77,40 @@ async function HubBody({ params }: { params: Props["params"] }) {
 
   return (
     <>
-      <h1 className="font-display text-3xl font-extrabold">Pauschalreisen {hub.name}</h1>
+      <h1 className="font-display text-3xl font-extrabold">Package holidays {hub.name}</h1>
       <p className="mt-2 max-w-[70ch] text-sm text-muted-foreground">{hub.description}</p>
 
       <section className="mt-8 rounded-card border border-border bg-surface p-6 shadow-card">
-        <h2 className="text-sm font-semibold">Schnellantworten</h2>
+        <h2 className="text-sm font-semibold">Quick answers</h2>
         <dl className="mt-3 grid gap-x-8 gap-y-1 text-sm sm:grid-cols-2">
           <div className="flex justify-between border-b border-border py-1.5">
-            <dt className="text-muted-foreground">Aktuelle Angebote</dt>
+            <dt className="text-muted-foreground">Current offers</dt>
             <dd className="tnum font-medium">{offers.length}</dd>
           </div>
           <div className="flex justify-between border-b border-border py-1.5">
-            <dt className="text-muted-foreground">Niedrigster Preis</dt>
+            <dt className="text-muted-foreground">Lowest price</dt>
             <dd className="tnum font-medium">
-              {prices.length ? `ab ${Math.min(...prices)} €` : "keiner ausgewiesen"}
+              {prices.length ? `from €${Math.min(...prices)}` : "none stated"}
             </dd>
           </div>
           <div className="flex justify-between border-b border-border py-1.5">
-            <dt className="text-muted-foreground">Reisedauer</dt>
+            <dt className="text-muted-foreground">Trip length</dt>
             <dd className="tnum font-medium">
-              {nights.length ? `${Math.min(...nights)}–${Math.max(...nights)} Nächte` : "unterschiedlich"}
+              {nights.length ? `${Math.min(...nights)}–${Math.max(...nights)} nights` : "varies"}
             </dd>
           </div>
           <div className="flex justify-between border-b border-border py-1.5">
-            <dt className="text-muted-foreground">Abflughäfen</dt>
-            <dd className="font-medium">{airports.length ? airports.join(", ") : "keiner angegeben"}</dd>
+            <dt className="text-muted-foreground">Departure airports</dt>
+            <dd className="font-medium">{airports.length ? airports.join(", ") : "none stated"}</dd>
           </div>
           <div className="flex justify-between border-b border-border py-1.5">
-            <dt className="text-muted-foreground">Verpflegung</dt>
-            <dd className="font-medium">{boards.length ? boards.join(", ") : "variiert"}</dd>
+            <dt className="text-muted-foreground">Board</dt>
+            <dd className="font-medium">{boards.length ? boards.join(", ") : "varies"}</dd>
           </div>
           <div className="flex justify-between border-b border-border py-1.5">
-            <dt className="text-muted-foreground">Geprüft am</dt>
+            <dt className="text-muted-foreground">Checked on</dt>
             <dd className="font-medium">
-              {offers[0]?.lastChecked ? new Date(offers[0].lastChecked).toLocaleDateString("de-DE") : "—"}
+              {offers[0]?.lastChecked ? new Date(offers[0].lastChecked).toLocaleDateString("en-GB") : "—"}
             </dd>
           </div>
         </dl>
@@ -130,9 +124,9 @@ async function HubBody({ params }: { params: Props["params"] }) {
 
       <section className="mt-12 border-t border-border pt-8 text-xs text-subtle">
         <p>
-          Preise laut Anbieter zum Prüfzeitpunkt, pro Person oder als Gesamtpreis wie
-          ausgewiesen; Gepäck, Transfers und Kurtaxe können hinzukommen. Ein Angebot
-          erscheint hier erst nach redaktioneller Prüfung.
+          Prices as stated by the supplier at the time we checked, per person or as
+          a total where stated; baggage, transfers and tourist tax may be added.
+          An offer only appears here after editorial review.
         </p>
       </section>
     </>

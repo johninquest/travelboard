@@ -69,7 +69,7 @@ function Fact({ label, value, sub }: { label: string; value: string; sub?: strin
 }
 
 function fmt(n: number) {
-  return `€${n.toLocaleString("de-DE")}`;
+  return `€${n.toLocaleString("en-GB")}`;
 }
 
 function km(m: number) {

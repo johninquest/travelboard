@@ -6,9 +6,9 @@ import { FindForm, BeatForm } from "@/components/forms";
 // took over `/`. Kept reachable and unchanged — the form API routes are untouched.
 
 export const metadata: Metadata = {
-  title: "Reise finden",
+  title: "Find a trip",
   description:
-    "Gib uns deine Vorgaben und wir prüfen, welche Reise sich lohnt — oder ob sich dein gefundenes Angebot unterbieten lässt.",
+    "Give us your constraints and we check which trip is worth booking — or whether the offer you found can be beaten.",
 };
 
 export default function AnfragePage() {

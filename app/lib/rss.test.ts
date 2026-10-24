@@ -118,7 +118,7 @@ describe("field extraction", () => {
   });
 
   it("resolves destinations to a country code", () => {
-    expect(destinationFrom("All Inclusive auf Kreta")).toEqual({ destination: "Kreta", country: "GR" });
+    expect(destinationFrom("All Inclusive auf Kreta")).toEqual({ destination: "Crete", country: "GR" });
     expect(destinationFrom("Strandurlaub in der Türkei")).toBeNull();
   });
 });
@@ -131,14 +131,14 @@ describe("draftFromFeed", () => {
 
     expect(draft.status).toBe("needs_review");
     expect(draft.confidence).toBe("feed");
-    expect(draft.slug).toMatch(/^kreta-.*-20260804$/);
+    expect(draft.slug).toMatch(/^crete-.*-20260804$/);
     expect(draft.price_from_eur).toBe(649);
     expect(draft.nights).toBe(7);
-    expect(draft.destination).toBe("Kreta");
+    expect(draft.destination).toBe("Crete");
     expect(draft.country).toBe("GR");
     expect(draft.departure_airport).toBe("MUC");
     expect(draft.travel_window).toEqual({ start: "2026-08-20", end: "2026-08-27", label: "20.08. – 27.08." });
-    expect(draft.summary).toBe("Kreta · 7 Nächte · all inclusive · ab €649");
+    expect(draft.summary).toBe("Crete · 7 nights · all inclusive · from €649");
     expect(draft.notes).toMatch(/unverified/i);
     // The fixture's €8364 entity arrives decoded through stripTags, so the price is found.
     expect(draft.booking_url).toBe("https://www.urlaubspiraten.de/deals/kreta-all-inclusive-august");
@@ -152,6 +152,6 @@ describe("draftFromFeed", () => {
     expect(draft.price_from_eur).toBeNull();
     expect(draft.nights).toBeNull();
     expect(draft.country).toBe("PT");
-    expect(draft.summary).toContain("Preis prüfen");
+    expect(draft.summary).toContain("check price");
   });
 });

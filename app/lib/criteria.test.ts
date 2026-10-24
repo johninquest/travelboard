@@ -44,8 +44,8 @@ describe("criteriaSchema", () => {
 });
 
 describe("trip formatting", () => {
-  it("formats EUR with de-DE grouping", () => {
-    expect(formatEur(1499)).toBe("€1.499");
+  it("formats EUR with en-GB grouping", () => {
+    expect(formatEur(1499)).toBe("€1,499");
   });
 
   it("price line shows total and per person", () => {
