@@ -41,6 +41,7 @@ export function recordToListing(rec: Record<string, unknown>): Listing {
     sourcePublishedAt: str(rec.source_published_at, null as unknown as string) || null,
     bookingUrl: "", // never client-visible; see lib/store.ts getClickTarget()
     affiliateNetwork: str(rec.affiliate_network, "none"),
+    affiliateProgram: str(rec.affiliate_program),
     status: (str(rec.status, "needs_review") as Listing["status"]) ?? "needs_review",
     confidence: (str(rec.confidence, "feed") as Listing["confidence"]) ?? "feed",
     lastChecked: str(rec.last_checked),

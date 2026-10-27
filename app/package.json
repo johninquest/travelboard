@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "ingest": "node --experimental-strip-types scripts/ingest.ts"
+    "ingest": "node --experimental-strip-types scripts/ingest.ts",
+    "publish": "node --experimental-strip-types scripts/publish.ts"
   },
   "dependencies": {
     "lucide-react": "^1.59.0",
