@@ -41,6 +41,7 @@ export type Listing = {
   sourcePublishedAt: string | null;
   bookingUrl: string; // never shipped to the client (PB view rule hides it from anon)
   affiliateNetwork: string;
+  affiliateProgram: string; // program key, e.g. "booking" | "kiwi" — resolved to an id at click time
   status: ListingStatus;
   confidence: ListingConfidence;
   lastChecked: string; // ISO — staleness must be visible
@@ -52,7 +53,7 @@ export type Listing = {
 export const LISTING_SELECT_VALUES = {
   status: ["live", "expired", "needs_review"],
   confidence: ["verified", "feed", "manual"],
-  affiliateNetwork: ["check24", "awin", "direct", "none"],
+  affiliateNetwork: ["travelpayouts", "check24", "awin", "direct", "none"],
   themes: ["beach", "all-inclusive", "city", "family", "romance", "last-minute", "ski", "cruise"],
 } as const;
 

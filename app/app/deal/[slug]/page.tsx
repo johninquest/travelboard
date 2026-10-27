@@ -77,7 +77,15 @@ async function DealBody({ params }: { params: Props["params"] }) {
         >
           Go to the offer at the supplier
         </a>
-        <p className="mt-2 text-[11px] text-subtle">
+        {/* Commercial-purpose disclosure. UWG § 5a Abs. 4 requires the commercial
+            purpose to be evident, and Anhang Nr. 11 requires an advertorial to be
+            unambiguously identifiable — so this sits directly under the button,
+            not in a footer. No exact wording is prescribed; the test is that a
+            reader cannot miss it. */}
+        <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-subtle">
+          Advertising · affiliate link
+        </p>
+        <p className="mt-1 text-[11px] text-subtle">
           You are redirected to the tour operator. {sourceName ? `Offer originally published at ${sourceName}` : "Source: supplier"}
           . We may receive a commission on referred bookings — this does not change the price.
         </p>

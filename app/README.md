@@ -23,6 +23,7 @@ npm run lint     # eslint
 npx tsc --noEmit # typecheck
 npm test         # vitest
 npm run ingest   # poll the feeds into data/candidates.json
+npm run publish  # publish a reviewed candidate to the board (see below)
 ```
 
 ## Setup prerequisites
@@ -39,12 +40,45 @@ A feed item is *discovery*, never a fact. The workflow is deliberately manual:
 1. `npm run ingest` polls the sources in `app/data/sources.json` and writes
    drafts to `app/data/candidates.json` as `needs_review`.
 2. Review them at `/admin` (read-only) and check the price on the source page.
-3. Move the entry into `app/data/listings.json` with `status: "live"`,
-   `confidence: "verified"` and a fresh `last_checked`, then commit.
+3. Publish it:
+
+   ```bash
+   npm run publish -- <candidate-id> --price 742 --program booking
+   ```
+
+   `--price` is **required** — the command refuses to publish a number nobody
+   verified. It also refuses an offer whose travel window has already ended, and
+   one with no destination. It moves the row into `app/data/listings.json` with
+   `status: "live"` and `confidence: "verified"`, then you commit both files.
+   Use `--dry-run` to see the row first.
 
 Only `live` rows are ever shown, and `lib/store.ts` re-checks `last_checked`
 against the source's `max_age_days` at read time, so a stale offer cannot linger
 even if nobody runs ingest.
+
+### Affiliate links
+
+The board stores the **raw** supplier URL and wraps it at click time, so the
+stored data stays honest and the marker can change without a data edit. The
+wrapper is a pure function ([`lib/affiliate.ts`](lib/affiliate.ts)) — no network
+call, no dashboard round-trip.
+
+Set these in `app/.env.local` to turn it on:
+
+```
+TRAVELPAYOUTS_MARKER=...   # your Partner ID
+TRAVELPAYOUTS_TRS=...      # your Project ID
+TRAVELPAYOUTS_PROGRAMS=... # optional, "booking:2076,kiwi:3791"
+```
+
+**With no environment variables the board still works** — the builder is a
+passthrough and clicks go straight to the supplier. Nothing breaks; you just
+earn nothing.
+
+The listing id doubles as the affiliate SubID, so the Travelpayouts report can
+answer *which offer earns*. Each click logs a `deal_click` line with `network`,
+`program` and an `affiliate` boolean, so a click that earns nothing is
+distinguishable from one that does.
 
 ### Optional: PocketBase
 
@@ -73,7 +107,7 @@ Layer 2  Normalized trip model   lib/listing.ts — the core asset
 Layer 3  Decision engine         human curation + lib/hubs.ts filters
 Layer 4  Public pages            /, /deals, /deal/<slug>, /holidays/<hub>
 Layer 5  Machine-readable        /api/holidays, /sitemap.xml
-Layer 6  Affiliate transaction   /api/deal-click/[id] -> booking_url
+Layer 6  Affiliate transaction   /api/deal-click/[id] -> affiliate-wrapped booking_url
 ```
 
 `lib/store.ts` is the only module that touches storage. Everything downstream

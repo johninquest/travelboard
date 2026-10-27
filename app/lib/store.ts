@@ -137,13 +137,24 @@ export async function getCandidates(): Promise<Listing[]> {
 
 // The outbound click target. booking_url is deliberately absent from the Listing
 // model (it must never reach the client), so the click route reads it here.
-export function getClickTarget(id: string): { bookingUrl: string; sourceUrl: string } | null {
+// The affiliate fields come along so the route can wrap the URL without a second
+// read of the store.
+export function getClickTarget(id: string): {
+  bookingUrl: string;
+  sourceUrl: string;
+  affiliateNetwork: string;
+  affiliateProgram: string;
+} | null {
   const rec = RAW_LISTINGS.find((r) => r["id"] === id);
   if (!rec) return null;
   const booking = rec["booking_url"];
   const source = rec["source_url"];
+  const network = rec["affiliate_network"];
+  const program = rec["affiliate_program"];
   return {
     bookingUrl: typeof booking === "string" ? booking : "",
     sourceUrl: typeof source === "string" ? source : "",
+    affiliateNetwork: typeof network === "string" ? network : "none",
+    affiliateProgram: typeof program === "string" ? program : "",
   };
 }
