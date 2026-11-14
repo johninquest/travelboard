@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { inter, cabinetGrotesk } from "@/lib/fonts";
 import { PageViewTracker } from "@/components/page-view-tracker";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { BRAND } from "@/lib/site";
+import { BRAND, RSS_ALTERNATE } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   },
   description:
     "Curated package holiday offers departing from German airports: price, trip length, departure airport and travel dates — no fluff.",
+    alternates: {
+      types: RSS_ALTERNATE,
+    },
 };
 
 export default function RootLayout({

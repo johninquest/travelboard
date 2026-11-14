@@ -12,7 +12,7 @@ travel-deals board**: a clean, dense, fluff-free listings board of verified pack
 monetised via affiliate links. The board is the front door (`/`), with `/deals` as the
 canonical board URL and `/anfrage` holding the older decision-product forms.
 
-### Commands (run from `app/`)
+### Commands (run from `app/`, or from the repo root as `npm --prefix app run <script>`)
 
 | Purpose | Command |
 | --- | --- |
@@ -22,6 +22,14 @@ canonical board URL and `/anfrage` holding the older decision-product forms.
 | Typecheck | `npx tsc --noEmit` |
 | Tests | `npm test` (vitest) |
 | Feed ingest | `npm run ingest` |
+
+### Deployment
+
+`app/` is a monorepo member, not the repo root: deploy it via a **base directory**
+(`netlify.toml` sets `base = "app"`; Vercel uses Root Directory; the `Dockerfile`
+copies `app/`). Do not "fix" the `cd app/` ergonomics by adding a root
+`package.json` — a second Node project makes host auto-detection pick the wrong
+root. Keep `engines.node` / `app/.nvmrc` / `NODE_VERSION` in step.
 
 ### Setup prerequisites
 
@@ -161,6 +169,15 @@ Conventions that follow from this:
 - **Use IndexNow** to notify participating engines of new/updated URLs, and **Bing Webmaster
   Tools** from day one for its AI Performance report (grounding queries, cited URLs,
   citation share).
+
+- `/blog` is for **decision-bound guides**, not articles. Every post declares a hub
+  (`lib/blog.ts`) and the page renders that hub's live verified offers beneath the
+  prose. A post with fewer than three live offers says so. Never put a price in
+  prose — prices come from the board, where they are dated and expire. Do not add
+  tag archives, related-post lists, pagination, search or a CMS until there are
+  enough posts to need them.
+- The market is German and the site is English. Language is an open product
+  decision — do not "fix" it in code without the ideation doc changing first.
 
 ## Content flywheel
 

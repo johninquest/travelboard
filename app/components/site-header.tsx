@@ -20,6 +20,9 @@ export function SiteHeader() {
           <Link href="/holidays/spain" className={link}>
             Destinations
           </Link>
+                    <Link href="/blog" className={link}>
+                      Guides
+                    </Link>
           <Link href="/anfrage" className={link}>
             Find a trip
           </Link>
@@ -41,6 +44,9 @@ export function SiteFooter() {
           <Link href="/deals" className="hover:text-foreground">
             Offers
           </Link>
+                    <Link href="/blog" className="hover:text-foreground">
+                      Guides
+                    </Link>
           <Link href="/anfrage" className="hover:text-foreground">
             Find a trip
           </Link>

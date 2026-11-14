@@ -5,5 +5,10 @@
 
 export const BRAND = "travelboard";
 
+// Declared in one place so the feed stays discoverable on every page: a
+// page-level `alternates` export replaces the layout's rather than merging, so
+// each page that sets alternates has to repeat this.
+export const RSS_ALTERNATE = { "application/rss+xml": "/blog/feed.xml" } as const;
+
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://travelboard.johnxlabs.de";

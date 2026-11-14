@@ -1,0 +1,11 @@
+# Keep the image small and keep secrets out of it.
+node_modules
+**/node_modules
+.next
+**/.next
+.git
+.github
+.env*
+**/.env*
+Dockerfile
+README.md

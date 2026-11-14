@@ -1,0 +1,16 @@
+# Netlify deploy settings for the Next.js site that lives in `app/`.
+#
+# The site is a monorepo member, not the repo root: `base` tells Netlify where to
+# install dependencies and build. Nothing else in the repo needs to move.
+#
+# The Next.js adapter is deliberately not pinned. Netlify provisions its OpenNext
+# adapter automatically and keeps it current; pinning it opts out of updates that
+# are needed to support new Next.js features (see docs.netlify.com Next.js guide).
+
+[build]
+  base = "app"
+  command = "npm run build"
+
+[build.environment]
+  # app/package.json requires >= 20.9.0; keep this in step with app/.nvmrc.
+  NODE_VERSION = "22"

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Board, BoardSkeleton, PriceDisclaimer } from "@/components/board";
+import { LatestGuides } from "@/components/latest-guides";
 
 // The front door IS the board. The V0 decision-product landing page moved to
 // /anfrage — the board is the product, so it gets the homepage.
@@ -28,6 +29,10 @@ export default function Home() {
       </Suspense>
 
       <PriceDisclaimer />
+
+            {/* Below the board on purpose: the offers are the product, the guides
+                explain how to read them. */}
+            <LatestGuides />
     </main>
   );
 }
