@@ -118,7 +118,7 @@ async function HubBody({ params }: { params: Props["params"] }) {
 
       <div className="mt-8 border-t border-border">
         {offers.map((l) => (
-          <DealRow key={l.id} listing={l} />
+          <DealRow key={l.id} listing={l} from={`hub_${hub.slug}`} />
         ))}
       </div>
 

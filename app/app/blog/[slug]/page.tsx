@@ -174,9 +174,20 @@ async function GroundedOffers({ hub, post }: { hub: HubDef; post: BlogPost }) {
           </p>
           <div className="mt-4 border-t border-border">
             {shown.map((l) => (
-              <DealRow key={l.id} listing={l} />
+              <DealRow key={l.id} listing={l} from={`blog_${post.slug}`} />
             ))}
           </div>
+          {/* Commercial-purpose disclosure, next to the links rather than in a page
+              footer — the same UWG § 5a Abs. 4 / Anhang Nr. 11 reasoning the deal
+              page follows. These rows lead to affiliate-wrapped outbound clicks
+              attributed to this article, so this is where a reader must be told. */}
+          <p className="mt-4 text-[11px] font-semibold uppercase tracking-wide text-subtle">
+            Advertising · affiliate link
+          </p>
+          <p className="mt-1 text-[11px] text-subtle">
+            Offers link to the tour operator. We may receive a commission on
+            referred bookings — this does not change the price.
+          </p>
         </>
       )}
     </section>

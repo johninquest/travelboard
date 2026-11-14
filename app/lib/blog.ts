@@ -12,6 +12,7 @@
 // farm the project explicitly decided not to build.
 
 import { ALL_HUBS } from "./hubs";
+import { requireNiche } from "./niche";
 import { SITE_URL, BRAND } from "./site";
 
 export type BlogPost = {
@@ -21,7 +22,20 @@ export type BlogPost = {
   publishedAt: string; // YYYY-MM-DD
   updatedAt?: string; // YYYY-MM-DD, only when the substance changed
   hub: string; // hub slug from lib/hubs — the decision the article is about
-    deals: readonly string[]; // listing slugs the article refers to (may be empty)
+  /**
+   * The audience niche this article tests, as a token from lib/niche. Required,
+   * because an article is the unit the 12-week test is measured in: without it an
+   * affiliate click from a post cannot be attributed to a niche, and the test
+   * cannot produce a verdict.
+   */
+  niche: string;
+  /**
+   * Short stable code used in the affiliate sub-ID. Lowercase alphanumeric only —
+   * NO underscore, since the sub-ID is underscore-delimited. Keep it short: the
+   * whole sub-ID is capped at 64 chars and the listing id has to fit inside it.
+   */
+  trackCode: string;
+  deals: readonly string[]; // listing slugs the article refers to (may be empty)
 };
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -40,6 +54,10 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
       "The five checks that separate a genuine price drop from a headline number that evaporates at checkout.",
     publishedAt: "2026-11-13",
     hub: "beach",
+    // Pre-dates the niche audit, so it sits in the general pool. Re-tag it once the
+    // audit in docs/niche-audits.md picks its niches.
+    niche: "general",
+    trackCode: "spotdeal",
     deals: [],
   },
   ] as const satisfies readonly BlogPost[];
@@ -52,12 +70,14 @@ export type PostSlug = (typeof POSTS)[number]["slug"];
 export type Post = BlogPost & { readonly slug: PostSlug };
 
 const HUB_SLUGS = new Set(ALL_HUBS.map((h) => h.slug));
+const TRACK_CODE = /^[a-z0-9]+$/;
 
 // Validate on import, for the same reason lib/store.ts does: a typo in this
 // table must fail the build, not silently produce a broken URL or a page whose
 // live-offer block always renders the "nothing to show" state.
 function validate<T extends BlogPost>(posts: readonly T[]): readonly T[] {
   const seen = new Set<string>();
+  const seenCodes = new Set<string>();
   for (const p of posts) {
     if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(p.slug)) {
       throw new Error(`blog: slug "${p.slug}" must be lowercase-hyphenated`);
@@ -75,6 +95,22 @@ function validate<T extends BlogPost>(posts: readonly T[]): readonly T[] {
         `blog: ${p.slug} names hub "${p.hub}", which is not in lib/hubs ALL_HUBS`
       );
     }
+    // Throws if the niche was never added to lib/niche. A post cannot be quietly
+    // counted as "general" — that would merge two niches' earnings into one row.
+    requireNiche(p.niche);
+    // Underscore is the sub-ID delimiter, so it must not appear in a component.
+    if (!TRACK_CODE.test(p.trackCode)) {
+      throw new Error(
+        `blog: ${p.slug} trackCode "${p.trackCode}" must be lowercase alphanumeric (no underscore, no hyphen)`
+      );
+    }
+    if (p.trackCode.length > 16) {
+      throw new Error(`blog: ${p.slug} trackCode "${p.trackCode}" must be 16 characters or fewer`);
+    }
+    if (seenCodes.has(p.trackCode)) {
+      throw new Error(`blog: duplicate trackCode "${p.trackCode}" — it would merge two articles in the report`);
+    }
+    seenCodes.add(p.trackCode);
   }
   return posts;
 }

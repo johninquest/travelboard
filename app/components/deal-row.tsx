@@ -1,9 +1,14 @@
 import type { Listing } from "@/lib/listing";
 import { eur } from "@/lib/listing";
+import { withFrom } from "@/lib/surface";
 
 // Dense list row for the board. The board is a listings board, not a card
 // gallery: one offer per row, facts on three tight lines, no marketing prose
 // (copyright guardrail — we never republish the supplier's wording).
+//
+// `from` names the surface the row was rendered on (see lib/surface) so the click
+// can be attributed to the niche and article that earned it. Omitted on the plain
+// board, where the origin is already the deal page itself.
 
 function metaLine(l: Listing): string {
   const bits: string[] = [];
@@ -22,7 +27,7 @@ function dateLine(l: Listing): string {
   return "Check the travel window with the supplier";
 }
 
-export function DealRow({ listing }: { listing: Listing }) {
+export function DealRow({ listing, from }: { listing: Listing; from?: string }) {
   const price = listing.priceFromEur;
   const source = listing.sourcePublishedAt
     ? new Date(listing.sourcePublishedAt).toLocaleDateString("en-GB")
@@ -31,7 +36,7 @@ export function DealRow({ listing }: { listing: Listing }) {
 
   return (
     <a
-      href={`/deal/${listing.slug}`}
+      href={withFrom(`/deal/${listing.slug}`, from)}
       className="group block border-b border-border px-1 py-3 transition-colors hover:bg-surface-warm"
     >
       <div className="flex items-baseline justify-between gap-4">

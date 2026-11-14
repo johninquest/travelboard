@@ -6,8 +6,9 @@ import { Suspense } from "react";
 import { getLiveListingBySlug } from "@/lib/store";
 import { priceStatement, eur, type Listing } from "@/lib/listing";
 import { SITE_URL } from "@/lib/site";
+import { fromParam, resolveOrigin, withFrom } from "@/lib/surface";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ from?: string }> };
 
 async function loadListing(slug: string) {
   return getLiveListingBySlug(slug);
@@ -22,11 +23,19 @@ function fact(label: string, value: React.ReactNode) {
   );
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Holiday offer" };
+// Canonical is the clean URL, deliberately without `?from=`. The parameter is an
+// attribution carrier, not a content variant: the page shows exactly the same offer
+// either way, so letting Google index `/deal/x?from=blog_y` would create duplicate
+// variants of every offer page and split whatever signal they earn.
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  return {
+    title: "Holiday offer",
+    alternates: { canonical: `${SITE_URL}/deal/${slug}` },
+  };
 }
 
-export default async function DealPage({ params }: Props) {
+export default async function DealPage({ params, searchParams }: Props) {
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
       <nav className="mb-6 text-sm">
@@ -37,14 +46,18 @@ export default async function DealPage({ params }: Props) {
       {/* params is runtime data under cacheComponents — it may only be read
           inside a Suspense boundary, so the whole body streams below it. */}
       <Suspense fallback={<div className="h-96 animate-pulse rounded-card border border-border bg-surface" />}>
-        <DealBody params={params} />
+        <DealBody params={params} searchParams={searchParams} />
       </Suspense>
     </main>
   );
 }
 
-async function DealBody({ params }: { params: Props["params"] }) {
+async function DealBody({ params, searchParams }: Props) {
   const { slug } = await params;
+  // `from` is the surface this visitor came from, resolved against lib/surface's
+  // allowlist. Unrecognised or absent values become `direct` and never reach the
+  // affiliate marker, so a hand-edited URL cannot invent attribution.
+  const origin = resolveOrigin((await searchParams).from);
   await connection(); // live board data — never prerendered (cacheComponents)
   const listing = await loadListing(slug);
   if (!listing) notFound();
@@ -55,6 +68,10 @@ async function DealBody({ params }: { params: Props["params"] }) {
   const published = l.sourcePublishedAt ? new Date(l.sourcePublishedAt).toLocaleDateString("en-GB") : "—";
   const sourceName = l.sourceName;
   const sourceUrl = l.sourceAttributionUrl;
+  // Carry the surface into the click route so the sub-ID can name the niche and
+  // the article. `fromParam`/`resolveOrigin` are the same pair, so a value emitted
+  // here is always one the route understands.
+  const clickHref = withFrom(`/api/deal-click/${l.id}`, fromParam(origin));
 
   return (
     <>
@@ -72,7 +89,7 @@ async function DealBody({ params }: { params: Props["params"] }) {
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{statement}</p>
 
         <a
-          href={`/api/deal-click/${l.id}`}
+          href={clickHref}
           className="mt-5 inline-block rounded-input bg-primary px-6 py-3 text-sm font-semibold text-white hover:bg-primary-hover"
         >
           Go to the offer at the supplier

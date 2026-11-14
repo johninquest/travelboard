@@ -3,6 +3,10 @@
 A feed-first board of verified package-holiday offers for German departure airports.
 The board is the front door: `/` and `/deals` render the same server-rendered listings.
 
+**The board is an instrument, not the product.** The current phase is a 12-week content
+test — see [`../docs/strategy.md`](../docs/strategy.md) for the plan and the keep/kill
+rules, and [`../docs/decision-log.md`](../docs/decision-log.md) before proposing changes.
+
 ## Routes
 
 | Route | What it is |
@@ -80,10 +84,47 @@ TRAVELPAYOUTS_PROGRAMS=... # optional, "booking:2076,kiwi:3791"
 passthrough and clicks go straight to the supplier. Nothing breaks; you just
 earn nothing.
 
-The listing id doubles as the affiliate SubID, so the Travelpayouts report can
-answer *which offer earns*. Each click logs a `deal_click` line with `network`,
-`program` and an `affiliate` boolean, so a click that earns nothing is
-distinguishable from one that does.
+#### Sub-ID: which niche and which article earned this
+
+Every outbound click carries a SubID composed as:
+
+```
+<niche>_<article>_<listing>
+```
+
+built by `composeSubId()` and attached as a **dot-suffix on the marker** (that is
+how Travelpayouts long links take a SubID; `&sub_id=` is only valid on `tp.st`
+short links). Together the three parts answer *which niche earns*, *which article
+earned it*, and *which offer* — the first two being what the 12-week content test
+in [`../docs/strategy.md`](../docs/strategy.md) is measured by.
+
+How a click gets those values:
+
+1. A surface renders an offer link with `?from=` — `board`, `hub_<slug>` or
+   `blog_<post-slug>` (`lib/surface.ts`'s `fromParam`, used by `Board`, the hub
+   page and `DealRow`).
+2. `/deal/<slug>` reads `from` and carries it into its CTA,
+   `/api/deal-click/<id>?from=...`. It is stripped from the canonical URL, so it
+   never creates an indexable duplicate of an offer page.
+3. The click route resolves `from` through `resolveOrigin()`, which matches it
+   against the hub and post registries. `niche` and `trackCode` come from the
+   post's own declaration in `lib/blog.ts`.
+
+**Unrecognised values become `direct` and contribute nothing to the marker.**
+`from` is attacker-controllable URL data that ends up inside an affiliate
+identifier; passing it through would let anyone mint report rows by sharing a
+crafted deal URL. The allowlist is the defence, and `lib/surface.test.ts` asserts
+it — including a hostile-value case and the full `from` → marker chain.
+
+Each click logs a `deal_click` line with `surface`, `ref`, `niche`, `article`,
+`network`, `program` and an `affiliate` boolean, so a click that earns nothing is
+distinguishable from one that does. The attribution fields are logged even when no
+marker is configured.
+
+Niche tokens live in [`lib/niche.ts`](lib/niche.ts) and are added only after the
+audit in [`../docs/niche-audits.md`](../docs/niche-audits.md) picks them — until
+then everything is `general`. A post that names an unknown niche or reuses another
+post's `trackCode` fails at import, not in production.
 
 ### Optional: PocketBase
 
@@ -188,6 +229,7 @@ Layer 3  Decision engine         human curation + lib/hubs.ts filters
 Layer 4  Public pages            /, /deals, /deal/<slug>, /holidays/<hub>, /blog
 Layer 5  Machine-readable        /api/holidays, /sitemap.xml
 Layer 6  Affiliate transaction   /api/deal-click/[id] -> affiliate-wrapped booking_url
+                                 sub-ID: <niche>_<article>_<listing>
 ```
 
 `lib/store.ts` is the only module that touches storage. Everything downstream

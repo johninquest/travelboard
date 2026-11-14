@@ -15,6 +15,9 @@
 //     parameter. `&sub_id=` is documented only for tp.st short links.
 //   - Kiwi.com cannot use tp.media/r at all, and Travelpayouts warns that a
 //     Kiwi link without a `deep` destination is not counted and earns nothing.
+//
+// The SubID format is `<niche>_<article>_<listing>` (see composeSubId) — the
+// attribution the content test in docs/strategy.md is measured by.
 
 export type AffiliateNetwork = "travelpayouts" | "direct" | "none";
 
@@ -45,6 +48,43 @@ export function sanitizeSubId(raw: string): string {
     .replace(/[^A-Za-z0-9_]+/g, "_")
     .replace(/^_+|_+$/g, "")
     .slice(0, SUB_ID_MAX);
+}
+
+// The sub-ID carries the attribution the 12-week test needs, as
+// `<niche>_<article>_<listing>`. Each part is already an allowlisted token
+// (lib/niche, lib/blog trackCode, the listing id), but they are sanitised here
+// anyway because this function is also reachable with a bare listing id from the
+// board, and a stray character would break the parse.
+//
+// The 64-char cap is kept by shortening the *listing* part, which is the longest and
+// the least lossy to shorten — niche and article are the two dimensions the report is
+// grouped by, so they must survive intact.
+export function composeSubId(input: {
+  niche?: string | null;
+  article?: string | null;
+  listingId: string;
+}): string {
+  const niche = sanitizePart(input.niche);
+  const article = sanitizePart(input.article);
+  const parts = [niche, article, sanitizePart(input.listingId)].filter(Boolean);
+  if (parts.length === 0) return "";
+
+  let listing = parts[parts.length - 1];
+  const prefix = parts.slice(0, -1).join("_");
+  const budget = SUB_ID_MAX - (prefix ? prefix.length + 1 : 0);
+  if (budget < 1) return prefix.slice(0, SUB_ID_MAX);
+  if (listing.length > budget) listing = listing.slice(0, budget);
+
+  return prefix ? `${prefix}_${listing}` : listing;
+}
+
+// Sanitize one component without applying the whole-string cap, and collapse the
+// underscores a component can never legitimately contain. A part that sanitizes to
+// nothing is dropped rather than left as an empty segment, so `general__listing-9`
+// never becomes `general_.listing-9`-style noise in the report.
+function sanitizePart(raw: string | null | undefined): string {
+  if (!raw) return "";
+  return raw.replace(/[^A-Za-z0-9_]+/g, "_").replace(/^_+|_+$/g, "").replace(/_+/g, "_");
 }
 
 // "booking:2076,kiwi:3791" -> { booking: "2076", kiwi: "3791" }

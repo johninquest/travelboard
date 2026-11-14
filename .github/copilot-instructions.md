@@ -1,18 +1,54 @@
-# Copilot Instructions — travel
+# Copilot Instructions — travelboard
 
-## Repository status
+## What this is
 
-The repo holds a working Next.js app in [`app/`](/app) plus a PocketBase schema in
-[`pocketbase/`](/pocketbase). [ideation_session.txt](/ideation_session.txt) remains the
-source of truth for product decisions — read it before writing code, and do not invent
-requirements that contradict it.
+A board of **verified package-holiday offers** for a deliberately narrow market, monetised by
+affiliate links. The board renders facts server-side; booking happens at the supplier.
 
-The product has since pivoted from the "decision product" framing below to a **feed-first
-travel-deals board**: a clean, dense, fluff-free listings board of verified package offers,
-monetised via affiliate links. The board is the front door (`/`), with `/deals` as the
-canonical board URL and `/anfrage` holding the older decision-product forms.
+The board is the front door (`/`), with `/deals` as the canonical board URL and `/anfrage`
+holding the older decision-product forms.
 
-### Commands (run from `app/`, or from the repo root as `npm --prefix app run <script>`)
+Read [`ideation_session.txt`](/ideation_session.txt) before changing product direction, and
+[`docs/strategy.md`](/docs/strategy.md) before adding features. The current phase is a
+**12-week content test**: the board is the instrument, the writing is the test. Do not
+over-build it.
+
+## Locked market (do not generalize)
+
+- **Departures:** Munich, Nuremberg, Stuttgart, Frankfurt
+- **Destinations:** Spain, Greece, Turkey, Portugal, Italy, Cyprus, Malta
+- **Trip length:** 4–10 nights · **Budget:** €400–€2,000 · prices in EUR, per person *and* total
+- **Travellers:** typically 2 adults
+
+Audience niches (mobility, dogs, solo 50+) are **lenses on this inventory, never second
+sites**. Niche claims live in article prose only — do not add `themes` values or PocketBase
+schema fields to label an offer pet- or accessibility-friendly; the board cannot verify that.
+
+## Hard rules
+
+- **A feed item is discovery, not a fact.** Nothing is `live` until a human verified the
+  price on the source page. Never present an estimate as a confirmed price.
+- **Never fabricate** prices, availability, ratings, or accessibility claims. Missing or
+  stale data must be stated as missing, on the page.
+- **No scraping.** Only sources listed in [`docs/data-sources.md`](/docs/data-sources.md).
+  Never impersonate named AI bots when polling feeds.
+- **No supplier prose or photos.** Listing summaries are our own wording.
+- **Every affiliate click is attributed** as `niche_article_listing` (see
+  [`app/lib/affiliate.ts`](/app/lib/affiliate.ts) and [`app/lib/surface.ts`](/app/lib/surface.ts)).
+  Unrecognised `?from=` values must degrade to `direct` and never reach the marker.
+- **Every page with affiliate links carries the disclosure** next to the CTA, not in a
+  footer (UWG §5a Abs. 4, Anhang Nr. 11).
+- **No price in prose.** Prices come from the board, where they are dated and expire.
+- **Only create an indexable page that has enough real data to justify existing** (≥3 live
+  offers). Thin pages answer nothing.
+- Prefer **3–5 recommendations** over long lists. The value is narrowing, not enumerating.
+- **≤30% of effort on dashboard code.** If a request adds machinery before a niche is kept,
+  say so before building it.
+- **Never start a local PocketBase instance** — the user manages PocketBase themselves.
+- AI features, agent frameworks, RAG, vector DBs, own booking engine, payments: out of scope
+  unless `docs/strategy.md` or the ideation doc changes first.
+
+## Commands (from `app/`, or `npm --prefix app run <script>` from root)
 
 | Purpose | Command |
 | --- | --- |
@@ -20,21 +56,21 @@ canonical board URL and `/anfrage` holding the older decision-product forms.
 | Build | `npm run build` |
 | Lint | `npm run lint` |
 | Typecheck | `npx tsc --noEmit` |
-| Tests | `npm test` (vitest) |
+| Tests | `npm test` (vitest — this is the enforcement gate; there is no CI) |
 | Feed ingest | `npm run ingest` |
+| Publish an offer | `npm run publish` |
 
-### Deployment
+## Deployment
 
-`app/` is a monorepo member, not the repo root: deploy it via a **base directory**
-(`netlify.toml` sets `base = "app"`; Vercel uses Root Directory; the `Dockerfile`
-copies `app/`). Do not "fix" the `cd app/` ergonomics by adding a root
-`package.json` — a second Node project makes host auto-detection pick the wrong
-root. Keep `engines.node` / `app/.nvmrc` / `NODE_VERSION` in step.
+`app/` is a monorepo member, not the repo root: deploy via a **base directory** (`netlify.toml`
+sets `base = "app"`; Vercel uses Root Directory; the `Dockerfile` copies `app/`). Do not "fix"
+the `cd app/` ergonomics by adding a root `package.json` — a second Node project makes host
+auto-detection pick the wrong root. Keep `engines.node` / `app/.nvmrc` / `NODE_VERSION` in step.
 
-### Setup prerequisites
+## Setup prerequisites
 
-The board renders an empty state until these are done — see
-[`app/README.md`](/app/README.md) for the full list:
+The board renders an empty state until these are done — full list in
+[`app/README.md`](/app/README.md):
 
 1. Import the extended PocketBase schema (`travel_sources`, `travel_listings`,
    `travel_clicks.listing`).
@@ -42,194 +78,28 @@ The board renders an empty state until these are done — see
 3. Set `PB_SUPERUSER_EMAIL` / `PB_SUPERUSER_PASSWORD` in `app/.env.local`.
 4. Run `npm run ingest`.
 
-**Never start a local PocketBase instance** — the user manages PocketBase themselves.
+PocketBase is **not** on the critical path: the board reads committed JSON through
+`app/lib/store.ts`. With no env vars at all the board renders and links out correctly — it
+just earns nothing.
 
-## Product thesis
+## Where the reasoning lives
 
-The product is **not** an AI travel agent and **not** a better travel aggregator. It is a
-travel *decision* product: the user supplies constraints, and the product returns a small
-number of complete trips it would actually book, each with an explicit justification.
+Not loaded every request — read the one that applies:
 
-The current implementation of that thesis is the **deals board**: rather than asking the
-user for constraints, it curates verified package offers and lets the user narrow by
-destination, airport, theme and month. The decision work happens in the curation and
-ranking, not in a form.
-
-- The differentiator is the **decision model** (ranking + explanation), not the AI.
-- Positioning: *"AI can help you explore. We help you decide."* Later: *"We verify the trip
-  before we recommend it."*
-- Travel is a bad domain for hallucination — a wrong price or impossible connection costs
-  the user real money. Never present unverified or estimated figures as confirmed facts.
-- AI is deliberately deferred. It becomes the *interface* (interpreting free-text
-  preferences) only after the workflow is proven valuable. The agent is the consequence of
-  a discovered workflow, not the hypothesis.
-
-## MVP wedge: "Can I beat this holiday?"
-
-The first thing to build is the **optimization** entry point, not the inspiration entry
-point. The user pastes an existing package-holiday offer (URL or screenshot) and the product
-returns cheaper/better alternatives with a stated saving.
-
-Rationale: the user has already decided to buy, so acquisition is far easier, and the
-backend only has to answer *"can I find a better combination than this?"* rather than
-*"what does every human want from a holiday?"*
-
-The inspiration entry point ("find me a holiday") is a secondary entry point on the same
-homepage. Build both, but treat the beat-this-deal flow as the primary funnel.
-
-## Constrained market (do not generalize)
-
-Scope is deliberately narrow so one person can attack it. Keep these bounds unless the
-ideation doc is updated:
-
-- **Departures:** Munich, Nuremberg, Stuttgart, Frankfurt (Germany)
-- **Destinations:** Spain, Greece, Turkey, Portugal, Italy, Cyprus, Malta
-- **Trip length:** 4–10 nights
-- **Budget:** €400–€2,000, prices in EUR, quoted **per person** and as a total
-- **Travellers:** typically 2 adults
-
-## Recommended stack
-
-From the ideation doc, if starting fresh:
-
-| Concern | Choice |
+| File | Contains |
 | --- | --- |
-| Frontend | Next.js (server-rendered — see answerability below) |
-| Database | Supabase / Postgres |
-| Flight & hotel discovery | Amadeus Self-Service APIs |
-| Affiliate / monetization layer | Travelpayouts |
-| Analytics | PostHog |
-| AI | None initially; OpenAI API later for preference interpretation only |
-| Payments | None — redirect to supplier for booking |
+| [`docs/strategy.md`](/docs/strategy.md) | The 12-week test, the 8 h/week split and 30% cap, timeline, **keep/kill/double-down rules**, what is deferred and its trigger |
+| [`docs/niche-audits.md`](/docs/niche-audits.md) | The four audit gates and per-niche findings. **This decides which niches are in the test** |
+| [`docs/data-sources.md`](/docs/data-sources.md) | Approved sources, licences, attribution requirements, what must not be used |
+| [`docs/decision-log.md`](/docs/decision-log.md) | Decisions with reasons, newest first. Read at session start; write the value-challenger log here at session end |
+| [`docs/product-principles.md`](/docs/product-principles.md) | The older thesis, layered architecture, answerability conventions, V0–V5 roadmap |
+| [`README.md`](/README.md) | Public-facing statement of what the board is and is not |
 
-## Data sources and their limits
+## Conventions
 
-- **Amadeus Self-Service** — flights, hotels, destinations, activities. Free test quota;
-  start here.
-- **Travelpayouts** — affiliate infrastructure across multiple brands; auto-connects
-  relevant programs. Use for the monetization layer, not inventory.
-- **Booking.com Demand API** — sandbox only until approved as a Managed Affiliate Partner.
-  Do not make it a dependency for the first experiment.
-- **Duffel** — good flight infrastructure, but sandbox prices are not real. Postpone.
-- **Viator** — tours/activities affiliate.
-
-Free-for-development is not free-for-production. Keep a supplier abstraction so a source can
-be swapped without rewriting the ranking layer.
-
-## Architecture: the layered model
-
-```
-Layer 1  Data          Amadeus / affiliate partners
-Layer 2  Normalized trip model   Trip, Destination, Dates, Price, Flight, Hotel,
-                                 Activities, Constraints, Scores, Last checked
-Layer 3  Decision engine         Which trips are actually good?
-Layer 4  Public pages            Human-readable + machine-readable
-Layer 5  Personalized interface  "Find me my trip."
-Layer 6  Affiliate transaction   Book -> commission
-```
-
-The normalized trip model (Layer 2) is the core asset. Everything downstream — ranking,
-pages, JSON endpoints, future agents — reads from it. Invest in getting it right rather than
-in adding suppliers.
-
-## Answerability over SEO
-
-The guiding principle: **optimize for answerability, not for search rankings.** For every
-page ask — *if ChatGPT had to answer a user's question using only this page, would it have
-everything it needs?* If yes, it is probably a good SEO page too.
-
-Conventions that follow from this:
-
-- **Server-render the facts.** Core information (price, nights, flight type, hotel rating)
-  must be in the initial HTML, never behind a click → spinner → API call. The interactive
-  app sits on top of crawlable HTML.
-- **Every page contains explicit answers.** Write "Direct flights from Munich: yes",
-  "Typical 7-night budget: €X–€Y", "Avoid if: you want very quiet beaches" — not
-  "Mallorca is a beautiful island with diverse attractions".
-- **Standardized "Trip Fact Sheet"** on every trip/destination page: Trip (destination,
-  departure, dates, duration, travellers), Cost (flight / hotel / transfer / estimated
-  total), Characteristics (beach, food, nightlife, family, romance — scored out of 10),
-  Logistics (direct flight, flight time, transfer time), Recommendation (best for,
-  confidence).
-- **URL architecture follows intent, not inventory:**
-  `/holidays/`, `/holidays/beach/`, `/holidays/under-1000/`, `/holidays/from-munich/`,
-  `/holidays/september/`, `/destinations/crete/`, `/compare/crete-vs-mallorca/`, `/deals/`,
-  and eventually combinations like `/holidays/from-munich/beach/under-1000/september/`.
-- **Only create an indexable page when it has enough real data to justify existing.** Start
-  with 50–200 genuinely useful pages; do not mass-generate near-identical pages.
-- **Schema.org structured data** where it accurately describes the content (Google has
-  travel-entity support including `VacationRental`). Structured data is not the strategy —
-  it makes already-useful content machine-legible.
-- **Expose a machine-readable layer** (JSON endpoints such as `/api/trips/...`) with fields
-  like `destination`, `departure`, `duration_nights`, `travel_month`, `price_total`,
-  `currency`, `direct_flight`, `hotel_rating`, `beach_distance_m`, `breakfast`,
-  `last_checked`. Build this only after there is evidence it is used.
-- **robots.txt must allow `OAI-SearchBot`** (search/citation). Treat `GPTBot` (training) as a
-  separate, independent decision.
-- **Use IndexNow** to notify participating engines of new/updated URLs, and **Bing Webmaster
-  Tools** from day one for its AI Performance report (grounding queries, cited URLs,
-  citation share).
-
-- `/blog` is for **decision-bound guides**, not articles. Every post declares a hub
-  (`lib/blog.ts`) and the page renders that hub's live verified offers beneath the
-  prose. A post with fewer than three live offers says so. Never put a price in
-  prose — prices come from the board, where they are dated and expire. Do not add
-  tag archives, related-post lists, pagination, search or a CMS until there are
-  enough posts to need them.
-- The market is German and the site is English. Language is an open product
-  decision — do not "fix" it in code without the ideation doc changing first.
-
-## Content flywheel
-
-Travel data → trip comparisons → useful pages → Google traffic + AI citations → user
-arrives → personalized search → affiliate click → booking → more travel data → better
-recommendations → more useful pages.
-
-Do **not** build an affiliate SEO farm (`/blog/best-beaches-in-mallorca` × 10,000). Build
-live decision pages around decisions instead.
-
-## Roadmap
-
-| Version | Scope | AI |
-| --- | --- | --- |
-| V0 | Human-fulfilled: form → manual search → recommendation → affiliate links | none |
-| V1 | Automate: form → APIs → database → simple ranking → result page | 0–10% |
-| V2 | AI interprets free-text preferences into structured criteria | interface only |
-| V3 | Agentic: shows elimination reasoning ("47 viable, 32 eliminated for bad flight times") | workflow |
-| V4 | Monitor the market for the user | — |
-| V5 | Book and manage on the user's behalf | — |
-
-## Explicitly out of scope for month one
-
-Do not build these unless the ideation doc changes: GPUs, vector databases, agent
-frameworks, sophisticated orchestration, huge datasets, scraping infrastructure, an own
-booking engine, payment infrastructure, multi-agent architecture, RAG, or an
-MCP-enabled "autonomous travel API".
-
-What is in scope: landing page, form, API calls, ranking, affiliate links.
-
-## Metrics that decide whether to continue
-
-Track the full funnel and compute **revenue per visitor** and **revenue per
-recommendation**:
-
-```
-visitors -> submit a request -> receive recommendations -> click an offer -> book -> revenue
-```
-
-Decision tree after ~30 days: nobody wants it → kill it; want it but don't click →
-recommendations aren't compelling; click but don't book → offers/pricing/trust/UX are wrong;
-book but revenue tiny → need higher-value categories or better monetization; users come back
-→ now build the agent.
-
-## Working conventions
-
-- Prices are EUR. Always show the total and the per-person figure, and state `last_checked`
-  so staleness is visible.
-- Every recommendation carries a justification (why this trip, why this one over the
-  alternative) and, where relevant, the budget headroom left over.
-- Prefer 3–5 recommendations over long lists. The product's value is narrowing choices, not
-  enumerating them.
-- Never fabricate prices, availability, or ratings. If data is missing or stale, say so.
-- Keep supplier integrations behind an abstraction so sources can be swapped or added
-  without touching the ranking layer.
+- The market is German and the site is English. Language is an open product decision — do not
+  "fix" it in code without the ideation doc changing first.
+- Prices: EUR, total *and* per person, always with `last_checked` so staleness is visible.
+- `/blog` posts are decision-bound guides: each declares a hub and renders that hub's live
+  offers. No tag archives, related posts, pagination, search or a CMS until needed.
+- Keep this file under ~100 lines. If it grows, move detail to `docs/` and point here.

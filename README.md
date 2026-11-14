@@ -41,6 +41,15 @@ not, no amount of machinery fixes it.
 So the goal right now is a small board with a real audience and an honest click-through, not
 a complete platform. Build the least that can be judged, then let the judging change it.
 
+The board is now also the **instrument for a 12-week content test**: audience niches
+(mobility, dogs, solo travel at 50+) are written as guides about the offers already on this
+board, and every affiliate click is attributed as `niche_article_listing` so "which niche
+earns" is answerable. The plan, the weekly hours budget and the keep/kill rules are in
+[docs/strategy.md](./docs/strategy.md); the reasoning behind each decision is in
+[docs/decision-log.md](./docs/decision-log.md). The cap that matters: no more than 30% of
+effort on dashboard code. Building the board is more fun than writing, and the writing is
+what produces the answer.
+
 ## What this is not
 
 - Not an AI travel planner. AI is the interface later, never the hypothesis now.
@@ -54,6 +63,7 @@ a complete platform. Build the least that can be judged, then let the judging ch
 | Path | What's there |
 | --- | --- |
 | [`app/`](./app) | The Next.js site â€” board, deal pages, hubs, guides, curation admin, ingest worker |
+| [`docs/`](./docs) | The live experiment: strategy and keep/kill rules, niche audits, approved data sources, decision log, and the older product principles |
 | [`pocketbase/`](./pocketbase) | Collections and schema for sources, listings and clicks |
 | [`ideation_session.txt`](./ideation_session.txt) | Source of truth for product decisions â€” read before changing direction |
 

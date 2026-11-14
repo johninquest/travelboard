@@ -41,7 +41,7 @@ export async function Board({ filter = {} }: { filter?: BoardFilter }) {
       <p className="mt-4 text-sm text-subtle">{listings.length} offers</p>
       <div className="mt-2 border-t border-border">
         {listings.map((l) => (
-          <DealRow key={l.id} listing={l} />
+          <DealRow key={l.id} listing={l} from="board" />
         ))}
       </div>
     </>

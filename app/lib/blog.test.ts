@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ALL_HUBS } from "./hubs";
+import { NICHE_CODES } from "./niche";
 import { allPosts, buildRssFeed, formatDate, getPost, postPath, postUrl } from "./blog";
 
 describe("blog registry", () => {
@@ -21,6 +22,19 @@ describe("blog registry", () => {
   it("never dates an update before its publication", () => {
     for (const post of allPosts()) {
       if (post.updatedAt) expect(post.updatedAt >= post.publishedAt).toBe(true);
+    }
+  });
+
+  it("declares a niche that exists in lib/niche and a usable track code", () => {
+    const codes = new Set<string>(NICHE_CODES);
+    const seen = new Set<string>();
+    for (const post of allPosts()) {
+      expect(codes.has(post.niche)).toBe(true);
+      // No underscore: it is the sub-ID delimiter.
+      expect(post.trackCode).toMatch(/^[a-z0-9]+$/);
+      expect(post.trackCode.length).toBeLessThanOrEqual(16);
+      expect(seen.has(post.trackCode)).toBe(false);
+      seen.add(post.trackCode);
     }
   });
 
@@ -59,6 +73,8 @@ describe("buildRssFeed", () => {
         summary: "Under 500 & over 1,000",
         publishedAt: "2026-02-01",
         hub: "beach",
+        niche: "general",
+        trackCode: "testcode",
         deals: [],
       },
     ]);

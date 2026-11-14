@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   buildAffiliateUrl,
+  composeSubId,
   readAffiliateConfig,
   sanitizeSubId,
   type AffiliateConfig,
@@ -86,6 +87,64 @@ describe("sanitizeSubId", () => {
 
   it("caps the length", () => {
     expect(sanitizeSubId("x".repeat(500)).length).toBe(64);
+  });
+});
+
+describe("composeSubId — niche_article_listing", () => {
+  it("joins all three parts in order", () => {
+    expect(composeSubId({ niche: "general", article: "spotdeal", listingId: "sample-001" })).toBe(
+      "general_spotdeal_sample_001"
+    );
+  });
+
+  it("drops empty parts instead of leaving empty segments", () => {
+    expect(composeSubId({ listingId: "sample-001" })).toBe("sample_001");
+    expect(composeSubId({ niche: "general", listingId: "sample-001" })).toBe("general_sample_001");
+    expect(composeSubId({ niche: "", article: "", listingId: "" })).toBe("");
+  });
+
+  it("collapses the characters that would break the delimiter", () => {
+    // A hyphen inside a listing id becomes an underscore, which the report reads as
+    // a component boundary. Accepted trade-off: the parts are still recoverable by
+    // position, and nothing attacker-controlled can reach here (lib/surface resolves
+    // `from` against the registries first).
+    expect(composeSubId({ niche: "general", article: "spotdeal", listingId: "a-b" })).toBe(
+      "general_spotdeal_a_b"
+    );
+  });
+
+  it("never exceeds the 64-char cap", () => {
+    const long = composeSubId({
+      niche: "general",
+      article: "spotdeal",
+      listingId: "x".repeat(300),
+    });
+    expect(long.length).toBeLessThanOrEqual(64);
+  });
+
+  it("shortens the listing, not the niche or the article, when over budget", () => {
+    // The report is grouped by niche and article, so those two must survive intact or
+    // earnings get merged into the wrong row.
+    const long = composeSubId({
+      niche: "general",
+      article: "spotdeal",
+      listingId: "l".repeat(100),
+    });
+    expect(long.startsWith("general_spotdeal_")).toBe(true);
+    expect(long.length).toBe(64);
+  });
+
+  it("is what actually lands in the marker suffix", () => {
+    const url = new URL(
+      buildAffiliateUrl({
+        network: "travelpayouts",
+        program: "booking",
+        destinationUrl: DEST,
+        subId: composeSubId({ niche: "general", article: "spotdeal", listingId: "sample-001" }),
+        config,
+      })
+    );
+    expect(url.searchParams.get("marker")).toBe("123456.general_spotdeal_sample_001");
   });
 });
 

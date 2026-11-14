@@ -1,15 +1,22 @@
 import { NextResponse } from "next/server";
 import { getClickTarget } from "@/lib/store";
-import { buildAffiliateUrl, readAffiliateConfig } from "@/lib/affiliate";
+import { buildAffiliateUrl, composeSubId, readAffiliateConfig } from "@/lib/affiliate";
+import { resolveOrigin } from "@/lib/surface";
 
-// GET /api/deal-click/<listingId> — logs the click, then redirects to the offer.
+// GET /api/deal-click/<listingId>?from=<surface> — logs the click, then redirects
+// to the offer.
 // The booking_url only ever exists server-side; the board links here, never to
 // the supplier directly, so the funnel has one honest measurement point.
 //
 // The affiliate wrapper is applied here rather than stored, so the raw supplier
 // URL stays the source of truth and the marker can change without a data edit.
-// The listing id doubles as the affiliate SubID, which is what makes "which
-// offer earns" answerable in the Travelpayouts report.
+//
+// The sub-ID is `<niche>_<article>_<listing>`, built from the listing id and the
+// `from` parameter resolved through lib/surface's allowlist. That is what makes
+// "which niche earns" and "which article earns" answerable in the Travelpayouts
+// report — the question the 12-week content test asks. An unrecognised or absent
+// `from` degrades to the general pool with no article, never to attacker-supplied
+// text.
 //
 // The click is recorded as a structured log line rather than a database write.
 // That is enough to count clicks and see which offers convert; when the volume
@@ -24,12 +31,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     return NextResponse.redirect(new URL("/deals", url));
   }
 
+  const origin = resolveOrigin(url.searchParams.get("from"));
   const destination = target.bookingUrl || target.sourceUrl;
   const outbound = buildAffiliateUrl({
     network: target.affiliateNetwork,
     program: target.affiliateProgram,
     destinationUrl: destination,
-    subId: id,
+    subId: composeSubId({ niche: origin.niche, article: origin.article, listingId: id }),
     config: readAffiliateConfig(),
   });
 
@@ -39,10 +47,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       listing: id,
       network: target.affiliateNetwork,
       program: target.affiliateProgram || null,
+      // Attribution dimensions, logged even when no marker is configured — the
+      // log is the only place they exist until the network is set up.
+      surface: origin.surface,
+      ref: origin.ref,
+      niche: origin.niche,
+      article: origin.article,
       // True only when the outbound URL actually carries our marker — a click
       // that earns nothing must be distinguishable from one that does.
       affiliate: outbound !== destination,
-      ref: request.headers.get("referer") ?? "deal_page",
       at: new Date().toISOString(),
     })
   );
