@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   devIndicators: false,
+  experimental: {
+    // Set by `next upgrade --agent=security` (16.4.2 → 16.4.6). Marks this app as
+    // having taken the security upgrade so the advisory gate does not re-fire.
+    agentUpgrade: "security",
+  },
   async redirects() {
     return hubRedirects;
   },
