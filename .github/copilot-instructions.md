@@ -3,9 +3,8 @@
 ## What this is
 
 A board of **verified package-holiday offers** for a deliberately narrow market, monetised by
-affiliate links. The board renders facts server-side; booking happens at the supplier.
-
-The board is the front door (`/`), with `/deals` as the canonical board URL and `/anfrage`
+affiliate links. The board renders facts server-side; booking happens at the supplier. The
+board is the front door (`/`), with `/deals` as the canonical board URL and `/anfrage`
 holding the older decision-product forms.
 
 Read [`ideation_session.txt`](/ideation_session.txt) before changing product direction, and
@@ -23,6 +22,10 @@ over-build it.
 Audience niches (mobility, dogs, solo 50+) are **lenses on this inventory, never second
 sites**. Niche claims live in article prose only — do not add `themes` values or PocketBase
 schema fields to label an offer pet- or accessibility-friendly; the board cannot verify that.
+
+**Seasonal lenses** (`offseason`, `timing`) are a second kind: a hub choice with a date
+attached, not a claim about who travels. Only audience tokens are evidence that a niche
+earns — `NICHE_KIND` in [`app/lib/niche.ts`](/app/lib/niche.ts) records which is which.
 
 ## Hard rules
 
@@ -70,13 +73,9 @@ auto-detection pick the wrong root. Keep `engines.node` / `app/.nvmrc` / `NODE_V
 ## Setup prerequisites
 
 The board renders an empty state until these are done — full list in
-[`app/README.md`](/app/README.md):
-
-1. Import the extended PocketBase schema (`travel_sources`, `travel_listings`,
-   `travel_clicks.listing`).
-2. Seed `travel_sources` rows.
-3. Set `PB_SUPERUSER_EMAIL` / `PB_SUPERUSER_PASSWORD` in `app/.env.local`.
-4. Run `npm run ingest`.
+[`app/README.md`](/app/README.md): import the extended PocketBase schema
+(`travel_sources`, `travel_listings`, `travel_clicks.listing`), seed `travel_sources`,
+set `PB_SUPERUSER_EMAIL` / `PB_SUPERUSER_PASSWORD` in `app/.env.local`, run `npm run ingest`.
 
 PocketBase is **not** on the critical path: the board reads committed JSON through
 `app/lib/store.ts`. With no env vars at all the board renders and links out correctly — it

@@ -92,10 +92,16 @@ function expand(rec: Record<string, unknown>): Record<string, unknown> {
 // passed, or whose source is older than its max_age_days, is not shown even if
 // nobody has run the ingest worker to mark it expired. UWG Anhang Nr. 5/6 puts
 // the burden of proof on us, so staleness is enforced at read time too.
+//
+// `allowed` is checked here as well as in the ingest worker. It was previously
+// only enforced when polling, which meant a listing whose source is explicitly
+// disallowed (the `sample` source, `allowed: false`) still rendered on the public
+// board as a checked price. A source we may not read is a source we may not show.
 function isShowable(l: Listing): boolean {
   if (l.status !== "live") return false;
-  const maxAge = SOURCES_BY_SLUG.get(l.sourceId)?.max_age_days ?? 14;
-  return !isExpired(l, maxAge);
+  const source = SOURCES_BY_SLUG.get(l.sourceId);
+  if (!source?.allowed) return false;
+  return !isExpired(l, source.max_age_days);
 }
 
 function allLive(): Listing[] {

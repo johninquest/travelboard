@@ -171,3 +171,60 @@ Reason (one paragraph, so future-you cannot reinterpret it):
 When three are picked: record them in [`decision-log.md`](decision-log.md), add their tokens
 to the `NICHE_CODES` map in [`../app/lib/niche.ts`](../app/lib/niche.ts), and name them in
 [`../.github/copilot-instructions.md`](../.github/copilot-instructions.md).
+
+---
+
+## Widening the pool: seasonal lenses (2026-11-19)
+
+The five candidates above are all **audience** niches. At three articles, that pool is too
+narrow to fill a publishing calendar — and it ignores the strongest lever a package-holiday
+board actually has: **timing**. A page about *when* to travel is grounded in the same
+inventory, needs no new verification loop, and answers a question the buyer is asking this
+week.
+
+So the pool gains a second kind of lens. The distinction is load-bearing and must not be
+blurred in the week-12 report:
+
+| Kind | Token | What it claims | What it measures |
+| --- | --- | --- | --- |
+| audience | `solo` | *who* is travelling | the 12-week test in [`strategy.md`](strategy.md) |
+| seasonal | `offseason` | *when* to travel | whether a timing page earns at all |
+| seasonal | `timing` | *when* to travel | whether a timing page earns at all |
+
+`NICHE_KIND` in [`../app/lib/niche.ts`](../app/lib/niche.ts) encodes this, and
+`lib/niche.test.ts` fails if a token is added without a kind. A seasonal token is **not**
+evidence that an audience niche earns — reading it as such is how a timing page gets
+mistaken for a niche verdict.
+
+### The widened candidate pool
+
+| # | Lens | Kind | Verdict | Reason |
+| --- | --- | --- | --- | --- |
+| 1 | Off-season Greece/Turkey reality check | seasonal | **pick** | Darkest stretch of the German year; the board's cheapest offers are exactly these; counter-intuitive and trust-building |
+| 2 | Single room / single supplement | audience | **pick** | Real, under-documented price problem; January is peak booking; winnable SERP |
+| 3 | Early Easter 2027 (28 March) | seasonal | **pick** | Easter is unusually early; booking peaks in Feb; a factual answer big sites do not give |
+| 4 | "Book summer now or wait?" | seasonal | hold | Highest volume, most contested SERP, and it is a format rather than a decision about a place |
+| 5 | All-inclusive vs half board, real cost | seasonal | hold | Strong generic money page, heavily contested, tests a format not an audience. Best candidate for page 4 |
+| 6 | Christmas-market city break, package vs DIY | seasonal | drop | Two-week useful life; a new domain cannot rank inside it |
+| 7 | February school holidays by Bundesland | seasonal | drop | Needs per-Bundesland data the board does not hold; high risk of being wrong |
+| 8 | Summer 2027 early booking (Frühbucher) | seasonal | hold | Cannot be answered honestly without price history |
+| 9 | Dog on a package holiday | audience | hold | Needs airline-policy research; few joinable programs |
+| 10 | Mobility / step-free | audience | hold | Highest harm if wrong; every claim needs a named source |
+| 11 | Dark sky | audience | drop | Weak market fit, already judged above |
+
+**No lived experience is recorded for any candidate** (confirmed 2026-11-19). The
+right-to-win gate therefore stays unproven for all of them, and every page must earn its
+authority from named sources rather than from the writer's own experience.
+
+### The three published first
+
+| Article | Hub | Token | Publish |
+| --- | --- | --- | --- |
+| `cheap-greek-winter-what-is-open` | `greece` | `offseason` | 10 Dec 2026 |
+| `single-room-cost-package-holiday` | `nuremberg` | `solo` | 7 Jan 2027 |
+| `easter-2027-where-it-is-warm` | `cyprus` | `timing` | 21 Jan 2027 |
+
+**The 5 Feb verdict is narrower than [`strategy.md`](strategy.md) assumes.** That plan
+measures two pages per niche; this is one page per lens, and the third gets roughly two
+weeks of data. 5 Feb therefore answers *"which lens deserves pages 4–6?"*, not *"which niche
+survives"*. Record that limitation in the decision log **before** reading the numbers.

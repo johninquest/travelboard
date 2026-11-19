@@ -1,10 +1,21 @@
-// Niche tokens used in affiliate sub-IDs.
+// Lens tokens used in affiliate sub-IDs.
 //
 // Deliberately tiny and deliberately not a guess at the audit outcome: the week-1
-// audit in docs/niche-audits.md decides which niches are in the test, and a token is
+// audit in docs/niche-audits.md decides which lenses are in the test, and a token is
 // added here only after it is chosen. Until then everything is `general`, which keeps
 // the sub-ID format stable (`niche_article_listing`) without encoding demand that has
 // not been audited.
+//
+// Two kinds of token live here, and the report must not confuse them:
+//
+//   audience  — `solo`. A claim about *who* is travelling. This is what the 12-week
+//               test in docs/strategy.md measures.
+//   seasonal  — `offseason`, `timing`. A claim about *when* to travel. A hub choice
+//               with a date attached, not an audience.
+//
+// Both are legitimate pages, but a seasonal token is not evidence that an audience
+// niche earns. Read the report with that distinction in hand — see the 2026-11-19
+// entry in docs/decision-log.md.
 //
 // A code must be a single lowercase word — NO underscore. The sub-ID is parsed as
 // "first token is the niche, second is the article, the remainder is the listing id",
@@ -12,7 +23,7 @@
 // `validateNicheCode` enforces that at import time, in the same style as lib/blog.ts:
 // a mistake fails the build rather than splitting the report.
 
-export const NICHE_CODES = ["general"] as const;
+export const NICHE_CODES = ["general", "solo", "offseason", "timing"] as const;
 
 export type NicheCode = (typeof NICHE_CODES)[number];
 
@@ -34,6 +45,18 @@ export function isNicheCode(value: unknown): value is NicheCode {
 
 /** The niche a click belongs to when nothing more specific is known. */
 export const DEFAULT_NICHE: NicheCode = "general";
+
+/**
+ * What kind of claim a token makes. `audience` tokens are what the 12-week test
+ * measures; `seasonal` tokens are timing lenses and must not be read as evidence
+ * that an audience niche earns.
+ */
+export const NICHE_KIND: Record<NicheCode, "audience" | "seasonal"> = {
+  general: "audience",
+  solo: "audience",
+  offseason: "seasonal",
+  timing: "seasonal",
+};
 
 /**
  * Resolve a declared niche to a valid token, or throw.

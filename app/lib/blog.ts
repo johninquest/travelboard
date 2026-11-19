@@ -48,14 +48,26 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
   // and a missing body in lib/blog-bodies.ts is a compile error.
   export const POSTS = [
   {
+    slug: "cheap-greek-winter-what-is-open",
+    title: "A cheap Greek winter package: what is actually open",
+    summary:
+      "A December week in Greece is cheap because the season is over. What that means for the hotel, the street outside it, and the price you are being quoted.",
+    publishedAt: "2026-12-10",
+    hub: "greece",
+    niche: "offseason",
+    trackCode: "grwinter",
+    deals: [],
+  },
+  {
     slug: "how-to-spot-a-good-package-deal",
     title: "How to tell a real package-holiday deal from a fake one",
     summary:
       "The five checks that separate a genuine price drop from a headline number that evaporates at checkout.",
     publishedAt: "2026-11-13",
     hub: "beach",
-    // Pre-dates the niche audit, so it sits in the general pool. Re-tag it once the
-    // audit in docs/niche-audits.md picks its niches.
+    // Stays `general` by decision (2026-11-19): it is a cross-cutting piece about
+    // reading a price, not a claim about who travels or when. Re-tagging it to a
+    // lens would attribute its clicks to a niche it does not test.
     niche: "general",
     trackCode: "spotdeal",
     deals: [],

@@ -9,6 +9,78 @@ Newest first. Do not edit old entries — add a new one that supersedes them.
 
 ---
 
+## 2026-11-19 — The first three articles, and widening the lens pool
+
+**Goal and who pays:** unchanged. Affiliate commission from package-holiday clicks; the board
+is the instrument, the writing is the test.
+
+**Evidence so far (numbers):** 1 guide published, 14 rows in `listings.json` — **all
+placeholders** (`affiliate_network: "none"`, notes "SAMPLE DATA - delete before launch"), 0
+verified supplier prices, 0 traffic, 0 clicks, 0 revenue. Unchanged from 2026-11-14 except
+that the placeholder status is now confirmed rather than assumed.
+
+**Decisions made and why:**
+
+1. **Three articles, not six, and they are an audition rather than the test.** The strategy
+   designs 6 pages (2 per niche) to produce a keep/kill verdict. Three pages cannot run that
+   design. So the first three test three *different lenses*, and 5 Feb decides which lens
+   gets pages 4–6. Stated plainly because a three-page result read as a six-page verdict is
+   how a niche gets killed for the wrong reason.
+2. **The lens pool is widened with seasonal lenses.** The five candidates were all audience
+   niches. Timing is the strongest lever a package-holiday board has: it reuses the same
+   inventory, needs no new verification loop, and answers a question the buyer is asking this
+   week. Added `offseason` and `timing` alongside `solo`.
+3. **Audience and seasonal tokens are kept distinguishable in code.** `NICHE_KIND` in
+   `lib/niche.ts` marks each token `audience` or `seasonal`, and `lib/niche.test.ts` fails if
+   a token is added without a kind. Without this, a timing page's clicks would be read as
+   evidence that an audience niche earns — the one inference the test must not make.
+4. **The three picks, and why each slot is where it is.** Greek winter (10 Dec) because
+   winter-sun intent peaks in the darkest weeks and the board's cheapest offers are exactly
+   those; single supplement (7 Jan) because German booking volume peaks Jan–Mar and single
+   rooms are the scarcest inventory; early Easter (21 Jan) because Easter 2027 falls on 28
+   March and booking peaks in February. Each publishes *before* its demand peak, not during.
+5. **Christmas-market and school-holiday pages were cut, not deferred.** Both have a useful
+   life shorter than a new domain's time-to-rank. A page that cannot rank inside its own
+   season is a page that never earns.
+6. **No lived experience in any candidate niche** (confirmed by the owner). The right-to-win
+   gate stays unproven for all of them, so every page must earn authority from named sources.
+   This is recorded because the audit doc says lived experience outranks every other gate —
+   it does not apply here, and future-you should not assume it was overlooked.
+7. **English stays.** The single-supplement query is strongest in German
+   ("Einzelzimmerzuschlag Pauschalreise"), so that page will lean on Pinterest and community
+   answers rather than Google. Accepted as a cost of not changing language mid-test.
+8. **Verdict date stays 5 Feb 2027**, accepting that the third article gets ~2 weeks of data.
+   The limitation goes in the log before the numbers are read.
+
+**Cut or deferred (with trigger):**
+
+| Deferred | Trigger |
+| --- | --- |
+| "Book summer now or wait?" | A lens is kept at 5 Feb — it is the highest-volume seasonal page and needs the authority a kept lens would give |
+| All-inclusive vs half board, real cost | Page 4, if the 5 Feb read favours seasonal lenses |
+| Summer 2027 early booking | Price history exists (two seasons of dated offers) |
+| Dog-friendly, mobility | A lens is kept **and** the airline/accessibility research is done with named sources |
+| Dark sky | Unchanged: weak market fit |
+
+**Unverified assumptions:**
+
+- That a seasonal lens can earn at all. It is the cheapest page to write and the least
+  proven — the 5 Feb read is the first evidence either way.
+- That Cyprus can carry ≥3 verified late-March offers by 20 Jan. It has 1 placeholder row
+  today; if curation fails, Article 3 falls back to the `greece` hub.
+- That the single-supplement page can state a supplement without stating a price. The plan is
+  a dated percentage range; if no supplier states one, the page must say so rather than
+  estimate.
+- Affiliate terms still unconfirmed in writing. Without a marker, every click earns nothing
+  and the test measures nothing.
+
+**Next action (one, with deadline and success metric):** replace the 14 placeholder rows with
+real, human-verified offers — at least 3 for the `greece` hub — by **9 Dec 2026**. Success
+metric: Article 1 renders a real selection instead of the "not enough verified offers"
+message, and no placeholder price is publicly visible.
+
+---
+
 ## 2026-11-14 — Integrating the ideation-session content plan
 
 **Goal and who pays:** earn affiliate commission from package-holiday clicks. The board is
