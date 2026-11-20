@@ -16,6 +16,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticUrls: MetadataRoute.Sitemap = [
     { url: `${SITE}/`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${SITE}/deals`, lastModified: now, changeFrequency: "hourly", priority: 1.0 },
+    // Month-scoped, so it changes on the first of every month. It carries no
+    // offers, which is why it is not gated by MIN_OFFERS below: its data is a
+    // sourced season matrix and a verified platform registry, not a thin offer
+    // list. See the 2026-11-20 entry in docs/decision-log.md.
+    { url: `${SITE}/where-to-look`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
   ];
 
     // Guides are hand-written and few, so every one is in the sitemap. The RSS

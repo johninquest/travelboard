@@ -1,0 +1,38 @@
+[
+  {
+    "country": "ES",
+    "name": "Spain",
+    "months": ["quiet", "quiet", "shoulder", "shoulder", "peak", "peak", "peak", "peak", "peak", "peak", "quiet", "quiet"],
+    "basis": "corridor",
+    "note": "The source names May-October as the important season for the Germany to Spain corridor, with beach holidays and city breaks as the typical demand.",
+    "source": "UN Tourism International Tourism Highlights 2025 / Eurostat, corridor overview",
+    "sourceUrl": "https://ec.europa.eu/eurostat/web/tourism"
+  },
+  {
+    "country": "TR",
+    "name": "Turkey",
+    "months": ["quiet", "quiet", "shoulder", "shoulder", "peak", "peak", "peak", "peak", "peak", "peak", "quiet", "quiet"],
+    "basis": "corridor",
+    "note": "The source names May-October as the important season for the Germany to Turkey corridor, with beach resorts and family holidays as the typical demand.",
+    "source": "UN Tourism International Tourism Highlights 2025 / Eurostat, corridor overview",
+    "sourceUrl": "https://ec.europa.eu/eurostat/web/tourism"
+  },
+  {
+    "country": "GR",
+    "name": "Greece",
+    "months": ["quiet", "quiet", "shoulder", "shoulder", "shoulder", "shoulder", "peak", "peak", "shoulder", "shoulder", "quiet", "quiet"],
+    "basis": "market",
+    "note": "The source lists Greece among the main destinations for German travellers but gives no separate corridor season, so this row uses the German outbound demand calendar instead.",
+    "source": "UN Tourism International Tourism Highlights 2025 / Eurostat, German outbound demand calendar",
+    "sourceUrl": "https://ec.europa.eu/eurostat/web/tourism"
+  },
+  {
+    "country": "IT",
+    "name": "Italy",
+    "months": ["quiet", "quiet", "shoulder", "shoulder", "shoulder", "shoulder", "peak", "peak", "shoulder", "shoulder", "quiet", "quiet"],
+    "basis": "market",
+    "note": "The source lists Italy among the main destinations for German travellers but gives no separate corridor season, so this row uses the German outbound demand calendar instead.",
+    "source": "UN Tourism International Tourism Highlights 2025 / Eurostat, German outbound demand calendar",
+    "sourceUrl": "https://ec.europa.eu/eurostat/web/tourism"
+  }
+]
