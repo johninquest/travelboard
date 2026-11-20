@@ -1,38 +1,31 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { Board, BoardSkeleton, PriceDisclaimer } from "@/components/board";
+import { WhereToLookBody, WhereToLookSkeleton } from "@/components/where-to-look";
 import { LatestGuides } from "@/components/latest-guides";
 
-// The front door IS the board. The V0 decision-product landing page moved to
-// /anfrage — the board is the product, so it gets the homepage.
+// The front door is the source guide, not the board. The board is 14 placeholder
+// rows with no verified prices; this page answers a question with data we actually
+// have (a sourced season matrix and a verified platform registry) and needs no
+// curation. The board stays at /deals, which is its canonical URL.
+//
+// /where-to-look renders the same body and canonicalises here.
 
 export const metadata: Metadata = {
-  title: "Current holiday offers",
+  title: "Where to look for a package holiday this month",
   description:
-    "Curated package holiday offers departing from German airports: price, trip length, departure airport and travel dates — no fluff.",
+    "Which of our destinations are in season right now, and which kind of booking site carries that inventory. No prices, no availability claims — business models only.",
 };
 
 export default function Home() {
   return (
     <main className="mx-auto max-w-(--container-page) px-4 py-8">
-      <h1 className="font-display text-2xl font-extrabold md:text-3xl">
-        Current holiday offers
-      </h1>
-      <p className="mt-2 max-w-[70ch] text-sm text-muted-foreground">
-        An editor checks every offer before it appears here: price verified with
-        the supplier, travel dates realistic, departure airports in Germany.
-        Found in public travel feeds — you book directly with the tour operator.
-      </p>
-
-      <Suspense fallback={<BoardSkeleton />}>
-        <Board />
+      <Suspense fallback={<WhereToLookSkeleton />}>
+        <WhereToLookBody />
       </Suspense>
 
-      <PriceDisclaimer />
-
-            {/* Below the board on purpose: the offers are the product, the guides
-                explain how to read them. */}
-            <LatestGuides />
+      {/* Below the guide on purpose: the writing is the test, so it stays visible
+          without a nav click. Renders nothing when there are no posts. */}
+      <LatestGuides />
     </main>
   );
 }

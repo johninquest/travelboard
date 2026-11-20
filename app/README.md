@@ -1,7 +1,7 @@
 # travelboard — travel deals board
 
 A feed-first board of verified package-holiday offers for German departure airports.
-The board is the front door: `/` and `/deals` render the same server-rendered listings.
+The front door is the source guide (`/`); the board lives at `/deals`.
 
 **The board is an instrument, not the product.** The current phase is a 12-week content
 test — see [`../docs/strategy.md`](../docs/strategy.md) for the plan and the keep/kill
@@ -11,8 +11,9 @@ rules, and [`../docs/decision-log.md`](../docs/decision-log.md) before proposing
 
 | Route | What it is |
 | --- | --- |
-| `/` | The board (front door) |
-| `/deals` | Canonical board URL — same board, in the sitemap |
+| `/` | Where to look this month (front door) — season × platform source guide |
+| `/where-to-look` | Same page, canonicalises to `/` |
+| `/deals` | The board — canonical board URL, in the sitemap |
 | `/deal/<slug>` | Offer fact sheet + affiliate CTA |
 | `/holidays/<hub>` | Destination/airport/theme/month hubs, gated at ≥3 live offers |
 | `/blog` | Guides — articles, each tied to a hub's live offers |

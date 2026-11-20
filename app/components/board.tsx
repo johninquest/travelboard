@@ -3,8 +3,8 @@ import { connection } from "next/server";
 import { getLiveListings, type BoardFilter } from "@/lib/store";
 import { DealRow } from "@/components/deal-row";
 
-// The board itself. Rendered by both `/` (the front door) and `/deals` (the
-// canonical board URL) so the two can never drift apart.
+// The board itself. Rendered by `/deals`, the canonical board URL. The front door
+// (`/`) is the source guide instead — see app/page.tsx.
 //
 // Server-rendered on purpose: the facts (price, nights, airport, dates) must be
 // in the initial HTML, never behind a click → spinner → API call.
@@ -28,10 +28,10 @@ export async function Board({ filter = {} }: { filter?: BoardFilter }) {
       <div className="mt-6 rounded-(--radius-card) border border-border bg-surface-warm p-6 text-sm text-muted-foreground">
         No live offers yet. The feed worker imports candidates for editorial
         review —{" "}
-        <Link href="/anfrage" className="text-primary underline">
-          interested in a destination? Tell us
-        </Link>
-        .
+        <Link href="/" className="text-primary underline">
+          see which destinations are in season this month
+        </Link>{" "}
+        in the meantime.
       </div>
     );
   }

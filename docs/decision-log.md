@@ -9,6 +9,49 @@ Newest first. Do not edit old entries — add a new one that supersedes them.
 
 ---
 
+## 2026-11-21 — `/where-to-look` becomes the front door, and the nav drops to two
+
+**Goal and who pays:** unchanged. Affiliate commission from package-holiday clicks.
+
+**Evidence so far (numbers):** unchanged from 2026-11-20 — 14 rows in `listings.json`,
+all placeholders, 0 verified supplier prices, 0 traffic, 0 clicks, 0 revenue.
+
+**What prompted this:** the board was the front door. A front door that shows 14
+placeholder rows with no verified price is the weakest possible first impression, and
+the one page that answers a question with data we actually hold — the season × platform
+guide — was one nav click away.
+
+**Decisions made and why:**
+
+1. **`/` renders the source guide; the board moves to `/deals` only.** The guide needs no
+   curation, so it can be the front door today. The board is still the instrument, just
+   not the shop window while it is empty.
+2. **`/where-to-look` stays a live URL and canonicalises to `/`.** A redirect would throw
+   away the URL the 2026-11-20 entry argued for; a duplicate without a canonical would
+   split the signal. Same body, one canonical.
+3. **The body is extracted to `components/where-to-look.tsx`.** Two pages rendering the
+   same content must not be able to drift — the same reason `Board` is shared.
+4. **The header drops to `Offers · Guides`.** *Where to look* is the home page, so the
+   logo covers it. *Destinations* pointed at `/holidays/spain`, a single country hub that
+   404s below three live offers — a nav item that promises a page we may not have.
+   *Find a trip* is the V0 decision funnel, superseded by the board.
+5. **Unlinked is not deleted.** `/anfrage`, `/holidays/*` and `/admin` all still resolve.
+   Removing a nav item is reversible in one line; deleting a route is not.
+6. **No board strip on the landing page.** The guide already links to `/deals` with the
+   live offer count. A second offer list is machinery before a niche is kept.
+7. **The sitemap drops `/where-to-look` and raises `/` to 1.0.** Listing a URL that
+   canonicalises elsewhere contradicts the canonical.
+
+**Cut or deferred (with trigger):**
+
+| Deferred | Trigger |
+| --- | --- |
+| Board back on the front door | ≥10 verified, non-placeholder offers |
+| `Destinations` back in the nav | A hub that clears the ≥3-offer gate for a month |
+| `/anfrage` relinked or deleted | A decision to run the form funnel again, or a decision to kill it |
+
+---
+
 ## 2026-11-20 — A season × platform page, and why the niche focus is paused
 
 **Goal and who pays:** unchanged. Affiliate commission from package-holiday clicks. Nobody

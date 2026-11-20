@@ -14,13 +14,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const staticUrls: MetadataRoute.Sitemap = [
-    { url: `${SITE}/`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
-    { url: `${SITE}/deals`, lastModified: now, changeFrequency: "hourly", priority: 1.0 },
-    // Month-scoped, so it changes on the first of every month. It carries no
-    // offers, which is why it is not gated by MIN_OFFERS below: its data is a
-    // sourced season matrix and a verified platform registry, not a thin offer
-    // list. See the 2026-11-20 entry in docs/decision-log.md.
-    { url: `${SITE}/where-to-look`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    // The front door is the source guide. Month-scoped, so it changes on the first
+    // of every month. It carries no offers, which is why it is not gated by
+    // MIN_OFFERS below: its data is a sourced season matrix and a verified platform
+    // registry, not a thin offer list. See the 2026-11-20 entry in
+    // docs/decision-log.md.
+    { url: `${SITE}/`, lastModified: now, changeFrequency: "monthly", priority: 1.0 },
+    { url: `${SITE}/deals`, lastModified: now, changeFrequency: "hourly", priority: 0.9 },
+    // /where-to-look renders the same body and canonicalises to `/`, so it is not
+    // listed here — a sitemap entry would contradict its own canonical.
   ];
 
     // Guides are hand-written and few, so every one is in the sitemap. The RSS

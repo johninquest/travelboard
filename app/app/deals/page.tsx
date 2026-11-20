@@ -1,9 +1,10 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Board, BoardSkeleton, PriceDisclaimer } from "@/components/board";
 
-// Canonical board URL. `/` renders the same board (see app/page.tsx) — this
-// route stays because it is in the sitemap and linked from the hubs.
+// Canonical board URL. The front door (`/`) is the source guide — see
+// app/page.tsx — so this is where the offers live and where every hub links back to.
 
 export const metadata: Metadata = {
   title: "Current holiday offers",
@@ -28,6 +29,14 @@ export default function DealsPage() {
       </Suspense>
 
       <PriceDisclaimer />
+
+      <p className="mt-6 text-sm text-muted-foreground">
+        Not sure where to start?{" "}
+        <Link href="/" className="text-primary underline">
+          See which destinations are in season this month
+        </Link>
+        .
+      </p>
     </main>
   );
 }

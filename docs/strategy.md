@@ -16,7 +16,8 @@ We are finding which audience earns an affiliate commission, not building a bett
 
 The niche pages need research the owner does not have — airline pet policy, accessibility
 audits, single-supplement data — and produced 1 article in 6 weeks. A season × platform page
-needs none of it. So the next page is [`/where-to-look`](../app/app/where-to-look/page.tsx):
+needs none of it. So the next page is [`/where-to-look`](../app/app/where-to-look/page.tsx),
+now the front door (`/` renders the same body):
 which destinations are in season this month, and which *kind* of source carries that
 inventory.
 

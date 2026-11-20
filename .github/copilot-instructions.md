@@ -4,12 +4,13 @@
 
 A board of **verified package-holiday offers** for a deliberately narrow market, monetised by
 affiliate links. The board renders facts server-side; booking happens at the supplier. The
-board is the front door (`/`), with `/deals` as the canonical board URL and `/anfrage`
-holding the older decision-product forms.
+front door (`/`) is the source guide; the board lives at `/deals`, and `/anfrage` holds the
+older decision-product forms (unlinked, still live).
 
 `/where-to-look` is a **source guide, not an offer page**: which destinations are in season
 this month, and which kind of booking site carries that inventory. No prices, no availability
-claims — business-model facts and sourced season bands only.
+claims — business-model facts and sourced season bands only. It renders the same body as `/`
+and canonicalises there.
 
 Read [`ideation_session.txt`](/ideation_session.txt) before changing product direction, and
 [`docs/strategy.md`](/docs/strategy.md) before adding features. The current phase is a

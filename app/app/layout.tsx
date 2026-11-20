@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { inter, cabinetGrotesk } from "@/lib/fonts";
+import { GoogleAnalytics } from "@/components/google-analytics";
 import { PageViewTracker } from "@/components/page-view-tracker";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { BRAND, RSS_ALTERNATE } from "@/lib/site";
@@ -7,11 +8,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: `${BRAND} — verified package holiday offers`,
+    default: `${BRAND} — where to look for a package holiday`,
     template: `%s · ${BRAND}`,
   },
   description:
-    "Curated package holiday offers departing from German airports: price, trip length, departure airport and travel dates — no fluff.",
+    "Which destinations are in season this month, and which kind of booking site carries that inventory — plus verified package offers from German airports.",
     alternates: {
       types: RSS_ALTERNATE,
     },
@@ -30,6 +31,7 @@ export default function RootLayout({
         {children}
         <SiteFooter />
         <PageViewTracker />
+        <GoogleAnalytics />
       </body>
     </html>
   );

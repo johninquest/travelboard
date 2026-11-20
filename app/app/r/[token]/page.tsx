@@ -61,7 +61,7 @@ export default async function ResultPage({
           start a new search.
         </p>
         <Link
-          href="/"
+          href="/anfrage"
           className="inline-block mt-6 rounded-(--radius-input) bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
         >
           Find me a trip
