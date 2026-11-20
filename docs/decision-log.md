@@ -52,6 +52,81 @@ guide — was one nav click away.
 
 ---
 
+## 2026-11-21 — GA4 added, cookieless, and still not the source of truth
+
+**Goal and who pays:** unchanged. Affiliate commission from package-holiday clicks.
+
+**Evidence so far (numbers):** 0 traffic, 0 clicks, 0 revenue, 14 placeholder listings,
+2 guides + 1 source page. Unchanged from 2026-11-20. The next action from that session
+(drive traffic to `/where-to-look` by 4 Dec) is still open and is still the bottleneck.
+
+**What was asked:** Google Analytics, "simple minimal".
+
+**What I argued first.** The project already has analytics: `lib/track.ts` sends
+`page_view` / `card_view` / `deal_click` / `form_submit` to `travel_events`, and
+`/api/deal-click` logs the outbound click with `niche`, `article` and `listing`. That
+answers every keep/kill question with attribution GA structurally cannot see, because
+GA strips the sub-ID. GA also sets `_ga` cookies, which in the German market means a
+consent banner — so "simple minimal GA" was not on offer. Verdict given: **Cut down** —
+keep the beacon and make it countable without PocketBase instead.
+
+**Decision: the owner chose GA4 anyway, with no consent banner.** Recorded because it is
+his call and the reason matters later. Two constraints were accepted knowingly:
+
+- **There is no cookie banner, and no privacy or Impressum page.** For a German-market
+  `.de` site, GA4 with cookies and no opt-in is the configuration German DPAs and
+  Abmahnverbände target. I could not verify the current statutory text from this
+  environment (search engines blocked the lookup), so this is a widely-held DPA
+  position, not advice from a source read today. **This is the open risk of the change.**
+- **Two sources of truth exist now.** Mitigated structurally rather than by promise.
+
+**How the risk was reduced without a banner — the part worth keeping in mind:**
+
+1. **GA is cookieless by default.** `NEXT_PUBLIC_GA_MEASUREMENT_ID` off means Google
+   appears nowhere in the HTML (build-verified both ways). On, the consent default is
+   `analytics_storage: "denied"`, so GA4 falls back to cookieless measurement and sets
+   no `_ga` cookie — nothing to consent to. Counts still arrive, which is all the test
+   needs. `NEXT_PUBLIC_GA_CONSENT=granted` flips it, and is only correct once a banner
+   exists.
+2. **One call site, not two.** Both sinks live in `send()` in `lib/track.ts`, so the
+   funnel and GA cannot drift. `send_page_view: false` in the tag: page views come from
+   `trackPageView()` with `page_path`, because App Router navigations do not reload the
+   document — GA's automatic page view would miss client-side navigation and
+   double-count the rest.
+3. **PocketBase stays the source of truth.** It carries `session_id`, which is what
+   makes `page_view` → `deal_click` joinable, and it survives ad-blockers that block
+   Google entirely. GA will under-count by roughly the ad-block share. Do not reconcile
+   the numbers and do not let a GA discrepancy overturn a funnel read.
+4. **Ad storage, personalisation and functionality storage are denied unconditionally.**
+   The board earns from affiliate links, not from Google audiences. Nothing here justifies
+   building an ad audience.
+
+**Cut or deferred (with trigger):**
+
+| Deferred | Trigger |
+| --- | --- |
+| Consent banner + privacy/Impressum page, and cookie mode | Before `NEXT_PUBLIC_GA_CONSENT=granted`. Also needed for launch regardless of analytics |
+| GA4 funnels / custom reports | A kept niche. Reading `travel_events` is enough until then |
+| Removing the first-party beacon in favour of GA | Never, unless the beacon is proven redundant by real numbers |
+
+**Unverified assumptions:**
+
+- That cookieless GA4 keeps working without a banner. It is the current documented
+  Google behaviour and it is what `analytics_storage: "denied"` triggers, but Google
+  can change it and this project has no traffic to notice with.
+- That the legal exposure is acceptable at zero traffic. Probably true in practice —
+  there is nothing to Abmah when nobody visits. It stops being true the moment the
+  4 Dec push works.
+- Whether the 5 Feb verdict should read GA or `travel_events`. Stated above as
+  `travel_events`; if PocketBase is not running in production, GA is the only count
+  available, and that needs deciding before the numbers matter.
+
+**Next action (one, with deadline and success metric):** unchanged and now more urgent —
+drive traffic to `/where-to-look` by **4 Dec 2026**. Success metric: at least one logged
+outbound platform click. Setting GA up measures the test; it does not produce traffic.
+
+---
+
 ## 2026-11-20 — A season × platform page, and why the niche focus is paused
 
 **Goal and who pays:** unchanged. Affiliate commission from package-holiday clicks. Nobody

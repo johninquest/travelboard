@@ -127,6 +127,38 @@ audit in [`../docs/niche-audits.md`](../docs/niche-audits.md) picks them — unt
 then everything is `general`. A post that names an unknown niche or reuses another
 post's `trackCode` fails at import, not in production.
 
+### Optional: Google Analytics
+
+Off unless you set a Measurement ID. With no ID there is no Google script in the
+HTML at all — verified by building with and without the variable.
+
+```
+NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
+```
+
+GA is a **convenience dashboard over the same events** the first-party funnel already
+collects. `lib/track.ts` is the single call site: every event goes to
+`POST /api/track` *and* to `gtag`, so the two cannot drift. **PocketBase is the source
+of truth** for the keep/kill read — it carries `session_id`, which lets you join
+`page_view` → `deal_click`, and it survives ad-blockers that block Google outright.
+Expect GA to under-count by the ad-block share; do not reconcile the two numbers, and
+do not let a GA discrepancy change a decision the funnel already answers.
+
+**It is cookieless by default.** `NEXT_PUBLIC_GA_CONSENT` is unset, which makes the
+consent default `analytics_storage: "denied"`: GA4 falls back to cookieless
+measurement and sets no `_ga` cookie. Page and event counts still arrive. Ad storage,
+personalisation and functionality storage are denied unconditionally — this board earns
+from affiliate links, not from Google audiences.
+
+Set `NEXT_PUBLIC_GA_CONSENT=granted` only once a consent banner exists. There is
+**no banner in this project**, and there is no privacy or Impressum page either; that
+gap is recorded in [`../docs/decision-log.md`](../docs/decision-log.md) and is the
+outstanding risk of running GA at all.
+
+`send_page_view: false` is deliberate — page views are emitted by `trackPageView()`
+with `page_path`, because App Router navigations do not reload the document and GA's
+automatic page view would double-count client-side navigation while missing it.
+
 ### Optional: PocketBase
 
 PocketBase is **not** on the critical path. It is only used by the legacy
