@@ -7,6 +7,10 @@ affiliate links. The board renders facts server-side; booking happens at the sup
 board is the front door (`/`), with `/deals` as the canonical board URL and `/anfrage`
 holding the older decision-product forms.
 
+`/where-to-look` is a **source guide, not an offer page**: which destinations are in season
+this month, and which kind of booking site carries that inventory. No prices, no availability
+claims — business-model facts and sourced season bands only.
+
 Read [`ideation_session.txt`](/ideation_session.txt) before changing product direction, and
 [`docs/strategy.md`](/docs/strategy.md) before adding features. The current phase is a
 **12-week content test**: the board is the instrument, the writing is the test. Do not

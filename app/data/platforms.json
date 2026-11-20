@@ -1,0 +1,72 @@
+[
+  {
+    "slug": "tui",
+    "name": "TUI",
+    "url": "https://www.tui.com/",
+    "kind": "tour-operator",
+    "sells": "Its own package holidays: flight, hotel and transfer booked as one product.",
+    "limitation": "Only its own inventory. It cannot show you a competitor's price for the same hotel.",
+    "countries": [],
+    "lastVerified": "2026-11-20"
+  },
+  {
+    "slug": "schauinsland",
+    "name": "schauinsland-reisen",
+    "url": "https://www.schauinsland-reisen.de/",
+    "kind": "tour-operator",
+    "sells": "Its own package holidays, including early-booking (Fruehbucher) prices for the following summer.",
+    "limitation": "Only its own inventory, and its range is narrower than the large operators.",
+    "countries": [],
+    "lastVerified": "2026-11-20"
+  },
+  {
+    "slug": "alltours",
+    "name": "alltours",
+    "url": "https://www.alltours.de/",
+    "kind": "tour-operator",
+    "sells": "Its own package holidays, with a strong Spain and Balearics programme.",
+    "limitation": "Only its own inventory. Hotel choice is limited to what it contracts.",
+    "countries": [],
+    "lastVerified": "2026-11-20"
+  },
+  {
+    "slug": "check24",
+    "name": "Check24 Reisen",
+    "url": "https://urlaub.check24.de/",
+    "kind": "comparison",
+    "sells": "A comparison of package holidays from many tour operators in one search.",
+    "limitation": "It compares what its partner operators feed it, so a small operator may be missing entirely.",
+    "countries": [],
+    "lastVerified": "2026-11-20"
+  },
+  {
+    "slug": "urlaubspiraten",
+    "name": "Urlaubspiraten",
+    "url": "https://www.urlaubspiraten.de/",
+    "kind": "deal-feed",
+    "sells": "Editorially picked travel deals, each linking out to the operator or booking site that sells it.",
+    "limitation": "A deal feed, not a search. You cannot ask it for a specific destination and date.",
+    "countries": [],
+    "lastVerified": "2026-11-20"
+  },
+  {
+    "slug": "booking",
+    "name": "Booking.com",
+    "url": "https://www.booking.com/",
+    "kind": "accommodation",
+    "sells": "Accommodation only: hotels, apartments and guesthouses, booked per room.",
+    "limitation": "No flight and no transfer. A package holiday has to be assembled from separate bookings.",
+    "countries": [],
+    "lastVerified": "2026-11-20"
+  },
+  {
+    "slug": "kiwi",
+    "name": "Kiwi.com",
+    "url": "https://www.kiwi.com/",
+    "kind": "flight",
+    "sells": "Flights only, including combinations of airlines that do not normally sell together.",
+    "limitation": "No hotel and no transfer. Self-transfer itineraries carry their own risk if a leg is delayed.",
+    "countries": [],
+    "lastVerified": "2026-11-20"
+  }
+]

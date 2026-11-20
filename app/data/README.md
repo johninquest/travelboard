@@ -8,6 +8,31 @@ reads them, so swapping the storage backend means changing that one file.
 | `listings.json` | The offers the board renders. |
 | `sources.json` | Where offers come from, and how long each source's offers stay fresh. |
 | `candidates.json` | Output of `npm run ingest`. **Not** rendered — a staging area for review. |
+| `season.json` | Season bands per destination, for `/where-to-look`. Every row names a source. |
+| `platforms.json` | What each booking platform sells, for `/where-to-look`. Business-model facts only. |
+
+## `season.json` and `platforms.json`
+
+These two files back [`/where-to-look`](../app/app/where-to-look/page.tsx), which is a
+**source guide, not an offer page**. They are validated at import by
+[`../lib/season.ts`](../lib/season.ts) and [`../lib/platforms.ts`](../lib/platforms.ts), so a
+typo fails the build rather than rendering a wrong claim.
+
+**`season.json`** — one row per destination, `months` is exactly 12 entries (January first),
+each `peak | shoulder | quiet | closed`. Every row needs a `source` and `sourceUrl`; a
+destination with no named source does not go in the file at all, and the page reports it as
+unsourced instead. `basis` is `corridor` when the source states a season for that specific
+origin→destination pair, and `market` when it only states the origin market's calendar — the
+page renders the weaker claim as weaker.
+
+Portugal, Cyprus and Malta are **absent on purpose**: the research the matrix was seeded from
+does not cover them. Do not add a row without a named source.
+
+**`platforms.json`** — `sells` and `limitation` are statements about a company's **business
+model**, which is stable and checkable on its own site. They are **not** availability claims.
+"TUI sells its own package inventory" is a fact. "TUI has Crete in November" is not, and must
+never be written here. `lastVerified` is the date the business model was read off the
+company's site and renders next to each platform.
 
 ## Sample data (delete before launch)
 

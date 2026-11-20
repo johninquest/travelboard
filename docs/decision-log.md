@@ -9,6 +9,99 @@ Newest first. Do not edit old entries — add a new one that supersedes them.
 
 ---
 
+## 2026-11-20 — A season × platform page, and why the niche focus is paused
+
+**Goal and who pays:** unchanged. Affiliate commission from package-holiday clicks. Nobody
+pays for the board itself.
+
+**Evidence so far (numbers):** 1 guide published, 14 rows in `listings.json` — **all
+placeholders** (`affiliate_network: "none"`, notes "SAMPLE DATA - delete before launch"), 0
+verified supplier prices, 0 traffic, 0 clicks, 0 revenue. Unchanged from 2026-11-19.
+
+**What prompted this:** the owner brought a macro market-sizing document (UN Tourism 2025,
+Eurostat) and proposed walking away from the niche focus to build around it.
+
+**What the document actually says, and what it does not.** It confirms the locked market
+rather than replacing it: Germany is the #3 outbound spender ($120.3bn, 2024) with 114M+
+international trips/year; Germans travel to Spain, Italy, Austria, Turkey, Greece, Croatia —
+five of which the board already covers (Austria is drive-to, correctly excluded); German
+demand peaks Jul–Aug with shoulders May–Jun and Sep–Oct. Its one genuinely new idea is that
+the useful commercial unit is a **corridor × month**, not a country.
+
+It contains **no query data, no platform data, no price data and no affiliate data.** It
+therefore cannot support a "which platform has what" page on its own. That page needed a
+different source: what each platform actually sells.
+
+**Decisions made and why:**
+
+1. **The niche focus is paused, not killed.** The niche pages need research the owner does
+   not have (airline pet policy, accessibility audits, single-supplement data) and have
+   produced 1 article in 6 weeks. A corridor/season page needs none of it. The reason to
+   reorder is **cost per page**, not market size — the document did not change the
+   bottleneck, it changed the shape of the pages worth writing once the bottleneck clears.
+2. **The new page is a source guide, not an offer page.** `/where-to-look` answers which
+   destinations are in season this month and which *kind* of source carries that inventory.
+   It needs zero verified offers, which is the whole point: the owner has no time to curate
+   right now, and a page that waits for curation ships never.
+3. **It makes no availability claim and shows no price.** "TUI sells its own package
+   inventory" is a business-model fact, checkable on TUI's own site. "TUI has Crete in
+   November" is an unverified claim about stock. The word "probably" does not make the
+   second one safe. Every platform row carries `sells`, `limitation` and `lastVerified`, and
+   the page states the distinction in prose above the content rather than in a footer.
+4. **Season rows carry a `basis` field: `corridor` or `market`.** The source states a season
+   for Germany→Spain and Germany→Turkey specifically, but only lists Greece and Italy among
+   German destinations without a separate season. Rendering both as the same claim would
+   overstate the weaker one, so the page says which is which.
+5. **Portugal, Cyprus and Malta are absent from the matrix, deliberately.** The research
+   does not cover them. The page names them under "We cannot answer for these yet" so the
+   gap is visible instead of silent. Inventing a season for them would be the exact failure
+   the project's hardest rule exists to prevent.
+6. **Platform links are plain, not affiliate-wrapped.** The owner's choice, and the right
+   one: this is a pure demand test. Which platform do people actually leave for? That tells
+   you where to spend verification effort — the real bottleneck. Wrapping them would
+   confound the signal with commission differences.
+7. **The platform list renders once, not per destination.** Platforms are not
+   destination-specific today. Seven identical blocks under four destinations would be
+   duplicate content and would make the click data unreadable.
+8. **The page reads the live offer count instead of asserting the board is empty.** A
+   hardcoded "the board is currently empty" becomes a lie the first time an offer is
+   published, and a page whose premise is not overstating things cannot afford one.
+
+**The deliberate exception, recorded so it can be reversed on purpose:** the repo rule is
+*"only create an indexable page that has enough real data to justify existing (≥3 live
+offers)."* `/where-to-look` has **zero offers**. The rule exists to stop thin *offer* pages;
+this page's data is a sourced season matrix and a verified platform registry — real,
+checkable, not padded. It is a source guide that links to the board rather than substituting
+for it. If the page earns nothing by the next review, delete it rather than defend it.
+
+**Cut or deferred (with trigger):**
+
+| Deferred | Trigger |
+| --- | --- |
+| UK / second origin market | A German page earns a commission. It needs new airports, GBP, new affiliate programs, new sources and a second verification loop — a second site in everything but name |
+| A page per month (12 pages) | The single page shows traffic. Twelve thin month pages is the affiliate-farm shape the repo refuses |
+| Affiliate wrapping on platform links | The plain-link click data shows which platform earns attention |
+| Season rows for PT, CY, MT | A named source is found. Not before |
+| The niche pages (offseason / solo / timing) | Unchanged: a lens is kept at the next review. The three published picks are not withdrawn |
+
+**Unverified assumptions:**
+
+- That a season × platform page earns anything at all. It is the cheapest page to write and
+  the least proven. The click data is the first evidence either way.
+- That the platform `sells` sentences are accurate. They were read from each company's own
+  site on 2026-11-20, but a business model can change and `lastVerified` is the only guard.
+- That "in season" is a question anyone searches for. It is a real question; whether it is a
+  *searched* question is untested.
+- Affiliate terms still unconfirmed in writing. Unchanged, and still the thing that makes
+  every click earn nothing.
+
+**Next action (one, with deadline and success metric):** publish `/where-to-look` and drive
+any traffic to it — a Pinterest pin, a Reddit answer, or a single post — by **4 Dec 2026**.
+Success metric: at least one outbound platform click is logged, which tells you which source
+to verify offers from first. Zero clicks is also an answer, and a cheap one.
+
+---
+
 ## 2026-11-19 — The first three articles, and widening the lens pool
 
 **Goal and who pays:** unchanged. Affiliate commission from package-holiday clicks; the board

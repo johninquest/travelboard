@@ -12,6 +12,23 @@ Updated: 2026-11-14. Decisions and their reasons are in [`decision-log.md`](deci
 The board is the **instrument** that makes testing cheap; the **writing** is the test.
 We are finding which audience earns an affiliate commission, not building a better board.
 
+## Status: the niche focus is paused (2026-11-20)
+
+The niche pages need research the owner does not have — airline pet policy, accessibility
+audits, single-supplement data — and produced 1 article in 6 weeks. A season × platform page
+needs none of it. So the next page is [`/where-to-look`](../app/app/where-to-look/page.tsx):
+which destinations are in season this month, and which *kind* of source carries that
+inventory.
+
+It is a **source guide, not an offer page**. It shows no price and makes no availability
+claim, which is why it can ship with zero verified offers. Its job is to answer the question
+the board cannot yet answer: **which platform do people actually leave for?** That tells you
+where to spend verification effort.
+
+The niche lenses are paused, not killed. The three published picks stand. See the 2026-11-20
+entry in [`decision-log.md`](decision-log.md) for the reasoning and the deliberate exception
+to the ≥3-offers rule.
+
 ## What the board is for
 
 It does three jobs, and none of them is "be a product":
