@@ -137,16 +137,18 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 ```
 
 GA is a **convenience dashboard over the same events** the first-party funnel already
-collects. `lib/track.ts` is the single call site: every event goes to
-`POST /api/track` *and* to `gtag`, so the two cannot drift. **PocketBase is the source
-of truth** for the keep/kill read — it carries `session_id`, which lets you join
-`page_view` → `deal_click`, and it survives ad-blockers that block Google outright.
-Expect GA to under-count by the ad-block share; do not reconcile the two numbers, and
-do not let a GA discrepancy change a decision the funnel already answers.
+collects, with one deliberate exception: **page views are GA's, not ours.** Everything
+else goes through `send()` in `lib/track.ts` to both `POST /api/track` and `gtag`.
+**PocketBase is the source of truth** for the keep/kill read — it carries `session_id`,
+which lets you join `page_view` → `deal_click`, and it survives ad-blockers that block
+Google outright. Expect GA to under-count by the ad-block share; do not reconcile the
+two numbers, and do not let a GA discrepancy change a decision the funnel already
+answers.
 
 **It is cookieless by default.** `NEXT_PUBLIC_GA_CONSENT` is unset, which makes the
 consent default `analytics_storage: "denied"`: GA4 falls back to cookieless
-measurement and sets no `_ga` cookie. Page and event counts still arrive. Ad storage,
+measurement and sets no `_ga` cookie (verified — `document.cookie` is empty at runtime
+and hits carry `gcs=G100`). Page and event counts still arrive. Ad storage,
 personalisation and functionality storage are denied unconditionally — this board earns
 from affiliate links, not from Google audiences.
 
@@ -155,9 +157,51 @@ Set `NEXT_PUBLIC_GA_CONSENT=granted` only once a consent banner exists. There is
 gap is recorded in [`../docs/decision-log.md`](../docs/decision-log.md) and is the
 outstanding risk of running GA at all.
 
-`send_page_view: false` is deliberate — page views are emitted by `trackPageView()`
-with `page_path`, because App Router navigations do not reload the document and GA's
-automatic page view would double-count client-side navigation while missing it.
+#### Why `lib/track.ts` drops `page_view` before it reaches gtag
+
+`send_page_view: false` in the config **does not stop GA counting page views**, and
+this is not obvious. GA4's **Enhanced Measurement** — on by default for new data
+streams — collects `page_view` (and `scroll`, `click`, etc.) independently of the tag.
+Verified against a production build: an isolated page whose only GA call was
+`gtag("config", id, { send_page_view: false })`, with no custom event at all, still
+sent a `page_view` hit.
+
+So forwarding our own page view on top of that counted **every visit twice**, which is
+not cosmetic: the keep/kill rule is outbound clicks per 100 visits, and a doubled visit
+count halves the measured rate. `send()` therefore returns early for `page_view` — GA
+reports Enhanced Measurement's number, the beacon keeps the first-party one.
+
+They will not agree exactly. EM follows history changes, so it catches client-side
+navigation; the beacon fires once per document load. That asymmetry is a further reason
+the funnel, not GA, decides the test. The other GA-side consequence is that **client
+routing is counted by GA and not by us** — see the `PageViewTracker` note below.
+
+#### Turn Enhanced Measurement off if you want the two to agree
+
+GA admin → *Data streams* → your stream → *Google Tag* → *Configure Enhanced
+Measurement* → switch **Page views** off. Then GA reports only what `send()` forwards,
+and both systems count the same thing.
+
+Do this only if you also want GA's page views to follow the beacon's definition (per
+document load, not per navigation). Leaving EM on is the better default for a content
+site: it also gives you `scroll`, `outbound click` and `file_download` for free, and
+its outbound-click collection is the one place `/where-to-look`'s plain platform links
+are currently measured at all.
+
+#### Page views are per document load, not per navigation
+
+`PageViewTracker` sits in the root layout, which App Router keeps mounted across
+client-side navigations. With an empty dependency array it fired **once per document
+load**, so board → guide → offer logged one `page_view` for three views — verified in
+a production build. It now depends on `usePathname()`, so each navigation is logged.
+
+This mattered more than a missing page view: visits were under-counted while
+`deal_click` kept counting in full, so the clicks-per-100-visits number the keep/kill
+rule reads was inflated by roughly the client-navigation share.
+
+`?from=` is deliberately excluded from the tracked value (`pathname`, not `href`) —
+it is attribution, not a different page, and including it would log the same guide
+twice.
 
 ### Optional: PocketBase
 

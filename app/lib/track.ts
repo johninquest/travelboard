@@ -31,14 +31,20 @@ function send(name: string, props: Record<string, unknown> = {}) {
   // blocked or absent gtag must never stop the first-party event from being sent.
   if (!gaEnabled || typeof window.gtag !== "function") return;
 
-  // Page views are sent as an explicit event, not GA's automatic page_view, because
-  // App Router navigations do not reload the document. `page_path` is the parameter
-  // GA4 maps onto its built-in page dimension, so the report groups by URL the way it
-  // would have without send_page_view: false.
-  if (name === "page_view") {
-    window.gtag("event", "page_view", { page_path: props.path });
-    return;
-  }
+  // Page views are GA's job, not ours. `send_page_view: false` in the config does not
+  // suppress them: GA4's Enhanced Measurement collects page_view independently of the
+  // tag, and it cannot be turned off from the snippet. Verified 2026-11-21 against a
+  // production build — an isolated page that sent config only, with no custom event,
+  // still produced a page_view hit. Forwarding ours on top of that counted every visit
+  // twice, which matters more than it looks: the keep/kill rule is clicks per 100
+  // visits, so a doubled visit count halves the measured rate.
+  //
+  // So GA reports Enhanced Measurement's page views, and this beacon remains the
+  // first-party record. They will not agree exactly — EM follows history changes and
+  // this fires once per document load — which is another reason travel_events, not GA,
+  // is the source of truth for the test.
+  if (name === "page_view") return;
+
   // Cookieless mode discards the client id on Google's side, so nothing here carries
   // a cross-session identifier; session_id stays in the first-party store.
   window.gtag("event", name, props);

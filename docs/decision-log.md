@@ -52,6 +52,89 @@ guide — was one nav click away.
 
 ---
 
+## 2026-11-21 (later) — Verifying GA found two counting bugs, one of them in our own funnel
+
+Supersedes the "GA4 added" entry below where they disagree about page views. That entry
+was written from a build check; this one is from running the site in a browser.
+
+**Evidence so far (numbers):** unchanged — 0 traffic, 0 clicks, 0 revenue, 14 placeholder
+listings. Live site confirmed to carry no Google code at all yet (fetched
+`travelboard.johnxlabs.de`: no `googletagmanager`, no Measurement ID). Hosting is
+**Vercel**, not Netlify — `netlify.toml` is still in the repo and is now the wrong file
+to trust for build settings.
+
+**Why this matters more than the analytics setup:** the keep/kill rule is *outbound
+clicks per 100 visits*. Both bugs moved that number, in opposite directions, and neither
+is visible in a GA UI.
+
+**Bug 1 — every visit counted twice in GA.** `send_page_view: false` does not do what it
+says, because **GA4 Enhanced Measurement** (on by default for new streams) collects
+`page_view` independently of the tag. Proven with an isolated page whose only GA call was
+a config carrying the flag, and no custom event: it still sent a `page_view`. Our
+forwarded view arrived alongside it — two hits, one with `dp=/` and one without.
+
+Fix: `send()` returns early for `page_view`. GA reports EM's count; the beacon keeps the
+first-party one. Rejected alternatives: forwarding with a different event name (two
+definitions of a visit in one property), and disabling EM from code (impossible — it is
+a stream setting).
+
+Consequence worth knowing: **GA now counts client-side navigation, and until today we
+did not.** EM followed `/` → `/blog` and logged it. That is the asymmetry between the two
+sources, and the reason the funnel still decides the test.
+
+**Bug 2 — `PageViewTracker` fired once per document load, not per view.** It sits in the
+root layout, which App Router keeps mounted across navigations, and its effect had an
+empty dependency array. Measured in a production build: three pages, **one** `page_view`
+beacon. Visits were under-counted while `deal_click` counted in full, so the funnel's own
+click rate was inflated by roughly the client-navigation share — the opposite error to
+bug 1, and the one that would have been read as good news.
+
+Fix: depend on `usePathname()`. `?from=` is excluded deliberately (pathname, not href) —
+it is attribution, not a different page.
+
+**Regression cover:** `lib/track.test.ts` (4 cases) asserts GA gets no forwarded
+`page_view` while the beacon still does. Confirmed it fails when the early return is
+removed — a test that cannot fail proves nothing. 121 tests pass.
+
+**Rejected: the Google Tag Manager container.** Google's setup assistant offers
+`GTM-PPKS8DPW`. Not used, for four reasons: config would live in a web console git cannot
+see or review; consent defaults must precede the container or its tags fire first, which
+puts the cookieless guarantee in Google's UI instead of `lib/analytics.ts`; ~85KB to send
+four events on a site whose claim is speed and honesty; and there are no other tags to
+manage, which is the only problem GTM solves. The assistant's snippet is also incomplete
+as pasted — no `gtag("config", …)`, so it would measure nothing.
+
+**"Your Google tag wasn't detected" is correct, not a glitch.** The fix is deployed
+nowhere: the commits are local and the Vercel project has no
+`NEXT_PUBLIC_GA_MEASUREMENT_ID`. It is a `NEXT_PUBLIC_*` var, so it is inlined **at build
+time** — adding it requires a redeploy, and a deploy without it ships silently without
+GA.
+
+**Cut or deferred (with trigger):**
+
+| Deferred | Trigger |
+| --- | --- |
+| Disable EM page views so GA and the funnel agree | Only if the two numbers are ever argued over. EM also gives `scroll` and outbound-click data for free, which is currently the only measurement of `/where-to-look`'s plain platform links |
+| Delete or repoint `netlify.toml` | Next deploy-config change. It is a live trap: it sets `base = "app"` and `NODE_VERSION`, and Vercel ignores it |
+| `/where-to-look` platform clicks in our own funnel | The 4 Dec traffic push, if it happens. Those links are plain `<a href>` with no `track*` call, so the decision-log's success metric — "at least one outbound platform click is logged" — **cannot currently be met by our funnel.** EM would catch it; GA is not deployed. Resolve before driving traffic |
+
+**Unverified assumptions:**
+
+- That EM keeps sending page views without cookies. Observed at `gcs=G100` today; Google
+  can change it and there is no traffic to notice.
+- That `travel_events` is reachable in production. `PB_URL` is **commented out** in
+  `app/.env.local`, so unless Vercel sets it, the beacon answers `204` and drops every
+  event. With GA the only other sink now skipping `page_view`, a production visit could be
+  recorded nowhere. Check this before the 4 Dec push, not after.
+
+**Next action (one, with deadline and success metric):** unchanged — traffic to
+`/where-to-look` by **4 Dec 2026** — but it now has a precondition: set
+`NEXT_PUBLIC_GA_MEASUREMENT_ID` (and decide `PB_URL`) in the **Vercel** project, redeploy,
+and confirm the tag is served by fetching the live page. Traffic measured nowhere is not
+evidence.
+
+---
+
 ## 2026-11-21 — GA4 added, cookieless, and still not the source of truth
 
 **Goal and who pays:** unchanged. Affiliate commission from package-holiday clicks.

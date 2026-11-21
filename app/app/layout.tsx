@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { inter, cabinetGrotesk } from "@/lib/fonts";
 import { GoogleAnalytics } from "@/components/google-analytics";
@@ -30,7 +31,12 @@ export default function RootLayout({
         <SiteHeader />
         {children}
         <SiteFooter />
-        <PageViewTracker />
+        {/* usePathname() is URL data, which Next refuses to read in a Client Component
+            outside a Suspense boundary — without this the build fails at prerender. The
+            fallback is null: the tracker renders nothing and measures nothing. */}
+        <Suspense fallback={null}>
+          <PageViewTracker />
+        </Suspense>
         <GoogleAnalytics />
       </body>
     </html>
